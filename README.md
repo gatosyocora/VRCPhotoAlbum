@@ -13,3 +13,5 @@ ver 0.1
 * 日付順にフォルダ一覧を並べ替え
 * 特定のフォルダの写真一覧をサムネイル付きで表示
 * 写真を選択すると既存のアプリケーションで開く
+
+![サンプル](https://github.com/gatosyocora/VRCPhotoAlbum/images/vrcphotoalbum_sample4.png)
