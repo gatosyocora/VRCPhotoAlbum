@@ -14,4 +14,4 @@ ver 0.1
 * 特定のフォルダの写真一覧をサムネイル付きで表示
 * 写真を選択すると既存のアプリケーションで開く
 
-![サンプル](https://github.com/gatosyocora/VRCPhotoAlbum/images/vrcphotoalbum_sample4.png)
+![サンプル](https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/vrcphotoalbum_sample4.png)
