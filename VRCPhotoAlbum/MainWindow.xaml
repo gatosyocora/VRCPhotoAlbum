@@ -6,7 +6,67 @@
         xmlns:local="clr-namespace:VRCPhotoAlbum"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+
     <Grid>
-        
+
+        <!-- <ProgressBar
+            x:Name="ProgBar"
+            Value="{Binding ProgressValue}"
+            Maximum="300"
+            Height="30"
+            Width="300"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Panel.ZIndex="9"/>
+        -->
+
+        <Grid Margin="0,10,0,0" Height="52" VerticalAlignment="Top">
+            <Button Content="Show" Margin="393,22,0,0" VerticalAlignment="Top" Click="ShowButton_Click" HorizontalAlignment="Left" Width="75"/>
+            <TextBox x:Name = "FolderPathTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Width="175" Margin="182,19,0,0" Height="23" VerticalAlignment="Top" />
+            <Label Content="VRCPhotoFolderPath" HorizontalAlignment="Left" Margin="36,16,0,10"/>
+        </Grid>
+
+        <Grid Margin="0,67,0,0" HorizontalAlignment="Left" Width="174">
+            <ListBox 
+                x:Name ="FolderListBox" 
+                Margin="12,35,0,10" 
+                SelectionChanged="FolderListBox_SelectionChanged" 
+                HorizontalAlignment="Left" 
+                Width="155"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+            <Button x:Name="DayButton" Content="Day" HorizontalAlignment="Left" Margin="12,10,0,0" VerticalAlignment="Top" Width="75" Click="DayButton_Click" />
+            <Button x:Name="PhotoNumButton" Content="PhotoNum" HorizontalAlignment="Left" Margin="92,10,0,0" VerticalAlignment="Top" Width="75" Click="PhotoNumButton_Click" />
+        </Grid>
+
+        <Grid Margin="179,67,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="0*"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="FolderNameLabel" Content="No Select" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="150"/>
+            <ListView x:Name = "PhotoListView" SelectionMode="Extended" Margin="0,31,0,0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.IsDeferredScrollingEnabled="True"
+                  ScrollViewer.PanningMode="VerticalOnly"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling" SelectionChanged="PhotoListView_SelectionChanged"
+                  >
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel Orientation="Vertical"
+                                    CanVerticallyScroll="True"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="300" Height="200">
+                            <Image Source="{Binding Uri}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Grid>
+
 </Window>
