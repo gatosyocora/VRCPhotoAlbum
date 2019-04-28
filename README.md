@@ -14,10 +14,10 @@ ver 0.1
 * 特定のフォルダの写真一覧をサムネイル付きで表示
 * 写真を選択すると既存のアプリケーションで開く
 
-![サンプル](/blob/master/images/vrcphotoalbum_sample4.png)
+![サンプル](https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/vrcphotoalbum_sample4.png)
 
 ## インストール
-1. [releases](/releases)からVRCPhotoAlbum_vXXX.zipをダウンロードして解凍(XXXはバージョン)
+1. [releases](https://github.com/gatosyocora/VRCPhotoAlbum/releases)からVRCPhotoAlbum_vXXX.zipをダウンロードして解凍(XXXはバージョン)
 2. setup.exeをダブルクリックしてインストールおよび起動する
 3. 次回以降はVRCPhotoAlbum.applicationをダブルクリックでも起動できる
 (スタートメニューにも追加される)
