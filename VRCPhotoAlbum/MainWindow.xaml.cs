@@ -72,18 +72,23 @@ namespace VRCPhotoAlbum
 
         private SubFolderWindow subWin;
 
-        public int ProgressValue { set; get; }
+        private DayFolder selectedSubFolder;
+
+        private const string APP_JSONFILE_NAME = "vrc_photo_album.json";
+
+        public int ProgressValue { private set; get; }
 
         public MainWindow()
         {
             InitializeComponent();
-            this.Title = "VRCPhotoAlbum";
 
             folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\VRChat";
             FolderPathTextBox.Text = folderPath;
 
+            // initial state
             DayButton.IsEnabled = false;
             PhotoNumButton.IsEnabled = false;
+            SubFolderButton.IsEnabled = false;
         }
 
         private void ShowButton_Click(object sender, RoutedEventArgs e)
@@ -101,8 +106,10 @@ namespace VRCPhotoAlbum
             {
                 DayButton.IsEnabled = false;
                 PhotoNumButton.IsEnabled = false;
+                return;
             }
 
+            //CreateOrLoadInfoJsonFile();
         }
 
         private bool MovePhotosToDayNameFolder(string folderPath)
@@ -163,11 +170,21 @@ namespace VRCPhotoAlbum
             return true;
         }
 
+        private void CreateOrLoadInfoJsonFile()
+        {
+            var fs = new FileStream(APP_JSONFILE_NAME, FileMode.OpenOrCreate);
+        }
+
+        // selected dayfolder from list
         private void FolderListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var items = e.AddedItems.Cast<string>().ToList<string>();
             if (items.Count() > 0)
                 subWin = new SubFolderWindow(folderPath + "\\" + items[0].Split('\t')[0], this);
+
+            selectedSubFolder = folderList.subFolders[FolderListBox.SelectedIndex];
+
+            SubFolderButton.IsEnabled = true;
         }
 
         private void DayButton_Click(object sender, RoutedEventArgs e)
@@ -182,6 +199,7 @@ namespace VRCPhotoAlbum
             FolderListBox.ItemsSource = folderList.GetSubFolderInfoForList();
         }
 
+        // selected photo
         private void PhotoListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var image = e.AddedItems.Cast<Photo>().ToList<Photo>();
@@ -267,6 +285,12 @@ namespace VRCPhotoAlbum
             }
 
             MessageBox.Show("Finish");
+        }
+
+        private void SubFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedSubFolder != null)
+                System.Diagnostics.Process.Start(selectedSubFolder.path); 
         }
     }
 }

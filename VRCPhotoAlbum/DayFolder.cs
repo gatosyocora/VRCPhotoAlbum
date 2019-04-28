@@ -4,14 +4,15 @@ namespace VRCPhotoAlbum
 {
     public class DayFolder
     {
-        private string path { get; }
+        private string _path;
+        public string path { get { return this._path; } }
         public string day { get; }
         public int photoNum { get; }
         public string ListText { get; }
 
         public DayFolder(string folderPath)
         {
-            this.path = folderPath;
+            this._path = folderPath;
             var paths = folderPath.Split('\\');
             this.day = paths[paths.Length-1];
 
