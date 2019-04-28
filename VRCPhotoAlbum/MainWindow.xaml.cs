@@ -76,7 +76,7 @@ namespace VRCPhotoAlbum
 
         private const string APP_JSONFILE_NAME = "vrc_photo_album.json";
 
-        public int ProgressValue { private set; get; }
+        public int ProgressValue;
 
         public MainWindow()
         {
