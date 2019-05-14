@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+
+// https://garafu.blogspot.com/2015/06/dev-tasktray-residentapplication.html
 
 namespace VRCPhotoAlbum
 {
@@ -13,5 +9,19 @@ namespace VRCPhotoAlbum
     /// </summary>
     public partial class App : Application
     {
+        private NofifyIconWrapper notifyIcon;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            notifyIcon = new NofifyIconWrapper();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            this.notifyIcon.Dispose();
+        }
     }
 }
