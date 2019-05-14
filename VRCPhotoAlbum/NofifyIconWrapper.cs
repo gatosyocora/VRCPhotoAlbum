@@ -7,12 +7,16 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Threading;
 
 namespace VRCPhotoAlbum
 {
     public partial class NofifyIconWrapper: Component
     {
         private const string STARTUP_PATH = @"Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+        private Timer myTimer;
+
+        private DateTime execTime = new DateTime(2019, 5, 15, 0, 0, 0);
 
         public NofifyIconWrapper()
         {
@@ -22,6 +26,8 @@ namespace VRCPhotoAlbum
             toolStripMenuItem_OrganizePhotos.Click += this.toolStripMenuItem_OrganizePhotos_Click;
             toolStripMenuItem_StartUp.Click += this.toolStripMenuItem_StartUp_Click;
             toolStripMenuItem_Exit.Click += this.toolStripMenuItem_Exit_Click;
+
+            myTimer = SetTimer();
         }
 
         public NofifyIconWrapper(IContainer container)
@@ -86,6 +92,29 @@ namespace VRCPhotoAlbum
             {
                 throw e;
             }
+        }
+
+        private Timer SetTimer()
+        {
+            Timer timer;
+
+            // 次の日の0時にする
+            var nextDay = DateTime.Now.AddDays(1);
+            execTime = new DateTime(nextDay.Year, nextDay.Month, nextDay.Day, 0, 0, 0);
+
+            TimerCallback callback = state =>
+            {
+                if (execTime < DateTime.Now)
+                {
+                    toolStripMenuItem_OrganizePhotos_Click(null, null);
+                    execTime = execTime.AddDays(1);
+                }
+            };
+            
+            int M = 60 * 1000;
+            timer = new Timer(callback, null, 0, 1 * M); // 30分おきに実行
+
+            return timer;
         }
 
         private void toolStripMenuItem_Open_Click(object sender, EventArgs e)
