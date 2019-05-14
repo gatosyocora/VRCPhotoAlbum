@@ -96,7 +96,12 @@ namespace VRCPhotoAlbum
 
         private void toolStripMenuItem_OrganizePhotos_Click(object sender, EventArgs e)
         {
-            MainWindow.MovePhotosToDayNameFolder();
+            int movedPhotoNum = 0;
+            var result = MainWindow.MovePhotosToDayNameFolder(out movedPhotoNum);
+            if (result)
+                MessageBox.Show(movedPhotoNum + "枚の写真をフォルダに分けました");
+            else
+                MessageBox.Show("写真のフォルダ分けに失敗しました");
         }
 
         private void toolStripMenuItem_StartUp_Click(object sender, EventArgs e)

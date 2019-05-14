@@ -156,8 +156,14 @@ namespace VRCPhotoAlbum
             return true;
         }
 
-        public static bool MovePhotosToDayNameFolder()
+        /// <summary>
+        /// 写真を日付ごとのフォルダに分ける
+        /// </summary>
+        /// <param name="movedPhotoNum">移動した写真の数</param>
+        /// <returns>移動に成功したか</returns>
+        public static bool MovePhotosToDayNameFolder(out int movedPhotoNum)
         {
+            movedPhotoNum = 0;
             var folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\VRChat";
 
             if (!Directory.Exists(folderPath))
@@ -184,6 +190,7 @@ namespace VRCPhotoAlbum
                 var di = Directory.CreateDirectory(folderPath + "\\" + day);
 
                 File.Move(fileFullPath, folderPath + "\\" + day + "\\" + fileName);
+                movedPhotoNum++;
             }
 
             return true;
