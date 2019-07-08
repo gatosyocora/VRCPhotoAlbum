@@ -1,5 +1,9 @@
 # VRCPhotoAlbum
 
+
+![サンプル](https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/vrcphotoalbum_sample4.png)
+
+
 VRChatで撮影した写真を整理するためのWPFアプリケーションです
 
 日付ごとのフォルダに写真を分別し, 写真を見れます
@@ -18,8 +22,6 @@ latest release : ver 0.1
 (ver0.2)
 * 常駐アプリ化(インジケーターに表示されるようになった, 右クリックでウィンドウ表示,写真整理,終了が可能)
 * スタートアップに登録/解除(インジケーターのアイコン右クリックからおこなう)
-
-![サンプル](https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/vrcphotoalbum_sample4.png)
 
 ## 使い方
 1. VRChatの写真が保存されているフォルダのパスを入力して「Show」を押します。日付ごとにフォルダ分けされます。
