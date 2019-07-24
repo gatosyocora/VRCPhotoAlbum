@@ -18,6 +18,8 @@ namespace VRCPhotoAlbum
 
         private DateTime execTime = new DateTime(2019, 5, 15, 0, 0, 0);
 
+        private bool separatingNow = false;
+
         public NofifyIconWrapper()
         {
             InitializeComponent();
@@ -106,7 +108,7 @@ namespace VRCPhotoAlbum
             {
                 if (execTime < DateTime.Now)
                 {
-                    toolStripMenuItem_OrganizePhotos_Click(null, null);
+                    SeparatePhotos(ref separatingNow);
                     execTime = execTime.AddDays(1);
                 }
             };
@@ -117,6 +119,22 @@ namespace VRCPhotoAlbum
             return timer;
         }
 
+        private void SeparatePhotos(ref bool separatingNow)
+        {
+            if (separatingNow) return;
+
+            separatingNow = true;
+
+            int movedPhotoNum = 0;
+            var result = MainWindow.MovePhotosToDayNameFolder(out movedPhotoNum);
+            if (result)
+                MessageBox.Show(movedPhotoNum + "枚の写真をフォルダに分けました");
+            else
+                MessageBox.Show("写真のフォルダ分けに失敗しました");
+
+            separatingNow = false;
+        }
+
         private void toolStripMenuItem_Open_Click(object sender, EventArgs e)
         {
             var wnd = new MainWindow();
@@ -125,12 +143,7 @@ namespace VRCPhotoAlbum
 
         private void toolStripMenuItem_OrganizePhotos_Click(object sender, EventArgs e)
         {
-            int movedPhotoNum = 0;
-            var result = MainWindow.MovePhotosToDayNameFolder(out movedPhotoNum);
-            if (result)
-                MessageBox.Show(movedPhotoNum + "枚の写真をフォルダに分けました");
-            else
-                MessageBox.Show("写真のフォルダ分けに失敗しました");
+            SeparatePhotos(ref separatingNow);
         }
 
         private void toolStripMenuItem_StartUp_Click(object sender, EventArgs e)
