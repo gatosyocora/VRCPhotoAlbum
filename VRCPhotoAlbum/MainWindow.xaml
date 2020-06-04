@@ -8,7 +8,8 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <ListBox x:Name="PhotoListBox"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                ItemsSource="{Binding}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>

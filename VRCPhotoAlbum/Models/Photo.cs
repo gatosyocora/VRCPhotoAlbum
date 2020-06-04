@@ -6,7 +6,7 @@ using KoyashiroKohaku.VrcMetaToolSharp;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models
 {
-    class Photo
+    public class Photo
     {
         public string FilePath { get; set; }
         public Image OriginalImage { get; set; }

@@ -19,6 +19,7 @@ using Gatosyocora.VRCPhotoAlbum.Models;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Gatosyocora.VRCPhotoAlbum.ViewModel;
 
 namespace Gatosyocora.VRCPhotoAlbum
 {
@@ -27,7 +28,7 @@ namespace Gatosyocora.VRCPhotoAlbum
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<Photo> _showedPhotoList = new ObservableCollection<Photo>();
+        private MainViewModel _mainViewModel;
 
         public MainWindow()
         {
@@ -37,37 +38,9 @@ namespace Gatosyocora.VRCPhotoAlbum
 
         private void MainWindow_OnLoaded(object sender, EventArgs args)
         {
-            try
-            {
-                var photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
-
-                foreach (var photo in photoList)
-                {
-                    _showedPhotoList.Add(photo);
-                }
-                PhotoListBox.ItemsSource = _showedPhotoList;
-            }
-            catch (Exception e)
-            {
-                Debug.Print($"{e.GetType().Name}: {e.Message}");
-            }
-        }
-
-        private IEnumerable<Photo> LoadVRCPhotoList(string folderPath)
-        {
-            if (!Directory.Exists(folderPath))
-            {
-                throw new ArgumentException($"{folderPath} is not exist.");
-            }
-
-            return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                        .Select(x =>
-                        new Photo
-                        {
-                            FilePath = x,
-                            OriginalImage = Image.FromFile(x),
-                            MetaData = VrcMetaDataReader.Read(File.ReadAllBytes(x))
-                        });
+            _mainViewModel = new MainViewModel();
+            DataContext = _mainViewModel;
+            PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
         }
     }
 }
