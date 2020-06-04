@@ -18,6 +18,7 @@ using Image = System.Drawing.Image;
 using Gatosyocora.VRCPhotoAlbum.Models;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace Gatosyocora.VRCPhotoAlbum
 {
@@ -26,6 +27,8 @@ namespace Gatosyocora.VRCPhotoAlbum
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableCollection<Photo> _showedPhotoList = new ObservableCollection<Photo>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,6 +40,12 @@ namespace Gatosyocora.VRCPhotoAlbum
             try
             {
                 var photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
+
+                foreach (var photo in photoList)
+                {
+                    _showedPhotoList.Add(photo);
+                }
+                PhotoListBox.ItemsSource = _showedPhotoList;
             }
             catch (Exception e)
             {
