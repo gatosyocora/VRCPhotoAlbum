@@ -14,18 +14,32 @@ using Image = System.Drawing.Image;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Photo> ShowedPhotoList = new ObservableCollection<Photo>();
         private List<Photo> _photoList;
 
-        public string SearchText { get; set; }
+        public List<string> UserList { get; }
+
+        private string _searchText = string.Empty;
+        public string SearchText { get { return _searchText; }
+            set
+            {
+                _searchText = value;
+                SearchTextPropertyChanged(nameof(SearchText));
+                SearchPhotoWithUserName(_searchText);
+            }
+        }
+        private void SearchTextPropertyChanged(string propertyName) => PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MainViewModel()
         {
             try
             {
                 _photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
+                UserList = GetUserList(_photoList);
 
                 foreach (var photo in _photoList)
                 {
@@ -67,6 +81,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             {
                 ShowedPhotoList.Add(photo);
             }
+        }
+
+        private List<string> GetUserList(List<Photo> photoList)
+        {
+            return photoList
+                        .SelectMany(x => x.MetaData.Users)
+                        .Distinct()
+                        .ToList();
         }
     }
 }

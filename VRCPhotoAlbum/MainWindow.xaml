@@ -7,14 +7,31 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid Margin="0,0,0,386">
+        <Grid Margin="0,0,0,328">
             <TextBox x:Name="SearchTextBox" 
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     TextChanged="SearchTextBox_TextChanged"/>
+                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <ListView x:Name="UserListView"
+                      ItemsSource="{Binding UserList}" 
+                      Margin="0,53,0,-62"
+                      SelectionChanged="UserListView_SelectionChanged"
+                      SelectionMode="Single">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Text="{Binding}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,48,0,0">
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,106,0,0">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
