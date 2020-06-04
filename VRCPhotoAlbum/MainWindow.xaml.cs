@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Drawing;
+using Image = System.Drawing.Image;
+using Gatosyocora.VRCPhotoAlbum.Models;
 
 namespace Gatosyocora.VRCPhotoAlbum
 {
@@ -23,6 +27,36 @@ namespace Gatosyocora.VRCPhotoAlbum
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += MainWindow_OnLoaded;
+        }
+
+        private void MainWindow_OnLoaded(object sender, EventArgs args)
+        {
+            try
+            {
+                var photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        private List<Photo> LoadVRCPhotoList(string folderPath)
+        {
+            if (!Directory.Exists(folderPath))
+            {
+                throw new ArgumentException($"{folderPath} is not exist.");
+            }
+
+            return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+                        .Select(x =>
+                        new Photo 
+                        { 
+                            FilePath = x,
+                            OriginalImage = Image.FromFile(x)
+                        })
+                        .ToList();
         }
     }
 }
