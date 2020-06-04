@@ -42,5 +42,10 @@ namespace Gatosyocora.VRCPhotoAlbum
             DataContext = _mainViewModel;
             PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
         }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _mainViewModel.SearchPhotoWithUserName(_mainViewModel.SearchText);
+        }
     }
 }

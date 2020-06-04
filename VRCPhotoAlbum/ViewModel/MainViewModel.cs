@@ -17,14 +17,17 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
     public class MainViewModel
     {
         public ObservableCollection<Photo> ShowedPhotoList = new ObservableCollection<Photo>();
+        private List<Photo> _photoList;
+
+        public string SearchText { get; set; }
 
         public MainViewModel()
         {
             try
             {
-                var photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
+                _photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
 
-                foreach (var photo in photoList)
+                foreach (var photo in _photoList)
                 {
                     ShowedPhotoList.Add(photo);
                 }
@@ -35,7 +38,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             }
         }
 
-        private IEnumerable<Photo> LoadVRCPhotoList(string folderPath)
+        private List<Photo> LoadVRCPhotoList(string folderPath)
         {
             if (!Directory.Exists(folderPath))
             {
@@ -49,7 +52,21 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
                             FilePath = x,
                             OriginalImage = Image.FromFile(x),
                             MetaData = VrcMetaDataReader.Read(File.ReadAllBytes(x))
-                        });
+                        })
+                        .ToList();
+        }
+
+        public void SearchPhotoWithUserName(string searchedUserName)
+        {
+            ShowedPhotoList.Clear();
+            var searchedPhotoList = _photoList
+                    .Where(x => x.MetaData.Users.Any(u => u.StartsWith(searchedUserName)))
+                    .ToList();
+
+            foreach (var photo in searchedPhotoList)
+            {
+                ShowedPhotoList.Add(photo);
+            }
         }
     }
 }

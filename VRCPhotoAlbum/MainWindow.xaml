@@ -7,9 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid Margin="0,0,0,386">
+            <TextBox x:Name="SearchTextBox" 
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     TextChanged="SearchTextBox_TextChanged"/>
+        </Grid>
         <ListBox x:Name="PhotoListBox"
-                ItemsSource="{Binding}"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            ItemsSource="{Binding}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,48,0,0">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
