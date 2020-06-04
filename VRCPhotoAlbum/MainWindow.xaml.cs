@@ -121,9 +121,9 @@ namespace VRCPhotoAlbum
                 var filePaths = fileFullPath.Split('\\');
                 var fileName = filePaths[filePaths.Length - 1];
 
-                if (!Regex.IsMatch(fileName, "VRChat_1920x1080_[0-9_\\.-]+.png"))
+                if (!Regex.IsMatch(fileName, "VRChat_1920x1080_[0-9_\\.-]+.png") || !Regex.IsMatch(fileName, "screen_1920x1080_[0-9_\\.-]+.png"))
                 {
-                    ProgressValue++;
+                    //ProgressValue++;
                     continue;
                 }
 
@@ -132,7 +132,7 @@ namespace VRCPhotoAlbum
 
                 File.Move(fileFullPath, folderPath + "\\" + day + "\\" + fileName);
 
-                ProgressValue++;
+                //ProgressValue++;
             }
 
             // サブフォルダのリストを取得
@@ -181,7 +181,7 @@ namespace VRCPhotoAlbum
                 var filePaths = fileFullPath.Split('\\');
                 var fileName = filePaths[filePaths.Length - 1];
 
-                if (!Regex.IsMatch(fileName, "VRChat_1920x1080_[0-9_\\.-]+.png"))
+                if (!Regex.IsMatch(fileName, "VRChat_1920x1080_[0-9_\\.-]+.png") && !Regex.IsMatch(fileName, "screen_1920x1080_[0-9_\\.-]+.png"))
                 {
                     continue;
                 }
