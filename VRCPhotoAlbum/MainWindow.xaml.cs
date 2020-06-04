@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using System.Drawing;
 using Image = System.Drawing.Image;
 using Gatosyocora.VRCPhotoAlbum.Models;
+using KoyashiroKohaku.VrcMetaToolSharp;
+using System.Diagnostics;
 
 namespace Gatosyocora.VRCPhotoAlbum
 {
@@ -38,11 +40,11 @@ namespace Gatosyocora.VRCPhotoAlbum
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                Debug.Print($"{e.GetType().Name}: {e.Message}");
             }
         }
 
-        private List<Photo> LoadVRCPhotoList(string folderPath)
+        private IEnumerable<Photo> LoadVRCPhotoList(string folderPath)
         {
             if (!Directory.Exists(folderPath))
             {
@@ -51,12 +53,12 @@ namespace Gatosyocora.VRCPhotoAlbum
 
             return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                         .Select(x =>
-                        new Photo 
-                        { 
+                        new Photo
+                        {
                             FilePath = x,
-                            OriginalImage = Image.FromFile(x)
-                        })
-                        .ToList();
+                            OriginalImage = Image.FromFile(x),
+                            MetaData = VrcMetaDataReader.Read(File.ReadAllBytes(x))
+                        });
         }
     }
 }
