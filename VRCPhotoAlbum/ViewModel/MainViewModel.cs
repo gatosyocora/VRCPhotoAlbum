@@ -16,6 +16,7 @@ using System.Text.Json;
 using System.Reflection;
 using System.Windows;
 using Gatosyocora.VRCPhotoAlbum.Views;
+using Gatosyocora.VRCPhotoAlbum.Helpers;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -41,13 +42,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 
         public MainViewModel()
         {
-            var executeFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var jsonFilePath = executeFolderPath + @"/settings.json";
+            var jsonFilePath = JsonHelper.GetJsonFilePath();
             SettingData settingData;
             if (File.Exists(jsonFilePath))
             {
-                settingData = LoadSettingDataFromJsonFile(jsonFilePath);
-            }
+                settingData = JsonHelper.ImportJsonFile<SettingData>(jsonFilePath);            }
             else
             {
                 settingData = OpenSetting();
@@ -114,11 +113,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
                         .Distinct()
                         .OrderBy(x => x)
                         .ToList();
-        }
-
-        private SettingData LoadSettingDataFromJsonFile(string path)
-        {
-            return JsonSerializer.Deserialize(File.ReadAllText(path), typeof(SettingData)) as SettingData;
         }
 
         private SettingData OpenSetting()
