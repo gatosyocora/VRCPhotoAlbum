@@ -12,6 +12,9 @@ using KoyashiroKohaku.VrcMetaToolSharp;
 using System.Windows.Controls;
 using Image = System.Drawing.Image;
 using System.Windows.Media.Imaging;
+using System.Text.Json;
+using System.Reflection;
+using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -37,9 +40,21 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 
         public MainViewModel()
         {
+            var executeFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var jsonFilePath = executeFolderPath + @"/settings.json";
+            SettingData settingData;
+            if (File.Exists(jsonFilePath))
+            {
+                settingData = LoadSettingDataFromJsonFile(jsonFilePath);
+            }
+            else
+            {
+                settingData = CreateSettingData();
+            }
+
             try
             {
-                _photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
+                _photoList = LoadVRCPhotoList(settingData.FolderPath);
                 UserList = GetSortedUserList(_photoList);
 
                 foreach (var photo in _photoList)
@@ -98,6 +113,19 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
                         .Distinct()
                         .OrderBy(x => x)
                         .ToList();
+        }
+
+        private SettingData CreateSettingData()
+        {
+            return new SettingData
+            {
+                FolderPath = @"D:\VRTools\vrc_meta_tool\meta_pic"
+            };
+        }
+
+        private SettingData LoadSettingDataFromJsonFile(string path)
+        {
+            return JsonSerializer.Deserialize(File.ReadAllText(path), typeof(SettingData)) as SettingData;
         }
     }
 }
