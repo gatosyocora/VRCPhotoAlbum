@@ -15,10 +15,18 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="SearchTextBox" 
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="7*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Search User"/>
+            <TextBox x:Name="SearchTextBox" 
                 Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Grid.Column="0"
-                 Grid.Row="0"/>
+                Grid.Column="1"
+                VerticalAlignment="Center"/>
+        </Grid>
+
         <ListView x:Name="UserListView"
                 ItemsSource="{Binding UserList}" 
                 SelectionChanged="UserListView_SelectionChanged"
