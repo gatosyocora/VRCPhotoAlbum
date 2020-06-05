@@ -33,15 +33,36 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             set
             {
                 _searchText = value;
-                SearchTextPropertyChanged(nameof(SearchText));
-                SearchPhotoWithUserName(_searchText);
+                OnPropertyChanged(nameof(SearchText));
+                SearchPhotoWithUserNameAndDateTime(_searchText, _searchDate);
             }
         }
-        private void SearchTextPropertyChanged(string propertyName) => PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+
+        private DateTime _searchDate = DateTime.Now;
+        public DateTime SearchDate { get => _searchDate; 
+            set
+            {
+                _searchDate = value;
+                OnPropertyChanged(nameof(SearchDate));
+                SearchPhotoWithUserNameAndDateTime(_searchText, _searchDate);
+            }
+        }
+
+        private bool _searchWithDateTime = false;
+        public bool SearchWithDateTime { get => _searchWithDateTime;
+            set
+            {
+                _searchWithDateTime = value;
+                OnPropertyChanged(nameof(SearchWithDateTime));
+                SearchPhotoWithUserNameAndDateTime(_searchText, _searchDate);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string _cashFolderPath;
+
+        private void OnPropertyChanged(string propertyName) => PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 
         public MainViewModel()
         {
@@ -92,11 +113,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
                         .ToList();
         }
 
-        public void SearchPhotoWithUserName(string searchedUserName)
+        public void SearchPhotoWithUserNameAndDateTime(string searchedUserName, DateTime searchedDate)
         {
             ShowedPhotoList.Clear();
             var searchedPhotoList = _photoList
-                    .Where(x => x.MetaData.Users.Any(u => u.UserName.StartsWith(searchedUserName)))
+                    .Where(x => x.MetaData.Users.Any(u => u.UserName.StartsWith(searchedUserName)) &&
+                                (!SearchWithDateTime || x.MetaData.Date?.Date.CompareTo(_searchDate.Date) == 0))
                     .ToList();
 
             foreach (var photo in searchedPhotoList)

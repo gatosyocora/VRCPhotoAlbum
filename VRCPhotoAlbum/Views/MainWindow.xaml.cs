@@ -70,5 +70,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             _mainViewModel.SearchText = userName;
         }
+
+        private void SearchDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SearchDatePicker.SelectedDate is null) return;
+
+            var selectedDate = SearchDatePicker.SelectedDate ?? new DateTime();
+            _mainViewModel.SearchDate = selectedDate;
+        }
     }
 }

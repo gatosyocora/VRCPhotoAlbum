@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -47,11 +48,28 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Grid Grid.Column="0"
+                Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="8*"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="SearchWithDateTimeCheckBox"
+                      Grid.Column="0"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      IsChecked="{Binding SearchWithDateTime}"/>
+            <DatePicker x:Name="SearchDatePicker"
+                        Grid.Column="1"
+                        SelectedDate="{Binding SearchDate}"
+                        SelectedDateChanged="SearchDatePicker_SelectedDateChanged"
+                        IsEnabled="{Binding SearchWithDateTime, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             Grid.Column="0"
-            Grid.Row="2"
+            Grid.Row="3"
             SelectionMode="Single"
             SelectionChanged="PhotoListBox_SelectionChanged">
             <ListBox.ItemsPanel>
