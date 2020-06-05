@@ -52,5 +52,18 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             _mainViewModel.SearchText = selectedUserName;
         }
 
+        private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PhotoListBox.SelectedItem is null) return;
+
+            var selectedPhoto = PhotoListBox.SelectedItem as Photo;
+            OpenPhotoPreview(selectedPhoto);
+        }
+
+        private void OpenPhotoPreview(Photo photo)
+        {
+            var photoPreview = new PhotoPreview(photo);
+            photoPreview.Show();
+        }
     }
 }
