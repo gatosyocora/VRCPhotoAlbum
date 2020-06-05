@@ -23,12 +23,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     public partial class PhotoPreview : Window
     {
         private PhotoPreviewViewModel _photoPreviewViewModel;
+        private MainWindow _mainWindow;
 
-        public PhotoPreview(Photo photo)
+        public PhotoPreview(Photo photo, MainWindow mainWindow)
         {
             InitializeComponent();
             _photoPreviewViewModel = new PhotoPreviewViewModel(photo);
             DataContext = _photoPreviewViewModel;
+            _mainWindow = mainWindow;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -48,6 +50,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             {
                 Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
             }
+        }
+
+        private void UserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var  selectedUser = UserListView.SelectedItem as User;
+            _mainWindow.SearchWithUserName(selectedUser.UserName);
+            Close();
         }
     }
 }

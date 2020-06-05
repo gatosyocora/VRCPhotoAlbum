@@ -30,7 +30,8 @@
                 SelectionMode="Single"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 Grid.Column="1"
-                Grid.Row="0">
+                Grid.Row="0"
+                SelectionChanged="UserListView_SelectionChanged">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel/>

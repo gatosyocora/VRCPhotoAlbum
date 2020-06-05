@@ -62,8 +62,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private void OpenPhotoPreview(Photo photo)
         {
-            var photoPreview = new PhotoPreview(photo);
+            var photoPreview = new PhotoPreview(photo, this);
             photoPreview.Show();
+        }
+
+        public void SearchWithUserName(string userName)
+        {
+            _mainViewModel.SearchText = userName;
         }
     }
 }
