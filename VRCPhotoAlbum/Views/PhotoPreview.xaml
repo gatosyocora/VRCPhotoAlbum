@@ -84,17 +84,17 @@
                 <Label x:Name="WorldName"
                        Grid.Row="0"
                        Content="{Binding WorldName}"
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
                 <Label x:Name="PhotoGrapher"
                        Grid.Row="1"
                        Content="{Binding PhotographerName}"
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
                 <Label x:Name="PhotoDateTime"
                        Grid.Row="2"
                        Content="{Binding PhotoDateTime}"
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
             </Grid>
             <Button x:Name="PreviousPhotoButton"
