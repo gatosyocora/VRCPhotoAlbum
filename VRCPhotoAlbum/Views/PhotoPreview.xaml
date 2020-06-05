@@ -18,9 +18,10 @@
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
                HorizontalAlignment="Center"
-               Source="{Binding PreviewPhoto.OriginalImage}"/>
+               Source="{Binding Image}"
+               Grid.Row="0"/>
         <ListView x:Name="UserListView"
-                ItemsSource="{Binding PreviewPhoto.MetaData.Users}"
+                ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 Grid.Column="1"
@@ -33,7 +34,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <TextBlock Text="{Binding UserName}"/>
+                        <Label Content="{Binding UserName}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -46,14 +47,14 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="WorldName"
+            <Label x:Name="WorldName"
                        Grid.Row="0"
-                       Text="{Binding PreviewPhoto.MetaData.World}"
+                       Content="{Binding WorldName}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"/>
-            <TextBlock x:Name="PhotoGrapher"
+            <Label x:Name="PhotoGrapher"
                        Grid.Row="1"
-                       Text="{Binding PreviewPhoto.MetaData.Photographer}"
+                       Content="{Binding PhotographerName}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"/>
         </Grid>
