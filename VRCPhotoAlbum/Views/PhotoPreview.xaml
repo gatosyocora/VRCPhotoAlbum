@@ -18,7 +18,7 @@
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
                HorizontalAlignment="Center"
-               Source="{Binding PreviewPhoto.FilePath}"/>
+               Source="{Binding PreviewPhoto.OriginalImage}"/>
         <ListView x:Name="UserListView"
                 ItemsSource="{Binding PreviewPhoto.MetaData.Users}"
                 SelectionMode="Single"

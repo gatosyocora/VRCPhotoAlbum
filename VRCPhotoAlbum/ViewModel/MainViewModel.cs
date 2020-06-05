@@ -11,6 +11,7 @@ using System.Drawing;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using System.Windows.Controls;
 using Image = System.Drawing.Image;
+using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -61,11 +62,17 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 
             return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                         .Select(x =>
-                        new Photo
                         {
-                            FilePath = x,
-                            OriginalImage = Image.FromFile(x),
-                            MetaData = VrcMetaDataReader.Read(x)
+                            var source = new BitmapImage();
+                            source.BeginInit();
+                            source.UriSource = new Uri(x);
+                            source.EndInit();
+                            return new Photo
+                            {
+                                FilePath = x,
+                                OriginalImage = source,
+                                MetaData = VrcMetaDataReader.Read(x)
+                            };
                         })
                         .ToList();
         }
