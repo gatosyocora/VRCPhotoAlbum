@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Text.Json;
 using System.Reflection;
 using System.Windows;
+using Gatosyocora.VRCPhotoAlbum.Views;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -49,7 +50,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             }
             else
             {
-                settingData = CreateSettingData();
+                settingData = OpenSetting();
             }
 
             try
@@ -115,17 +116,16 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
                         .ToList();
         }
 
-        private SettingData CreateSettingData()
-        {
-            return new SettingData
-            {
-                FolderPath = @"D:\VRTools\vrc_meta_tool\meta_pic"
-            };
-        }
-
         private SettingData LoadSettingDataFromJsonFile(string path)
         {
             return JsonSerializer.Deserialize(File.ReadAllText(path), typeof(SettingData)) as SettingData;
+        }
+
+        private SettingData OpenSetting()
+        {
+            var settingWindow = new SettingWindow();
+            settingWindow.ShowDialog();
+            return settingWindow.SettingData;
         }
     }
 }
