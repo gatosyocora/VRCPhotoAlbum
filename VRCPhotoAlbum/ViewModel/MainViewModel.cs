@@ -39,7 +39,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             try
             {
                 _photoList = LoadVRCPhotoList(@"D:\VRTools\vrc_meta_tool\meta_pic");
-                UserList = GetUserList(_photoList);
+                UserList = GetSortedUserList(_photoList);
 
                 foreach (var photo in _photoList)
                 {
@@ -83,11 +83,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             }
         }
 
-        private List<string> GetUserList(List<Photo> photoList)
+        private List<string> GetSortedUserList(List<Photo> photoList)
         {
             return photoList
                         .SelectMany(x => x.MetaData.Users)
                         .Distinct()
+                        .OrderBy(x => x)
                         .ToList();
         }
     }
