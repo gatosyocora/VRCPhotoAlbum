@@ -20,8 +20,9 @@ using KoyashiroKohaku.VrcMetaToolSharp;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Gatosyocora.VRCPhotoAlbum.ViewModel;
+using Gatosyocora.VRCPhotoAlbum.Views;
 
-namespace Gatosyocora.VRCPhotoAlbum
+namespace Gatosyocora.VRCPhotoAlbum.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -50,5 +51,6 @@ namespace Gatosyocora.VRCPhotoAlbum
             var selectedUserName = UserListView.SelectedItem as string;
             _mainViewModel.SearchText = selectedUserName;
         }
+
     }
 }
