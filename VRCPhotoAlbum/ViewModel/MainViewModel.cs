@@ -65,7 +65,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
                         {
                             FilePath = x,
                             OriginalImage = Image.FromFile(x),
-                            MetaData = VrcMetaDataReader.Read(File.ReadAllBytes(x))
+                            MetaData = VrcMetaDataReader.Read(x)
                         })
                         .ToList();
         }
