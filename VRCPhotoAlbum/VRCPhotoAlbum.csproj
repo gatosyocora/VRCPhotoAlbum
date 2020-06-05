@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-    <PackageReference Include="VrcMetaToolSharp" Version="0.1.0" />
+    <PackageReference Include="VrcMetaToolSharp" Version="0.1.2" />
   </ItemGroup>
 
 </Project>

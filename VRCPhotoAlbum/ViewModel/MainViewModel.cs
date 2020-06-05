@@ -74,7 +74,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         {
             ShowedPhotoList.Clear();
             var searchedPhotoList = _photoList
-                    .Where(x => x.MetaData.Users.Any(u => u.StartsWith(searchedUserName)))
+                    .Where(x => x.MetaData.Users.Any(u => u.UserName.StartsWith(searchedUserName)))
                     .ToList();
 
             foreach (var photo in searchedPhotoList)
@@ -87,6 +87,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         {
             return photoList
                         .SelectMany(x => x.MetaData.Users)
+                        .Select(u => u.UserName)
                         .Distinct()
                         .OrderBy(x => x)
                         .ToList();
