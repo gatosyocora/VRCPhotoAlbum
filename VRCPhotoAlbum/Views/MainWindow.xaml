@@ -61,7 +61,7 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Width="300" Height="200">
+                    <Grid Width="300" Height="300">
                         <Image Source="{Binding OriginalImage}"/>
                     </Grid>
                 </DataTemplate>
