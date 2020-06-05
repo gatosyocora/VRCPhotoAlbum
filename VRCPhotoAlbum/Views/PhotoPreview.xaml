@@ -24,6 +24,7 @@
                 ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                HorizontalAlignment="Center"
                 Grid.Column="1"
                 Grid.Row="0">
             <ListView.ItemsPanel>
@@ -46,6 +47,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <Label x:Name="WorldName"
                        Grid.Row="0"
@@ -55,6 +57,11 @@
             <Label x:Name="PhotoGrapher"
                        Grid.Row="1"
                        Content="{Binding PhotographerName}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+            <Label x:Name="PhotoDateTime"
+                       Grid.Row="2"
+                       Content="{Binding PhotoDateTime}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"/>
         </Grid>

@@ -18,6 +18,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         public List<User> UserList => _previewPhoto?.MetaData?.Users ?? Enumerable.Empty<User>().ToList();
         public string WorldName => "World: " + _previewPhoto?.MetaData?.World ?? string.Empty;
         public string PhotographerName => "Photographer: " + _previewPhoto?.MetaData?.Photographer ?? string.Empty;
+        public string PhotoDateTime => _previewPhoto?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
