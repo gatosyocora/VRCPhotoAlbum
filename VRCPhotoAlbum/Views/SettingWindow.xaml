@@ -29,9 +29,7 @@
                    Grid.Column="0"/>
             <TextBox x:Name="FolderPathTextBox"
                  Text="{Binding FolderName}"
-                 HorizontalAlignment="Center"
                  VerticalAlignment="Center"
-                 Width="auto"
                  Grid.Column="1"/>
         </Grid>
         <Grid Grid.Row="2"
