@@ -49,6 +49,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             if (UserListView.SelectedItem is null) return;
 
             var selectedUserName = UserListView.SelectedItem as string;
+            UserListView.SelectedItem = null;
             _mainViewModel.SearchText = selectedUserName;
         }
 
@@ -57,6 +58,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             if (PhotoListBox.SelectedItem is null) return;
 
             var selectedPhoto = PhotoListBox.SelectedItem as Photo;
+            PhotoListBox.SelectedItem = null;
             OpenPhotoPreview(selectedPhoto);
         }
 
