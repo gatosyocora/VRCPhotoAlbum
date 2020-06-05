@@ -23,7 +23,7 @@
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
                HorizontalAlignment="Center"
-               Source="{Binding Image}"
+               Source="{Binding ImageFilePath}"
                Grid.Row="0"/>
         <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber}"

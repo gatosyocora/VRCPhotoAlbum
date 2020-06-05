@@ -10,7 +10,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     public class Photo
     {
         public string FilePath { get; set; }
-        public BitmapImage OriginalImage { get; set; }
+        public BitmapImage ThumbnailImage { get; set; }
 
         public VrcMetaData MetaData { get; set; }
 

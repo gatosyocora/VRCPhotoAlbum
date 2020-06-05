@@ -19,7 +19,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         private List<Photo> _photoList;
         private int _previewPhotoIndex;
 
-        public BitmapImage Image => _previewPhoto.OriginalImage;
+        public string ImageFilePath => _previewPhoto.FilePath;
 
         public List<User> UserList => _previewPhoto?.MetaData?.Users ?? Enumerable.Empty<User>().ToList();
         public string WorldName => "World: " + _previewPhoto?.MetaData?.World ?? string.Empty;
@@ -37,7 +37,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             _previousPhoto = _photoList[PreviousIndex(_previewPhotoIndex, _photoList.Count)];
             _nextPhoto = _photoList[NextIndex(_previewPhotoIndex, _photoList.Count)];
 
-            OnPropertyChanged(nameof(Image));
+            OnPropertyChanged(nameof(ImageFilePath));
             OnPropertyChanged(nameof(UserList));
             OnPropertyChanged(nameof(WorldName));
             OnPropertyChanged(nameof(PhotographerName));
@@ -57,7 +57,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             _previewPhoto = _previousPhoto;
             _previousPhoto = _photoList[PreviousIndex(_previewPhotoIndex, _photoList.Count)];
 
-            OnPropertyChanged(nameof(Image));
+            OnPropertyChanged(nameof(ImageFilePath));
             OnPropertyChanged(nameof(UserList));
             OnPropertyChanged(nameof(WorldName));
             OnPropertyChanged(nameof(PhotographerName));
@@ -71,7 +71,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             _previewPhoto = _nextPhoto;
             _nextPhoto = _photoList[NextIndex(_previewPhotoIndex, _photoList.Count)];
 
-            OnPropertyChanged(nameof(Image));
+            OnPropertyChanged(nameof(ImageFilePath));
             OnPropertyChanged(nameof(UserList));
             OnPropertyChanged(nameof(WorldName));
             OnPropertyChanged(nameof(PhotographerName));

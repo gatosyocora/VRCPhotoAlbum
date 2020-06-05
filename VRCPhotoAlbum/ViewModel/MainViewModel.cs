@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Windows;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using Gatosyocora.VRCPhotoAlbum.Helpers;
+using System.Drawing.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -40,6 +41,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private string _cashFolderPath;
+
         public MainViewModel()
         {
             var jsonFilePath = JsonHelper.GetJsonFilePath();
@@ -51,6 +54,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             {
                 settingData = OpenSetting();
             }
+
+            _cashFolderPath = settingData.FolderPath + Path.DirectorySeparatorChar+"Cash";
 
             try
             {
@@ -76,18 +81,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             }
 
             return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+                        .Where(x => !x.StartsWith(_cashFolderPath))
                         .Select(x =>
+                        new Photo
                         {
-                            var source = new BitmapImage();
-                            source.BeginInit();
-                            source.UriSource = new Uri(x);
-                            source.EndInit();
-                            return new Photo
-                            {
-                                FilePath = x,
-                                OriginalImage = source,
-                                MetaData = VrcMetaDataReader.Read(x)
-                            };
+                            FilePath = x,
+                            ThumbnailImage = GetThumbnailImage(x),
+                            MetaData = VrcMetaDataReader.Read(x)
                         })
                         .ToList();
         }
@@ -120,6 +120,33 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             var settingWindow = new SettingWindow();
             settingWindow.ShowDialog();
             return settingWindow.SettingData;
+        }
+
+        private BitmapImage GetThumbnailImage(string filePath)
+        {
+            if (!Directory.Exists(_cashFolderPath))
+            {
+                Directory.CreateDirectory(_cashFolderPath);
+            }
+
+            var thumbnailImageFilePath = $"{_cashFolderPath}/tn_" + Path.GetFileName(filePath);
+
+            if (!File.Exists(thumbnailImageFilePath))
+            {
+                using (var stream = File.OpenRead(filePath))
+                {
+                    var originalImage = Image.FromStream(stream, false, false);
+                    var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 4, originalImage.Height / 4, () => { return false; }, IntPtr.Zero);
+                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Png);
+                    originalImage.Dispose();
+                    thumbnailImage.Dispose();
+                }
+            }
+            var thumbnailBimapImage = new BitmapImage();
+            thumbnailBimapImage.BeginInit();
+            thumbnailBimapImage.UriSource = new Uri(thumbnailImageFilePath);
+            thumbnailBimapImage.EndInit();
+            return thumbnailBimapImage;
         }
     }
 }

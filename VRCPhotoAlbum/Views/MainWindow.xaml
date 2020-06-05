@@ -62,7 +62,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="300" Height="300">
-                        <Image Source="{Binding OriginalImage}"/>
+                        <Image Source="{Binding ThumbnailImage}"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
