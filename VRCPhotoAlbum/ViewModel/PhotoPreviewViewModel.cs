@@ -41,6 +41,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             OnPropertyChanged(nameof(UserList));
             OnPropertyChanged(nameof(WorldName));
             OnPropertyChanged(nameof(PhotographerName));
+            OnPropertyChanged(nameof(PhotoDateTime));
             OnPropertyChanged(nameof(PhotoNumber));
         }
 
@@ -61,6 +62,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             OnPropertyChanged(nameof(UserList));
             OnPropertyChanged(nameof(WorldName));
             OnPropertyChanged(nameof(PhotographerName));
+            OnPropertyChanged(nameof(PhotoDateTime));
             OnPropertyChanged(nameof(PhotoNumber));
         }
 
@@ -75,6 +77,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             OnPropertyChanged(nameof(UserList));
             OnPropertyChanged(nameof(WorldName));
             OnPropertyChanged(nameof(PhotographerName));
+            OnPropertyChanged(nameof(PhotoDateTime));
             OnPropertyChanged(nameof(PhotoNumber));
         }
 
