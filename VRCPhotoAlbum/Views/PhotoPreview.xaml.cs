@@ -3,6 +3,7 @@ using Gatosyocora.VRCPhotoAlbum.ViewModel;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -28,6 +29,25 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             InitializeComponent();
             _photoPreviewViewModel = new PhotoPreviewViewModel(photo);
             DataContext = _photoPreviewViewModel;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (e is null) return;
+            var twitterScreenName = (sender as Button)?.CommandParameter as string;
+            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
+            try
+            {
+                var startInfo = new ProcessStartInfo(uri)
+                {
+                    UseShellExecute = true
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception exception)
+            {
+                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
+            }
         }
     }
 }

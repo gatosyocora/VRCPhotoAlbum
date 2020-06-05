@@ -6,6 +6,11 @@
         xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
         mc:Ignorable="d"
         Title="PhotoPreview" Height="450" Width="800">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
@@ -35,7 +40,25 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <Label Content="{Binding UserName}"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="{Binding UserName}"
+                               Grid.Column="0"/>
+                        <Button x:Name="TwitterButton"
+                                Click="Button_Click"
+                                CommandParameter="{Binding TwitterScreenName}"
+                                Visibility="{Binding HasTwitterScreenName, Converter={StaticResource BoolVisibilityConverter}}"
+                                Grid.Column="1">
+                            <Button.Background>
+                                <SolidColorBrush Opacity="0"/>
+                            </Button.Background>
+                            <Button.BorderBrush>
+                                <SolidColorBrush Opacity="0"/>
+                            </Button.BorderBrush>
+                            <Image Source="../Resources/Twitter_Social_Icon_Circle_Color.png" Width="20" Height="20"/>
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
