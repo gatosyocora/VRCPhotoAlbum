@@ -3,6 +3,7 @@ using Gatosyocora.VRCPhotoAlbum.ViewModel;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -25,10 +26,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         private PhotoPreviewViewModel _photoPreviewViewModel;
         private MainWindow _mainWindow;
 
-        public PhotoPreview(Photo photo, MainWindow mainWindow)
+        public PhotoPreview(Photo photo, List<Photo> photoList, MainWindow mainWindow)
         {
             InitializeComponent();
-            _photoPreviewViewModel = new PhotoPreviewViewModel(photo);
+            _photoPreviewViewModel = new PhotoPreviewViewModel(photo, photoList);
             DataContext = _photoPreviewViewModel;
             _mainWindow = mainWindow;
         }
@@ -57,6 +58,16 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             var  selectedUser = UserListView.SelectedItem as User;
             _mainWindow.SearchWithUserName(selectedUser.UserName);
             Close();
+        }
+
+        private void PreviousPhotoButton_Click(object sender, RoutedEventArgs e)
+        {
+            _photoPreviewViewModel.PreviousPreview();
+        }
+
+        private void NextPhotoButton_Click(object sender, RoutedEventArgs e)
+        {
+            _photoPreviewViewModel.NextPreview();
         }
     }
 }

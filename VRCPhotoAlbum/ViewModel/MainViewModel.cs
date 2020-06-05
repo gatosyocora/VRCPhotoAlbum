@@ -23,7 +23,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
     public class MainViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Photo> ShowedPhotoList = new ObservableCollection<Photo>();
-        private List<Photo> _photoList;
+        private List<Photo> _photoList { get; }
 
         public List<string> UserList { get; }
 

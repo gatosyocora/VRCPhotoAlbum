@@ -62,7 +62,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private void OpenPhotoPreview(Photo photo)
         {
-            var photoPreview = new PhotoPreview(photo, this);
+            var photoPreview = new PhotoPreview(photo, _mainViewModel.ShowedPhotoList.ToList(), this);
             photoPreview.Show();
         }
 
