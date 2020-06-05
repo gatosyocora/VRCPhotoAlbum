@@ -18,14 +18,21 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="12*"/>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="7*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Search User"/>
             <TextBox x:Name="SearchTextBox" 
                 Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Grid.Column="1"
                 VerticalAlignment="Center"/>
+            <Button x:Name="ClearButton"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Content=" x "
+                    Click="ClearButton_Click"/>
         </Grid>
 
         <ListView x:Name="UserListView"
