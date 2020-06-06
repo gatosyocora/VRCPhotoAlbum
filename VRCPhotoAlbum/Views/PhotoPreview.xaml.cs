@@ -12,7 +12,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// PhotoPreview.xaml の相互作用ロジック
     /// </summary>
-    public partial class PhotoPreview : Window
+    public partial class PhotoPreview : MahApps.Metro.Controls.MetroWindow
     {
         private PhotoPreviewViewModel _photoPreviewViewModel;
         private MainWindow _mainWindow;

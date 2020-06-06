@@ -7,7 +7,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// SettingWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class SettingWindow : Window
+    public partial class SettingWindow : MahApps.Metro.Controls.MetroWindow
     {
         protected SettingViewModel _settingViewModel;
 
