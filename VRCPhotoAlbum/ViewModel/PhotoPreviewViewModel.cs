@@ -30,7 +30,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         public ReactiveCommand Previous { get; set; } = new ReactiveCommand();
         public ReactiveCommand Next { get; set; } = new ReactiveCommand();
         public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
-        public ReactiveCommand OpenTwitter { get; set; } = new ReactiveCommand();
+        public ReactiveCommand<string> OpenTwitter { get; set; } = new ReactiveCommand<string>();
 
         public PhotoPreviewViewModel(Photo photo, List<Photo> photoList)
         {
@@ -52,7 +52,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 
             Previous.Subscribe(() => PreviousPreview());
             Next.Subscribe(() => NextPreview());
-            OpenTwitter.Subscribe(() => OpenTwitterWithScreenName("@gatosyocora"));
+            OpenTwitter.Subscribe(userName => OpenTwitterWithScreenName(userName));
         }
 
         private void PreviousPreview()

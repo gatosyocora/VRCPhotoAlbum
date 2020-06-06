@@ -55,7 +55,7 @@
                         <Label Content="{Binding UserName}"
                                Grid.Column="0"/>
                         <Button x:Name="TwitterButton"
-                                Command="{Binding OpenTwitter}"
+                                Click="TwitterButton_Click"
                                 CommandParameter="{Binding TwitterScreenName}"
                                 Visibility="{Binding HasTwitterScreenName, Converter={StaticResource BoolVisibilityConverter}}"
                                 Grid.Column="1">

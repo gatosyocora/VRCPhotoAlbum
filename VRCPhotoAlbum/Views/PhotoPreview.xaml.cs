@@ -31,5 +31,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             _mainWindow.SearchWithUserName(selectedUser.UserName);
             Close();
         }
+
+        private void TwitterButton_Click(object sender, RoutedEventArgs e)
+        {
+            var displayName = (sender as Button)?.CommandParameter as string ?? string.Empty;
+            _photoPreviewViewModel.OpenTwitter.Execute(displayName);
+        }
     }
 }
