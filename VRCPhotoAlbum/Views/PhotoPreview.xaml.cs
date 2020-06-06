@@ -25,25 +25,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             _mainWindow = mainWindow;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (e is null) return;
-            var twitterScreenName = (sender as Button)?.CommandParameter as string;
-            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
-            try
-            {
-                var startInfo = new ProcessStartInfo(uri)
-                {
-                    UseShellExecute = true
-                };
-                Process.Start(startInfo);
-            }
-            catch (Exception exception)
-            {
-                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
-            }
-        }
-
         private void UserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedUser = UserListView.SelectedItem as User;

@@ -4,6 +4,7 @@ using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -29,6 +30,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         public ReactiveCommand Previous { get; set; } = new ReactiveCommand();
         public ReactiveCommand Next { get; set; } = new ReactiveCommand();
         public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
+        public ReactiveCommand OpenTwitter { get; set; } = new ReactiveCommand();
 
         public PhotoPreviewViewModel(Photo photo, List<Photo> photoList)
         {
@@ -50,7 +52,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 
             Previous.Subscribe(() => PreviousPreview());
             Next.Subscribe(() => NextPreview());
-            //SearchWithUser.Subscribe(userName => )
+            OpenTwitter.Subscribe(() => OpenTwitterWithScreenName("@gatosyocora"));
         }
 
         private void PreviousPreview()
@@ -63,6 +65,23 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         {
             _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
             PreviewPhoto.Value = _photoList[_previewPhotoIndex];
+        }
+
+        private void OpenTwitterWithScreenName(string twitterScreenName)
+        {
+            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
+            try
+            {
+                var startInfo = new ProcessStartInfo(uri)
+                {
+                    UseShellExecute = true
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception exception)
+            {
+                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
+            }
         }
 
         public void Dispose()
