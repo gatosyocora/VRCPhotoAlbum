@@ -37,26 +37,27 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         private MainWindow _mainWindow;
 
+        private SettingData _settingData;
+
         public MainViewModel(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
 
             var jsonFilePath = JsonHelper.GetJsonFilePath();
-            SettingData settingData;
             if (File.Exists(jsonFilePath))
             {
-                settingData = JsonHelper.ImportJsonFile<SettingData>(jsonFilePath);
+                _settingData = JsonHelper.ImportJsonFile<SettingData>(jsonFilePath);
             }
             else
             {
-                settingData = OpenSetting();
+                _settingData = OpenSetting(_settingData);
             }
 
-            _cashFolderPath = settingData.FolderPath + Path.DirectorySeparatorChar + "Cash";
+            _cashFolderPath = _settingData.FolderPath + Path.DirectorySeparatorChar + "Cash";
 
             try
             {
-                _photoList = LoadVRCPhotoList(settingData.FolderPath);
+                _photoList = LoadVRCPhotoList(_settingData.FolderPath);
                 UserList = GetSortedUserList(_photoList);
 
                 foreach (var photo in _photoList)
@@ -81,7 +82,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithUser.Subscribe(userName => SearchText.Value = userName);
             OpenSettingCommand.Subscribe(() => 
             {
-                settingData = OpenSetting();
+                _settingData = OpenSetting(_settingData);
             });
         }
 
@@ -128,12 +129,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                         .ToList();
         }
 
-        private SettingData OpenSetting()
+        private SettingData OpenSetting(SettingData settingData)
         {
-            var settingWindow = new SettingWindow();
+            var settingWindow = new SettingWindow(settingData);
             settingWindow.Owner = _mainWindow;
             settingWindow.ShowDialog();
-            JsonHelper.ExportJsonFile(settingWindow.SettingData, JsonHelper.GetJsonFilePath());
             return settingWindow.SettingData;
         }
 

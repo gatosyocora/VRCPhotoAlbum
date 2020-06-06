@@ -11,16 +11,19 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     {
         protected SettingViewModel _settingViewModel;
 
+        private SettingData _settingData;
+
         public SettingData SettingData { get; set; }
-        public SettingWindow()
+        public SettingWindow(SettingData settingData)
         {
+            _settingData = settingData;
             InitializeComponent();
             Loaded += SettingWindow_OnLoaded;
         }
 
         private void SettingWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            _settingViewModel = new SettingViewModel();
+            _settingViewModel = new SettingViewModel(_settingData);
             DataContext = _settingViewModel;
         }
 
