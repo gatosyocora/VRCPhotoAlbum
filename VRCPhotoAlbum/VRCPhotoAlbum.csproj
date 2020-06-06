@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\RotateLeft90Image.png" />
+    <None Remove="Resources\RotateRight90Image.png" />
     <None Remove="Resources\SettingButtonImage.png" />
     <None Remove="Resources\Twitter_Social_Icon_Circle_Color.png" />
   </ItemGroup>
@@ -34,6 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\RotateLeft90Image.png" />
+    <Resource Include="Resources\RotateRight90Image.png" />
     <Resource Include="Resources\SettingButtonImage.png" />
     <Resource Include="Resources\Twitter_Social_Icon_Circle_Color.png" />
   </ItemGroup>

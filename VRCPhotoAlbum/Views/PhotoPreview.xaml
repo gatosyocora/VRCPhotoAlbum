@@ -41,22 +41,32 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Button x:Name="RotateLeft90Button"
-                    Content="L90"
                     Grid.Column="0"
                     Grid.Row="0"
                     Margin="5" Padding="0"
-                    Command="{Binding RotateL90}"/>
+                    Command="{Binding RotateL90}">
+                <Image Source="pack://application:,,,/Resources/RotateLeft90Image.png" 
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Width="20"
+                   Height="20"/>
+            </Button>
             <Button x:Name="FlipHorizontalButton"
                     Content="&lt;--&gt;"
                     Grid.Column="1"
                     Grid.Row="0"
                     Margin="5" Padding="0"/>
             <Button x:Name="RotateRight90Button"
-                    Content="R90"
                     Grid.Column="2"
                     Grid.Row="0"
                     Margin="5" Padding="0"
-                    Command="{Binding RotateR90}"/>
+                    Command="{Binding RotateR90}">
+                <Image Source="pack://application:,,,/Resources/RotateRight90Image.png" 
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Width="20"
+                   Height="20"/>
+            </Button>
             <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber.Value}"
                Grid.Column="0"
