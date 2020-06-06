@@ -26,14 +26,41 @@
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
                HorizontalAlignment="Center"
-               Source="{Binding ImageFilePath.Value}"
+               Source="{Binding Image.Value}"
                Grid.Row="0"/>
-        <Label x:Name="PhotoNumberLabel"
+        <Grid Grid.Column="1"
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="RotateLeft90Button"
+                    Content="L90"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Command="{Binding RotateL90}"/>
+            <Button x:Name="FlipHorizontalButton"
+                    Content="&lt;--&gt;"
+                    Grid.Column="1"
+                    Grid.Row="0"/>
+            <Button x:Name="RotateRight90Button"
+                    Content="R90"
+                    Grid.Column="2"
+                    Grid.Row="0"
+                    Command="{Binding RotateR90}"/>
+            <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber.Value}"
                Grid.Column="1"
                Grid.Row="1"
                VerticalAlignment="Bottom"
                HorizontalAlignment="Center"/>
+        </Grid>
+
         <ListView x:Name="UserListView"
                 ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
