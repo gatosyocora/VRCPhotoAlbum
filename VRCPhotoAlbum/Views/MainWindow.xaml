@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
             <Label Content="Search User"/>
             <TextBox x:Name="SearchTextBox" 
-                Text="{Binding SearchText.Value}"
+                Text="{Binding SearchText.Value, UpdateSourceTrigger=PropertyChanged}"
                 Grid.Column="1"
                 VerticalAlignment="Center"/>
             <Button x:Name="ClearButton"
