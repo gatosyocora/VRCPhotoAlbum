@@ -13,8 +13,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
     public class PhotoPreviewViewModel : IDisposable, INotifyPropertyChanged
     {
         public ReactiveProperty<Photo> PreviewPhoto { get; set; } = new ReactiveProperty<Photo>();
-        private Photo _previousPhoto;
-        private Photo _nextPhoto;
 
         private List<Photo> _photoList;
         private int _previewPhotoIndex;
@@ -37,8 +35,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             _photoList = photoList;
             PreviewPhoto.Value = photo;
             _previewPhotoIndex = _photoList.IndexOf(photo);
-            _previousPhoto = _photoList[PreviousIndex(_previewPhotoIndex, _photoList.Count)];
-            _nextPhoto = _photoList[NextIndex(_previewPhotoIndex, _photoList.Count)];
 
             ImageFilePath = PreviewPhoto.Select(p => p?.FilePath ?? string.Empty).ToReadOnlyReactiveProperty();
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty();
@@ -59,28 +55,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 
         private void PreviousPreview()
         {
-            _previewPhotoIndex = PreviousIndex(_previewPhotoIndex, _photoList.Count);
-            _nextPhoto = PreviewPhoto.Value;
-            PreviewPhoto.Value = _previousPhoto;
-            _previousPhoto = _photoList[PreviousIndex(_previewPhotoIndex, _photoList.Count)];
+            _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
+            PreviewPhoto.Value = _photoList[_previewPhotoIndex];
         }
 
         private void NextPreview()
         {
-            _previewPhotoIndex = NextIndex(_previewPhotoIndex, _photoList.Count);
-            _previousPhoto = PreviewPhoto.Value;
-            PreviewPhoto.Value = _nextPhoto;
-            _nextPhoto = _photoList[NextIndex(_previewPhotoIndex, _photoList.Count)];
-        }
-
-        public static int PreviousIndex(int i, int n)
-        {
-            return (i + n) % n;
-        }
-
-        private int NextIndex(int i, int n)
-        {
-            return (i + 1) % n;
+            _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
+            PreviewPhoto.Value = _photoList[_previewPhotoIndex];
         }
 
         public void Dispose()
