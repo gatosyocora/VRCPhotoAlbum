@@ -9,8 +9,8 @@
         xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="PhotoPreview"
         Width="800" Height="450" 
-        MinWidth="800" MinHeight="500">
-
+        MinWidth="800" MinHeight="500"
+        WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
     </Window.Resources>
@@ -44,18 +44,18 @@
                     Content="L90"
                     Grid.Column="0"
                     Grid.Row="0"
-                    Margin="5"
+                    Margin="5" Padding="0"
                     Command="{Binding RotateL90}"/>
             <Button x:Name="FlipHorizontalButton"
                     Content="&lt;--&gt;"
                     Grid.Column="1"
                     Grid.Row="0"
-                    Margin="5"/>
+                    Margin="5" Padding="0"/>
             <Button x:Name="RotateRight90Button"
                     Content="R90"
                     Grid.Column="2"
                     Grid.Row="0"
-                    Margin="5"
+                    Margin="5" Padding="0"
                     Command="{Binding RotateR90}"/>
             <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber.Value}"

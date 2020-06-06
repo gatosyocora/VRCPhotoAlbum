@@ -6,8 +6,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
         mc:Ignorable="d"
-        Title="Setting" Height="450" Width="600"
-        DataContext="{Binding SettingViewModel}">
+        Title="Setting"
+        Height="450" Width="600"
+        DataContext="{Binding SettingViewModel}"
+        WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
