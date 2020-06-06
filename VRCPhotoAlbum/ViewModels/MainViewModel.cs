@@ -13,6 +13,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using Image = System.Drawing.Image;
 using Reactive.Bindings;
+using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -30,6 +31,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand ClearSearchText { get; set; } = new ReactiveCommand();
         public ReactiveCommand<Photo> ShowPreview { get; set; } = new ReactiveCommand<Photo>();
         public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
+        public ReactiveCommand OpenSettingCommand { get; set; } = new ReactiveCommand();
 
         private string _cashFolderPath;
 
@@ -77,6 +79,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ClearSearchText.Subscribe(_ => SearchText.Value = string.Empty);
             ShowPreview.Subscribe(photo => { if (!(photo is null)) OpenPhotoPreview(photo); });
             SearchWithUser.Subscribe(userName => SearchText.Value = userName);
+            OpenSettingCommand.Subscribe(() => 
+            {
+                settingData = OpenSetting();
+            });
         }
 
         private List<Photo> LoadVRCPhotoList(string folderPath)
@@ -127,6 +133,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             var settingWindow = new SettingWindow();
             settingWindow.Owner = _mainWindow;
             settingWindow.ShowDialog();
+            JsonHelper.ExportJsonFile(settingWindow.SettingData, JsonHelper.GetJsonFilePath());
             return settingWindow.SettingData;
         }
 
