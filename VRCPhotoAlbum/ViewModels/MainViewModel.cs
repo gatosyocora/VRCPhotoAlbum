@@ -125,6 +125,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private SettingData OpenSetting()
         {
             var settingWindow = new SettingWindow();
+            settingWindow.Owner = _mainWindow;
             settingWindow.ShowDialog();
             return settingWindow.SettingData;
         }
@@ -159,6 +160,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private void OpenPhotoPreview(Photo photo)
         {
             var photoPreview = new PhotoPreview(photo, ShowedPhotoList.ToList(), _mainWindow);
+            photoPreview.Owner = _mainWindow;
             photoPreview.Show();
         }
     }
