@@ -75,7 +75,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             SearchWithDateTime.Subscribe(useDateTime => SearchPhotoWithUserNameAndDateTime(SearchText.Value, SearchDate.Value, useDateTime));
 
             ClearSearchText.Subscribe(_ => SearchText.Value = string.Empty);
-            ShowPreview.Subscribe(photo => OpenPhotoPreview(photo));
+            ShowPreview.Subscribe(photo => { if (!(photo is null)) OpenPhotoPreview(photo); });
             SearchWithUser.Subscribe(userName => SearchText.Value = userName);
         }
 
