@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum"
+        xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -24,7 +25,7 @@
             </Grid.ColumnDefinitions>
             <Label Content="Search User"/>
             <TextBox x:Name="SearchTextBox" 
-                Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Text="{Binding SearchText.Value}"
                 Grid.Column="1"
                 VerticalAlignment="Center"/>
             <Button x:Name="ClearButton"
@@ -32,16 +33,21 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     Content=" x "
-                    Click="ClearButton_Click"/>
+                    Command="{Binding ClearSearchText}"/>
         </Grid>
 
         <ListView x:Name="UserListView"
-                ItemsSource="{Binding UserList}" 
-                SelectionChanged="UserListView_SelectionChanged"
+                ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
                 Grid.Column="0"
                 Grid.Row="1">
+            <ie:Interaction.Triggers>
+                <ie:EventTrigger EventName="SelectionChanged">
+                    <ie:InvokeCommandAction Command="{Binding SearchWithUser}"
+                                            CommandParameter="{Binding ElementName=UserListView, Path=SelectedItem}"/>
+                </ie:EventTrigger>
+            </ie:Interaction.Triggers>
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
@@ -65,20 +71,24 @@
                       Grid.Column="0"
                       VerticalAlignment="Center"
                       HorizontalAlignment="Center"
-                      IsChecked="{Binding SearchWithDateTime}"/>
+                      IsChecked="{Binding SearchWithDateTime.Value}"/>
             <DatePicker x:Name="SearchDatePicker"
                         Grid.Column="1"
-                        SelectedDate="{Binding SearchDate}"
-                        SelectedDateChanged="SearchDatePicker_SelectedDateChanged"
-                        IsEnabled="{Binding SearchWithDateTime, UpdateSourceTrigger=PropertyChanged}"/>
+                        SelectedDate="{Binding SearchDate.Value}"
+                        IsEnabled="{Binding SearchWithDateTime.Value}"/>
         </Grid>
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             Grid.Column="0"
             Grid.Row="3"
-            SelectionMode="Single"
-            SelectionChanged="PhotoListBox_SelectionChanged">
+            SelectionMode="Single">
+            <ie:Interaction.Triggers>
+                <ie:EventTrigger EventName="SelectionChanged">
+                    <ie:InvokeCommandAction Command="{Binding ShowPreview}"
+                                            CommandParameter="{Binding ElementName=PhotoListBox, Path=SelectedItem}"/>
+                </ie:EventTrigger>
+            </ie:Interaction.Triggers>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>

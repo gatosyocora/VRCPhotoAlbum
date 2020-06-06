@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
         mc:Ignorable="d"
+        
+        xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="PhotoPreview" Height="450" Width="800">
 
     <Window.Resources>
@@ -23,10 +25,10 @@
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
                HorizontalAlignment="Center"
-               Source="{Binding ImageFilePath}"
+               Source="{Binding ImageFilePath.Value}"
                Grid.Row="0"/>
         <Label x:Name="PhotoNumberLabel"
-               Content="{Binding PhotoNumber}"
+               Content="{Binding PhotoNumber.Value}"
                Grid.Column="1"
                Grid.Row="1"
                VerticalAlignment="Bottom"
@@ -83,17 +85,17 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="WorldName"
                        Grid.Row="0"
-                       Content="{Binding WorldName}"
+                       Content="{Binding WorldName.Value}"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
                 <Label x:Name="PhotoGrapher"
                        Grid.Row="1"
-                       Content="{Binding PhotographerName}"
+                       Content="{Binding PhotographerName.Value}"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
                 <Label x:Name="PhotoDateTime"
                        Grid.Row="2"
-                       Content="{Binding PhotoDateTime}"
+                       Content="{Binding PhotoDateTime.Value}"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
             </Grid>
@@ -101,12 +103,12 @@
                     Content="Previous"
                     Grid.Column="0"
                     Margin="10"
-                    Click="PreviousPhotoButton_Click"/>
+                    Command="{Binding Previous}"/>
             <Button x:Name="NextPhotoButton"
                     Content="Next"
                     Grid.Column="2"
                     Margin="10"
-                    Click="NextPhotoButton_Click"/>
+                    Command="{Binding Next}"/>
         </Grid>
     </Grid>
 </Window>

@@ -50,15 +50,5 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             _mainWindow.SearchWithUserName(selectedUser.UserName);
             Close();
         }
-
-        private void PreviousPhotoButton_Click(object sender, RoutedEventArgs e)
-        {
-            _photoPreviewViewModel.PreviousPreview();
-        }
-
-        private void NextPhotoButton_Click(object sender, RoutedEventArgs e)
-        {
-            _photoPreviewViewModel.NextPreview();
-        }
     }
 }

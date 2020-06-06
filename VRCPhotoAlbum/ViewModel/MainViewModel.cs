@@ -12,60 +12,33 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Image = System.Drawing.Image;
+using Reactive.Bindings;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel
     {
         public ObservableCollection<Photo> ShowedPhotoList = new ObservableCollection<Photo>();
         private List<Photo> _photoList { get; }
 
         public List<string> UserList { get; }
 
-        private string _searchText = string.Empty;
-        public string SearchText
-        {
-            get { return _searchText; }
-            set
-            {
-                _searchText = value;
-                OnPropertyChanged(nameof(SearchText));
-                SearchPhotoWithUserNameAndDateTime(_searchText, _searchDate);
-            }
-        }
+        public ReactiveProperty<string> SearchText { get; set; } = new ReactiveProperty<string>();
+        public ReactiveProperty<DateTime> SearchDate { get; set; } = new ReactiveProperty<DateTime>();
+        public ReactiveProperty<bool> SearchWithDateTime { get; set; } = new ReactiveProperty<bool>();
 
-        private DateTime _searchDate = DateTime.Now;
-        public DateTime SearchDate
-        {
-            get => _searchDate;
-            set
-            {
-                _searchDate = value;
-                OnPropertyChanged(nameof(SearchDate));
-                SearchPhotoWithUserNameAndDateTime(_searchText, _searchDate);
-            }
-        }
-
-        private bool _searchWithDateTime = false;
-        public bool SearchWithDateTime
-        {
-            get => _searchWithDateTime;
-            set
-            {
-                _searchWithDateTime = value;
-                OnPropertyChanged(nameof(SearchWithDateTime));
-                SearchPhotoWithUserNameAndDateTime(_searchText, _searchDate);
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public ReactiveCommand ClearSearchText { get; set; } = new ReactiveCommand();
+        public ReactiveCommand<Photo> ShowPreview { get; set; } = new ReactiveCommand<Photo>();
+        public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
 
         private string _cashFolderPath;
 
-        private void OnPropertyChanged(string propertyName) => PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        private MainWindow _mainWindow;
 
-        public MainViewModel()
+        public MainViewModel(MainWindow mainWindow)
         {
+            _mainWindow = mainWindow;
+
             var jsonFilePath = JsonHelper.GetJsonFilePath();
             SettingData settingData;
             if (File.Exists(jsonFilePath))
@@ -93,6 +66,17 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             {
                 Debug.Print($"{e.GetType().Name}: {e.Message}");
             }
+
+            SearchText.Value = string.Empty;
+            SearchDate.Value = DateTime.Now;
+            SearchWithDateTime.Value = false;
+            SearchText.Subscribe(searchText => SearchPhotoWithUserNameAndDateTime(searchText, SearchDate.Value, SearchWithDateTime.Value));
+            SearchDate.Subscribe(searchDate => SearchPhotoWithUserNameAndDateTime(SearchText.Value, searchDate, SearchWithDateTime.Value));
+            SearchWithDateTime.Subscribe(useDateTime => SearchPhotoWithUserNameAndDateTime(SearchText.Value, SearchDate.Value, useDateTime));
+
+            ClearSearchText.Subscribe(_ => SearchText.Value = string.Empty);
+            ShowPreview.Subscribe(photo => OpenPhotoPreview(photo));
+            SearchWithUser.Subscribe(userName => SearchText.Value = userName);
         }
 
         private List<Photo> LoadVRCPhotoList(string folderPath)
@@ -114,12 +98,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
                         .ToList();
         }
 
-        public void SearchPhotoWithUserNameAndDateTime(string searchedUserName, DateTime searchedDate)
+        public void SearchPhotoWithUserNameAndDateTime(string searchedUserName, DateTime searchedDate, bool useDate)
         {
             ShowedPhotoList.Clear();
             var searchedPhotoList = _photoList
                     .Where(x => x.MetaData.Users.Any(u => u.UserName.StartsWith(searchedUserName)) &&
-                                (!SearchWithDateTime || x.MetaData.Date?.Date.CompareTo(_searchDate.Date) == 0))
+                                (!useDate || x.MetaData.Date?.Date.CompareTo(searchedDate.Date) == 0))
                     .ToList();
 
             foreach (var photo in searchedPhotoList)
@@ -170,6 +154,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             thumbnailBimapImage.UriSource = new Uri(thumbnailImageFilePath);
             thumbnailBimapImage.EndInit();
             return thumbnailBimapImage;
+        }
+
+        private void OpenPhotoPreview(Photo photo)
+        {
+            var photoPreview = new PhotoPreview(photo, ShowedPhotoList.ToList(), _mainWindow);
+            photoPreview.Show();
         }
     }
 }
