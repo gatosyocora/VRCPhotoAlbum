@@ -1,7 +1,7 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
 
-namespace Gatosyocora.VRCPhotoAlbum.ViewModel
+namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
     public class SettingViewModel
     {

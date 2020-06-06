@@ -1,5 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
-using Gatosyocora.VRCPhotoAlbum.ViewModel;
+using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;

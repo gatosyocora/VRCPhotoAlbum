@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using Image = System.Drawing.Image;
 using Reactive.Bindings;
 
-namespace Gatosyocora.VRCPhotoAlbum.ViewModel
+namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
     public class MainViewModel
     {

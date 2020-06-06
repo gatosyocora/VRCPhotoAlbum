@@ -1,5 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
-using Gatosyocora.VRCPhotoAlbum.ViewModel;
+using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using System;
 using System.Collections.Generic;

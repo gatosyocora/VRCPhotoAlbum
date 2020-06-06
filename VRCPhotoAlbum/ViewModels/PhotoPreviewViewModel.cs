@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace Gatosyocora.VRCPhotoAlbum.ViewModel
+namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
     public class PhotoPreviewViewModel : IDisposable, INotifyPropertyChanged
     {

@@ -1,5 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
-using Gatosyocora.VRCPhotoAlbum.ViewModel;
+using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
