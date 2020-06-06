@@ -1,9 +1,5 @@
-﻿using Gatosyocora.VRCPhotoAlbum.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers

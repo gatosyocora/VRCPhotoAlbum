@@ -1,23 +1,17 @@
-﻿using Gatosyocora.VRCPhotoAlbum.Models;
+﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
+using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.Views;
+using KoyashiroKohaku.VrcMetaToolSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System.Drawing;
-using KoyashiroKohaku.VrcMetaToolSharp;
-using System.Windows.Controls;
-using Image = System.Drawing.Image;
-using System.Windows.Media.Imaging;
-using System.Text.Json;
-using System.Reflection;
-using System.Windows;
-using Gatosyocora.VRCPhotoAlbum.Views;
-using Gatosyocora.VRCPhotoAlbum.Helpers;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Windows.Media.Imaging;
+using Image = System.Drawing.Image;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -29,7 +23,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         public List<string> UserList { get; }
 
         private string _searchText = string.Empty;
-        public string SearchText { get { return _searchText; }
+        public string SearchText
+        {
+            get { return _searchText; }
             set
             {
                 _searchText = value;
@@ -39,7 +35,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         }
 
         private DateTime _searchDate = DateTime.Now;
-        public DateTime SearchDate { get => _searchDate; 
+        public DateTime SearchDate
+        {
+            get => _searchDate;
             set
             {
                 _searchDate = value;
@@ -49,7 +47,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         }
 
         private bool _searchWithDateTime = false;
-        public bool SearchWithDateTime { get => _searchWithDateTime;
+        public bool SearchWithDateTime
+        {
+            get => _searchWithDateTime;
             set
             {
                 _searchWithDateTime = value;
@@ -70,13 +70,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
             SettingData settingData;
             if (File.Exists(jsonFilePath))
             {
-                settingData = JsonHelper.ImportJsonFile<SettingData>(jsonFilePath);            }
+                settingData = JsonHelper.ImportJsonFile<SettingData>(jsonFilePath);
+            }
             else
             {
                 settingData = OpenSetting();
             }
 
-            _cashFolderPath = settingData.FolderPath + Path.DirectorySeparatorChar+"Cash";
+            _cashFolderPath = settingData.FolderPath + Path.DirectorySeparatorChar + "Cash";
 
             try
             {

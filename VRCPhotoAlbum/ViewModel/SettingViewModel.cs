@@ -1,11 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -21,9 +15,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         public SettingData CreateSettingData()
         {
             var settingData = new SettingData
-                            {
-                                FolderPath = FolderName
-                            };
+            {
+                FolderPath = FolderName
+            };
 
             var jsonFilePath = JsonHelper.GetJsonFilePath();
             JsonHelper.ExportJsonFile(settingData, jsonFilePath);

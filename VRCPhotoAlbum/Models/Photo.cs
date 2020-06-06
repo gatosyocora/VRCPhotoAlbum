@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using KoyashiroKohaku.VrcMetaToolSharp;
 using System.Windows.Media.Imaging;
-using KoyashiroKohaku.VrcMetaToolSharp;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models
 {

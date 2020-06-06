@@ -1,12 +1,8 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
 using KoyashiroKohaku.VrcMetaToolSharp;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModel
 {
@@ -25,7 +21,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModel
         public string WorldName => "World: " + _previewPhoto?.MetaData?.World ?? string.Empty;
         public string PhotographerName => "Photographer: " + _previewPhoto?.MetaData?.Photographer ?? string.Empty;
         public string PhotoDateTime => _previewPhoto?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty;
-        public string PhotoNumber => $"{_previewPhotoIndex+1}/{_photoList.Count}";
+        public string PhotoNumber => $"{_previewPhotoIndex + 1}/{_photoList.Count}";
 
         public event PropertyChangedEventHandler PropertyChanged;
 

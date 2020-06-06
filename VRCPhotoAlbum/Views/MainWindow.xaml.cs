@@ -1,26 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.ViewModel;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Drawing;
-using Image = System.Drawing.Image;
-using Gatosyocora.VRCPhotoAlbum.Models;
-using KoyashiroKohaku.VrcMetaToolSharp;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using Gatosyocora.VRCPhotoAlbum.ViewModel;
-using Gatosyocora.VRCPhotoAlbum.Views;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
