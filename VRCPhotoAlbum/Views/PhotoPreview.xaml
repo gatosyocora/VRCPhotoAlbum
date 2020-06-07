@@ -17,29 +17,30 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="5*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <Image x:Name="PreviewImage"
-               VerticalAlignment="Center"
-               HorizontalAlignment="Center"
-               Source="{Binding Image.Value}"
-               Grid.Row="0"/>
-        <Grid Grid.Column="1"
-              Grid.Row="1">
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
             <Button x:Name="RotateLeft90Button"
                     Grid.Column="0"
                     Grid.Row="0"
@@ -67,6 +68,30 @@
                    Width="20"
                    Height="20"/>
             </Button>
+        </Grid>
+        <Image x:Name="PreviewImage"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"
+               Source="{Binding Image.Value}"
+               Grid.Row="1"/>
+        <Grid Grid.Column="1"
+              Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="ShareButton"
+                    Content="Share"
+                    Margin="5 0 5 5"
+                    Padding="0"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="3"
+                    Command="{Binding ShareToTwitter}"/>
             <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber.Value}"
                Grid.Column="0"
@@ -82,7 +107,7 @@
                 SelectionMode="Single"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 Grid.Column="1"
-                Grid.Row="0"
+                Grid.Row="1"
                 SelectionChanged="UserListView_SelectionChanged">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -115,7 +140,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="3*"/>

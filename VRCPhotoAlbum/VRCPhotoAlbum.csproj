@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -8,22 +8,20 @@
     <StartupObject>Gatosyocora.VRCPhotoAlbum.App</StartupObject>
     <Authors>gatosyocora</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <UserSecretsId>57b90247-f63f-4628-9475-c26b8834a74e</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Resources\RotateLeft90Image.png" />
     <None Remove="Resources\RotateRight90Image.png" />
     <None Remove="Resources\SettingButtonImage.png" />
     <None Remove="Resources\Twitter_Social_Icon_Circle_Color.png" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.0.1" />
     <PackageReference Include="MaterialDesignColors" Version="1.2.6" />
@@ -34,12 +32,10 @@
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="VrcMetaToolSharp" Version="0.1.2" />
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="Resources\RotateLeft90Image.png" />
     <Resource Include="Resources\RotateRight90Image.png" />
     <Resource Include="Resources\SettingButtonImage.png" />
     <Resource Include="Resources\Twitter_Social_Icon_Circle_Color.png" />
   </ItemGroup>
-
 </Project>

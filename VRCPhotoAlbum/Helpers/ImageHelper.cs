@@ -5,11 +5,25 @@ using System.IO;
 using System.Text;
 using System.Drawing.Imaging;
 using KoyashiroKohaku.VrcMetaToolSharp;
+using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
     public class ImageHelper
     {
+        public static BitmapImage LoadBitmapImage(string filePath)
+        {
+            var bitmapImage = new BitmapImage();
+            var stream = File.OpenRead(filePath);
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = stream;
+            bitmapImage.EndInit();
+            stream.Close();
+            stream.Dispose();
+            return bitmapImage;
+        }
+
         public static Bitmap LoadImage(string filePath)
         {
             if (!File.Exists(filePath))

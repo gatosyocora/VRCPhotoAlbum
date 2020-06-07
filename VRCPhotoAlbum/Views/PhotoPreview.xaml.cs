@@ -20,7 +20,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         public PhotoPreview(Photo photo, List<Photo> photoList, MainWindow mainWindow)
         {
             InitializeComponent();
-            _photoPreviewViewModel = new PhotoPreviewViewModel(photo, photoList);
+            _photoPreviewViewModel = new PhotoPreviewViewModel(this, photo, photoList);
             DataContext = _photoPreviewViewModel;
             _mainWindow = mainWindow;
         }

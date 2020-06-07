@@ -1,5 +1,6 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using Reactive.Bindings;
 using System;
@@ -21,6 +22,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private List<Photo> _photoList;
         private int _previewPhotoIndex;
 
+        private PhotoPreview _photoPreviewWindow;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ReadOnlyReactiveProperty<BitmapImage> Image { get; }
@@ -36,9 +39,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<string> OpenTwitter { get; set; } = new ReactiveCommand<string>();
         public ReactiveCommand RotateL90 { get; set; } = new ReactiveCommand();
         public ReactiveCommand RotateR90 { get; set; } = new ReactiveCommand();
+        public ReactiveCommand ShareToTwitter { get; set; } = new ReactiveCommand();
 
-        public PhotoPreviewViewModel(Photo photo, List<Photo> photoList)
+        public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList)
         {
+            _photoPreviewWindow = photoPreviewWindow;
+
             _photoList = photoList;
             PreviewPhoto.Value = photo;
             _previewPhotoIndex = _photoList.IndexOf(photo);
@@ -46,15 +52,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             Image = PreviewPhoto.Select(p => 
             {
                 var filePath = p?.FilePath ?? string.Empty;
-                var bitmapImage = new BitmapImage();
-                var stream = File.OpenRead(filePath);
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-                stream.Close();
-                stream.Dispose();
-                return bitmapImage;
+                return ImageHelper.LoadBitmapImage(filePath);
             })
             .ToReadOnlyReactiveProperty();
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty();
@@ -80,6 +78,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             //{
             //    ImageHelper.RotateRight90AndSave(PreviewPhoto.Value.FilePath);
             //});
+            ShareToTwitter.Subscribe(() => OpenShareWindow(PreviewPhoto.Value));
         }
 
         private void PreviousPreview()
@@ -109,6 +108,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
             }
+        }
+
+        private void OpenShareWindow(Photo photo)
+        {
+            var shareWindow = new ShareWindow(photo);
+            shareWindow.Owner = _photoPreviewWindow;
+            shareWindow.ShowDialog();
         }
 
         public void Dispose()
