@@ -16,7 +16,6 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -25,40 +24,19 @@
                 <ColumnDefinition Width="12*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Search User"
+            <Label Content="Search"
                    Margin="10"/>
-            <TextBox x:Name="SearchUserTextBox" 
-                Text="{Binding SearchUserText.Value, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="SearchTextBox" 
+                Text="{Binding SearchText.Value, UpdateSourceTrigger=PropertyChanged}"
                 Grid.Column="1"
                 VerticalAlignment="Center"/>
-            <Button x:Name="ClearSearchUserButton"
+            <Button x:Name="ClearSearchButton"
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     Content="x"
                     Margin="2"
-                    Command="{Binding ClearSearchUserText}"
-                    Foreground="White"/>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="12*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Label Content="Search World"
-                   Margin="10"/>
-            <TextBox x:Name="SearchWorldTextBox" 
-                Text="{Binding SearchWorldText.Value, UpdateSourceTrigger=PropertyChanged}"
-                Grid.Column="1"
-                VerticalAlignment="Center"/>
-            <Button x:Name="ClearSearchWorldButton"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Content="x"
-                    Margin="2"
-                    Command="{Binding ClearSearchWorldText}"
+                    Command="{Binding ClearSearchText}"
                     Foreground="White"/>
         </Grid>
 
@@ -66,7 +44,7 @@
                 ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                Grid.Column="0" Grid.Row="2">
+                Grid.Column="0" Grid.Row="1">
             <ie:Interaction.Triggers>
                 <ie:EventTrigger EventName="SelectionChanged">
                     <ie:InvokeCommandAction Command="{Binding SearchWithUser}"
@@ -86,27 +64,26 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid Grid.Column="0" Grid.Row="3"
+        <Grid Grid.Column="0" Grid.Row="2"
               Margin="5 10 5 10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="49*"/>
+                <ColumnDefinition Width="604*"/>
+                <ColumnDefinition Width="136*"/>
             </Grid.ColumnDefinitions>
             <CheckBox x:Name="SearchWithDateTimeCheckBox"
-                      Grid.Column="0"
                       VerticalAlignment="Center"
                       HorizontalAlignment="Center"
                       IsChecked="{Binding SearchWithDateTime.Value}"/>
             <DatePicker x:Name="SearchDatePicker"
-                        Grid.Column="1"
-                        Margin="0 0 10 0"
+                        Margin="49,0,10,0"
                         SelectedDate="{Binding SearchDate.Value}"
-                        IsEnabled="{Binding SearchWithDateTime.Value}"/>
+                        IsEnabled="{Binding SearchWithDateTime.Value}" Grid.ColumnSpan="3"/>
         </Grid>
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            Grid.Column="0" Grid.Row="4"
+            Grid.Column="0" Grid.Row="3"
             SelectionMode="Single"
             SelectionChanged="PhotoListBox_SelectionChanged">
             <ie:Interaction.Triggers>

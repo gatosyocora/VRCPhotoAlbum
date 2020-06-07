@@ -36,12 +36,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         public void SearchWithUserName(string userName)
         {
-            _mainViewModel.SearchUserText.Value = userName;
+            _mainViewModel.SearchWithUserName(userName); 
         }
 
         public void SearchWithWorldName(string worldName)
         {
-            _mainViewModel.SearchWorldText.Value = worldName;
+            _mainViewModel.SearchWithWorldName(worldName);
         }
 
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
