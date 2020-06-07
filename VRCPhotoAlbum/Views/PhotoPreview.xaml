@@ -22,7 +22,7 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="2">
@@ -103,12 +103,11 @@
         </Grid>
 
         <ListView x:Name="UserListView"
-                ItemsSource="{Binding UserList}"
-                SelectionMode="Single"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                Grid.Column="1"
-                Grid.Row="1"
-                SelectionChanged="UserListView_SelectionChanged">
+                  ItemsSource="{Binding UserList}"
+                  SelectionMode="Single"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Grid.Column="1" Grid.Row="1"
+                  SelectionChanged="UserListView_SelectionChanged">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel/>
@@ -121,13 +120,16 @@
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="{Binding UserName}"
-                               Grid.Column="0"/>
+                        <TextBlock Text="{Binding UserName}"
+                                   Grid.Column="0"
+                                   VerticalAlignment="Center"/>
                         <Button x:Name="TwitterButton"
                                 Click="TwitterButton_Click"
                                 CommandParameter="{Binding TwitterScreenName}"
                                 Visibility="{Binding HasTwitterScreenName, Converter={StaticResource BoolVisibilityConverter}}"
-                                Grid.Column="1">
+                                Grid.Column="1"
+                                Width="20" Height="20"
+                                Padding="0" Margin="5">
                             <Button.Background>
                                 <SolidColorBrush Opacity="0"/>
                             </Button.Background>
