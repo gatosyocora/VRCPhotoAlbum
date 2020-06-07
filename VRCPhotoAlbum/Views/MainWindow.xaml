@@ -107,7 +107,8 @@
             ItemsSource="{Binding}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             Grid.Column="0" Grid.Row="4"
-            SelectionMode="Single">
+            SelectionMode="Single"
+            SelectionChanged="PhotoListBox_SelectionChanged">
             <ie:Interaction.Triggers>
                 <ie:EventTrigger EventName="SelectionChanged">
                     <ie:InvokeCommandAction Command="{Binding ShowPreview}"

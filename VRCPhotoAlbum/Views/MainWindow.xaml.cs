@@ -43,5 +43,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             _mainViewModel.SearchWorldText.Value = worldName;
         }
+
+        private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PhotoListBox.SelectedItem = null;
+        }
     }
 }
