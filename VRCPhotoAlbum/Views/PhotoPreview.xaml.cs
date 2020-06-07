@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
+using System;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
     /// <summary>
     /// PhotoPreview.xaml の相互作用ロジック
     /// </summary>
-    public partial class PhotoPreview : MetroWindow
+    public partial class PhotoPreview : MetroWindow, IDisposable
     {
         private PhotoPreviewViewModel _photoPreviewViewModel;
 
@@ -40,6 +41,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             var selectedWorld = (sender as Button)?.CommandParameter as string ?? string.Empty;
             MainWindow.Instance.SearchWithWorldName(selectedWorld);
             Close();
+        }
+
+        public void Dispose()
+        {
+            _photoPreviewViewModel.Dispose();
         }
     }
 }

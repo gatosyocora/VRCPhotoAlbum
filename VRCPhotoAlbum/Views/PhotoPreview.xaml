@@ -53,6 +53,7 @@
             <Button x:Name="FlipHorizontalButton"
                     Grid.Column="1" Grid.Row="0"
                     Margin="2" Padding="10 0 10 0"
+                    Command="{Binding FlipHorizontal}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                 <Image Source="pack://application:,,,/Resources/FlipHorizontalImage.png" 
@@ -71,7 +72,7 @@
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
                HorizontalAlignment="Center"
-               Source="{Binding Image.Value}"
+               Source="{Binding Image.Value, UpdateSourceTrigger=PropertyChanged}"
                Grid.Row="1"/>
         <Grid Grid.Column="1" Grid.Row="2">
             <Grid.ColumnDefinitions>

@@ -1,7 +1,10 @@
-﻿using System;
+﻿using KoyashiroKohaku.VrcMetaToolSharp;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
@@ -25,12 +28,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static BitmapImage GetThumbnailImage(string filePath, string cashFolderPath)
         {
-            if (!Directory.Exists(cashFolderPath))
-            {
-                Directory.CreateDirectory(cashFolderPath);
-            }
-
-            var thumbnailImageFilePath = $"{cashFolderPath}/tn_" + Path.GetFileName(filePath);
+            var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileName(filePath)}";
 
             if (!File.Exists(thumbnailImageFilePath))
             {
@@ -47,12 +45,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         }
         #endregion
 
+        #region Bitmap
         public static Bitmap LoadImage(string filePath)
         {
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"{filePath} is not found.");
             }
+
             return new Bitmap(filePath);
         }
 
@@ -68,19 +68,35 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             }
         }
 
-        public static void RotateLeft90AndSave(string filePath)
+        public static void SaveImage(byte[] imageBuffer, string filePath)
         {
-            var image = LoadImage(filePath);
-            image = RotateLeft90(image);
-            SaveImage(image, filePath);
+            File.WriteAllBytes(filePath, imageBuffer);
+        }
+        #endregion
+
+        #region Convert
+        public static Bitmap Bytes2Bitmap(byte[] buffer)
+        {
+            using (var ms = new MemoryStream(buffer))
+            {
+                var bitmap = new Bitmap(ms);
+                ms.Close();
+                return bitmap;
+            }
         }
 
-        public static void RotateRight90AndSave(string filePath)
+        public static byte[] Bitmap2Bytes(Bitmap bitmap)
         {
-            var image = LoadImage(filePath);
-            image = RotateRight90(image);
-            SaveImage(image, filePath);
+            using (var stream = new MemoryStream())
+            {
+                bitmap.Save(stream, ImageFormat.Png);
+                bitmap.Dispose();
+                return stream.GetBuffer();
+            }
         }
+        #endregion
+
+        #region ImageProcessing
 
         public static Bitmap RotateLeft90(string filePath)
         {
@@ -104,6 +120,35 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         {
             image.RotateFlip(RotateFlipType.Rotate90FlipNone);
             return image;
+        }
+
+        public static Bitmap FlipHorizontal(Bitmap image)
+        {
+            image.RotateFlip(RotateFlipType.Rotate180FlipY);
+            return image;
+        }
+
+        #endregion
+
+        public static void RotateLeft90AndSave(string filePath, VrcMetaData metaData)
+        {
+            var image = RotateLeft90(LoadImage(filePath));
+            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            SaveImage(buffer, filePath);
+        }
+
+        public static void RotateRight90AndSave(string filePath, VrcMetaData metaData)
+        {
+            var image = RotateRight90(LoadImage(filePath));
+            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            SaveImage(buffer, filePath);
+        }
+
+        public static void FilpHorizontalAndSave(string filePath, VrcMetaData metaData)
+        {
+            var image = FlipHorizontal(LoadImage(filePath));
+            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            SaveImage(buffer, filePath);
         }
     }
 }

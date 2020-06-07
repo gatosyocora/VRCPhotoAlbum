@@ -24,7 +24,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ReadOnlyReactiveProperty<BitmapImage> Image { get; }
+        public ReactiveProperty<BitmapImage> Image { get; }
         public ReactiveCollection<User> UserList { get; } = new ReactiveCollection<User>();
         public ReadOnlyReactiveProperty<string> WorldName { get; }
         public ReadOnlyReactiveProperty<string> PhotographerName { get; }
@@ -37,6 +37,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<string> OpenTwitter { get; set; } = new ReactiveCommand<string>();
         public ReactiveCommand RotateL90 { get; set; } = new ReactiveCommand();
         public ReactiveCommand RotateR90 { get; set; } = new ReactiveCommand();
+        public ReactiveCommand FlipHorizontal { get; set; } = new ReactiveCommand();
         public ReactiveCommand ShareToTwitter { get; set; } = new ReactiveCommand();
 
         public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList)
@@ -52,7 +53,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 var filePath = p?.FilePath ?? string.Empty;
                 return ImageHelper.LoadBitmapImage(filePath);
             })
-            .ToReadOnlyReactiveProperty();
+            .ToReactiveProperty();
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty();
             PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty();
             PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty).ToReadOnlyReactiveProperty();
@@ -67,15 +68,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             Previous.Subscribe(() => PreviousPreview());
             Next.Subscribe(() => NextPreview());
             OpenTwitter.Subscribe(OpenTwitterWithScreenName);
-            // 回転させるとメタデータが消えてしまうので一旦保留
-            //RotateL90.Subscribe(() =>
-            //{
-            //    ImageHelper.RotateLeft90AndSave(PreviewPhoto.Value.FilePath);
-            //});
-            //RotateR90.Subscribe(() =>
-            //{
-            //    ImageHelper.RotateRight90AndSave(PreviewPhoto.Value.FilePath);
-            //});
+            //RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateLeft90AndSave));
+            //RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateRight90AndSave));
+            //FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.FilpHorizontalAndSave));
             ShareToTwitter.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, _photoPreviewWindow));
         }
 
@@ -106,6 +101,15 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
             }
+        }
+
+        private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> ImageProcessFunction)
+        {
+            ImageProcessFunction(filePath, meta);
+            Cache.Instance.DeleteCacheFile(filePath);
+            PreviewPhoto.Value.ThumbnailImage = ImageHelper.GetThumbnailImage(filePath, Cache.Instance.CacheFolderPath);
+            //Image.Value = ImageHelper.LoadBitmapImage(filePath);
+            _photoPreviewWindow.Close();
         }
 
         public void Dispose()

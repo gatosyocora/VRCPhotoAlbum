@@ -29,8 +29,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
         public ReactiveCommand OpenSettingCommand { get; set; } = new ReactiveCommand();
 
-        private string _cashFolderPath;
-
         private MainWindow _mainWindow;
 
         private SettingData _settingData;
@@ -49,7 +47,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 _settingData = WindowHelper.OpenSettingDialog(_settingData, _mainWindow);
             }
 
-            _cashFolderPath = _settingData.FolderPath + Path.DirectorySeparatorChar + "Cash";
+            Cache.Instance.Create();
 
             try
             {
@@ -87,12 +85,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
 
             return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                        .Where(x => !x.StartsWith(_cashFolderPath))
-                        .Select(x =>
+                        .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
+                        .Select(x => 
                         new Photo
                         {
                             FilePath = x,
-                            ThumbnailImage = ImageHelper.GetThumbnailImage(x, _cashFolderPath),
+                            ThumbnailImage = ImageHelper.GetThumbnailImage(x, Cache.Instance.CacheFolderPath),
                             MetaData = VrcMetaDataReader.Read(x)
                         })
                         .ToList();
@@ -129,14 +127,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             if (!userMatch.Success && !worldMatch.Success)
             {
                 searchedPhotoList = searchedPhotoList
-                                        .Where(x => x.MetaData.Users.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ||
-                                                    x.MetaData.World.ToLower().Contains(searchWorldName.ToLower()));
+                                        .Where(x => (x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) ||
+                                                    (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
             }
             else
             {
                 searchedPhotoList = searchedPhotoList
-                                        .Where(x => x.MetaData.Users.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) &&
-                                                    x.MetaData.World.ToLower().Contains(searchWorldName.ToLower()));
+                                        .Where(x => (x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) &&
+                                                    (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
             }
 
             foreach (var photo in searchedPhotoList.ToList())
