@@ -26,12 +26,13 @@
                 Width="100"
                 HorizontalAlignment="Right"
                 Margin="10 10 140 10"
-                Command="Login"/>
+                Command="{Binding Login}"/>
         <Button x:Name="ShareButton"
                 Content="Share"
                 Grid.Row="3"
                 Width="100"
                 HorizontalAlignment="Right"
-                Margin="10 10 20 10"/>
+                Margin="10 10 20 10"
+                Command="{Binding Share}"/>
     </Grid>
 </Window>
