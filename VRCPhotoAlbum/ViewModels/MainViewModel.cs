@@ -52,7 +52,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
             else
             {
-                _settingData = OpenSetting(_settingData);
+                _settingData = WindowHelper.OpenSettingDialog(_settingData, _mainWindow);
             }
 
             _cashFolderPath = _settingData.FolderPath + Path.DirectorySeparatorChar + "Cash";
@@ -83,11 +83,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             ClearSearchUserText.Subscribe(_ => SearchUserText.Value = string.Empty);
             ClearSearchWorldText.Subscribe(_ => SearchWorldText.Value = string.Empty);
-            ShowPreview.Subscribe(photo => { if (!(photo is null)) OpenPhotoPreview(photo); });
+            ShowPreview.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _mainWindow); });
             SearchWithUser.Subscribe(userName => SearchUserText.Value = userName);
             OpenSettingCommand.Subscribe(() => 
             {
-                _settingData = OpenSetting(_settingData);
+                _settingData = WindowHelper.OpenSettingDialog(_settingData, _mainWindow);
             });
         }
 
@@ -133,21 +133,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                         .Distinct()
                         .OrderBy(x => x)
                         .ToList();
-        }
-
-        private SettingData OpenSetting(SettingData settingData)
-        {
-            var settingWindow = new SettingWindow(settingData);
-            settingWindow.Owner = _mainWindow;
-            settingWindow.ShowDialog();
-            return settingWindow.SettingData;
-        }
-
-        private void OpenPhotoPreview(Photo photo)
-        {
-            var photoPreview = new PhotoPreview(photo, ShowedPhotoList.ToList(), _mainWindow);
-            photoPreview.Owner = _mainWindow;
-            photoPreview.Show();
         }
     }
 }

@@ -12,7 +12,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// </summary>
     public partial class MainWindow : MahApps.Metro.Controls.MetroWindow
     {
+        public static MainWindow Instance { get; private set; }
+
         private MainViewModel _mainViewModel;
+
+        static MainWindow()
+        {
+            Instance = new MainWindow();
+        }
 
         public MainWindow()
         {

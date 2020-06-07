@@ -78,7 +78,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             //{
             //    ImageHelper.RotateRight90AndSave(PreviewPhoto.Value.FilePath);
             //});
-            ShareToTwitter.Subscribe(() => OpenShareWindow(PreviewPhoto.Value));
+            ShareToTwitter.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, _photoPreviewWindow));
         }
 
         private void PreviousPreview()
@@ -108,13 +108,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
             }
-        }
-
-        private void OpenShareWindow(Photo photo)
-        {
-            var shareWindow = new ShareWindow(photo);
-            shareWindow.Owner = _photoPreviewWindow;
-            shareWindow.ShowDialog();
         }
 
         public void Dispose()

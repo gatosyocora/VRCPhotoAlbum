@@ -15,20 +15,18 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     public partial class PhotoPreview : MahApps.Metro.Controls.MetroWindow
     {
         private PhotoPreviewViewModel _photoPreviewViewModel;
-        private MainWindow _mainWindow;
 
-        public PhotoPreview(Photo photo, List<Photo> photoList, MainWindow mainWindow)
+        public PhotoPreview(Photo photo, List<Photo> photoList)
         {
             InitializeComponent();
             _photoPreviewViewModel = new PhotoPreviewViewModel(this, photo, photoList);
             DataContext = _photoPreviewViewModel;
-            _mainWindow = mainWindow;
         }
 
         private void UserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedUser = UserListView.SelectedItem as User;
-            _mainWindow.SearchWithUserName(selectedUser.UserName);
+            MainWindow.Instance.SearchWithUserName(selectedUser.UserName);
             Close();
         }
 
