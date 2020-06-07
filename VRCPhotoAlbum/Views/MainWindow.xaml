@@ -36,7 +36,8 @@
                     HorizontalAlignment="Center"
                     Content="x"
                     Margin="2"
-                    Command="{Binding ClearSearchText}"/>
+                    Command="{Binding ClearSearchText}"
+                    Foreground="White"/>
         </Grid>
 
         <ListView x:Name="UserListView"

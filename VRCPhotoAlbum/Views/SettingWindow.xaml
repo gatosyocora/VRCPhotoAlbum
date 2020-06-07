@@ -43,7 +43,8 @@
                 HorizontalAlignment="Right"
                 Width="100"
                 Height="auto"
-                Click="EnterButton_Click"/>
+                Click="EnterButton_Click"
+                Foreground="White"/>
         </Grid>
     </Grid>
 </mahApps:MetroWindow>

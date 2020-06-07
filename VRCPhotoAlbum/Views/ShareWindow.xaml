@@ -27,13 +27,15 @@
                 Width="100"
                 HorizontalAlignment="Right"
                 Margin="10 10 140 10"
-                Command="{Binding Login}"/>
+                Command="{Binding Login}"
+                Foreground="White"/>
         <Button x:Name="ShareButton"
                 Content="Share"
                 Grid.Row="3"
                 Width="100"
                 HorizontalAlignment="Right"
                 Margin="10 10 20 10"
-                Command="{Binding Share}"/>
+                Command="{Binding Share}"
+                Foreground="White"/>
     </Grid>
 </mahApps:MetroWindow>

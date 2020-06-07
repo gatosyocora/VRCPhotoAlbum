@@ -56,7 +56,8 @@
                     Content="&lt;--&gt;"
                     Grid.Column="1"
                     Grid.Row="0"
-                    Margin="5" Padding="0"/>
+                    Margin="5" Padding="0"
+                    Foreground="White"/>
             <Button x:Name="RotateRight90Button"
                     Grid.Column="2"
                     Grid.Row="0"
@@ -91,7 +92,8 @@
                     Padding="0"
                     Grid.Row="0"
                     Grid.ColumnSpan="3"
-                    Command="{Binding ShareToTwitter}"/>
+                    Command="{Binding ShareToTwitter}"
+                    Foreground="White"/>
             <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber.Value}"
                Grid.Column="0"
@@ -174,12 +176,14 @@
                     Content="Previous"
                     Grid.Column="0"
                     Margin="10"
-                    Command="{Binding Previous}"/>
+                    Command="{Binding Previous}"
+                    Foreground="White"/>
             <Button x:Name="NextPhotoButton"
                     Content="Next"
                     Grid.Column="2"
                     Margin="10"
-                    Command="{Binding Next}"/>
+                    Command="{Binding Next}"
+                    Foreground="White"/>
         </Grid>
     </Grid>
 </mahApps:MetroWindow>
