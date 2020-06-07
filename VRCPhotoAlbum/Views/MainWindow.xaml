@@ -27,7 +27,7 @@
             <Label Content="Search"
                    Margin="10"/>
             <TextBox x:Name="SearchTextBox" 
-                Text="{Binding SearchText.Value, UpdateSourceTrigger=PropertyChanged}"
+                Text="{Binding SearchText.Value, UpdateSourceTrigger=PropertyChanged, Delay=500}"
                 Grid.Column="1"
                 VerticalAlignment="Center"/>
             <Button x:Name="ClearSearchButton"
