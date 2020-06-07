@@ -11,6 +11,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
     public class ImageHelper
     {
+
+        #region BitmapImage
         public static BitmapImage LoadBitmapImage(string filePath)
         {
             var bitmapImage = new BitmapImage();
@@ -23,6 +25,30 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             stream.Dispose();
             return bitmapImage;
         }
+
+        public static BitmapImage GetThumbnailImage(string filePath, string cashFolderPath)
+        {
+            if (!Directory.Exists(cashFolderPath))
+            {
+                Directory.CreateDirectory(cashFolderPath);
+            }
+
+            var thumbnailImageFilePath = $"{cashFolderPath}/tn_" + Path.GetFileName(filePath);
+
+            if (!File.Exists(thumbnailImageFilePath))
+            {
+                using (var stream = File.OpenRead(filePath))
+                {
+                    var originalImage = Image.FromStream(stream, false, false);
+                    var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
+                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Png);
+                    originalImage.Dispose();
+                    thumbnailImage.Dispose();
+                }
+            }
+            return LoadBitmapImage(thumbnailImageFilePath);
+        }
+        #endregion
 
         public static Bitmap LoadImage(string filePath)
         {

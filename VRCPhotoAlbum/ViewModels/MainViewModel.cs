@@ -99,7 +99,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                         new Photo
                         {
                             FilePath = x,
-                            ThumbnailImage = GetThumbnailImage(x),
+                            ThumbnailImage = ImageHelper.GetThumbnailImage(x, _cashFolderPath),
                             MetaData = VrcMetaDataReader.Read(x)
                         })
                         .ToList();
@@ -135,33 +135,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             settingWindow.Owner = _mainWindow;
             settingWindow.ShowDialog();
             return settingWindow.SettingData;
-        }
-
-        private BitmapImage GetThumbnailImage(string filePath)
-        {
-            if (!Directory.Exists(_cashFolderPath))
-            {
-                Directory.CreateDirectory(_cashFolderPath);
-            }
-
-            var thumbnailImageFilePath = $"{_cashFolderPath}/tn_" + Path.GetFileName(filePath);
-
-            if (!File.Exists(thumbnailImageFilePath))
-            {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    var originalImage = Image.FromStream(stream, false, false);
-                    var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 4, originalImage.Height / 4, () => { return false; }, IntPtr.Zero);
-                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Png);
-                    originalImage.Dispose();
-                    thumbnailImage.Dispose();
-                }
-            }
-            var thumbnailBimapImage = new BitmapImage();
-            thumbnailBimapImage.BeginInit();
-            thumbnailBimapImage.UriSource = new Uri(thumbnailImageFilePath);
-            thumbnailBimapImage.EndInit();
-            return thumbnailBimapImage;
         }
 
         private void OpenPhotoPreview(Photo photo)
