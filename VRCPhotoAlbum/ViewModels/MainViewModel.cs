@@ -115,7 +115,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ShowedPhotoList.Clear();
             var searchedPhotoList = _photoList
                     .Where(x => x.MetaData.Users.Any(u => u.UserName.ToLower().StartsWith(searchedUserName.ToLower())) &&
-                                x.MetaData.World.ToLower().StartsWith(searchWorldName.ToLower()) &&
+                                x.MetaData.World.ToLower().Contains(searchWorldName.ToLower()) &&
                                 (!useDate || x.MetaData.Date?.Date.CompareTo(searchedDate.Date) == 0))
                     .ToList();
 
