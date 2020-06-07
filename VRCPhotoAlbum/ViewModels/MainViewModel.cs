@@ -110,7 +110,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                         .ToList();
         }
 
-        public void SearchPhoto(string searchedUserName, string searchWorldName, DateTime searchedDate, bool useDate)
+        private void SearchPhoto(string searchedUserName, string searchWorldName, DateTime searchedDate, bool useDate)
         {
             ShowedPhotoList.Clear();
             var searchedPhotoList = _photoList
