@@ -103,8 +103,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ShowedPhotoList.Clear();
 
             string searchUserName, searchWorldName;
-            var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*)""");
-            var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*)""");
+            var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
+            var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*?)"".*");
             if (userMatch.Success)
             {
                 searchUserName = $"{userMatch.Groups["userName"]}";
