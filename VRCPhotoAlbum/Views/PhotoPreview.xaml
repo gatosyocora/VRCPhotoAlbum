@@ -161,6 +161,14 @@
                        Content="{Binding WorldName.Value}"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
+                <Button x:Name="SearchWithWorldButton"
+                        Content="Search"
+                        Width="60" Height="20"
+                        Margin="0 0 10 0" Padding="0"
+                        HorizontalAlignment="Right"
+                        Foreground="White"
+                        CommandParameter="{Binding PreviewPhoto.Value.MetaData.World}"
+                        Click="SearchWithWorldButton_Click"/>
                 <Label x:Name="PhotoGrapher"
                        Grid.Row="1"
                        Content="{Binding PhotographerName.Value}"

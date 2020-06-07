@@ -38,5 +38,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             _mainViewModel.SearchUserText.Value = userName;
         }
+
+        public void SearchWithWorldName(string worldName)
+        {
+            _mainViewModel.SearchWorldText.Value = worldName;
+        }
     }
 }
