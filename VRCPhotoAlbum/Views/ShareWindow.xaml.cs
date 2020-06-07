@@ -17,7 +17,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// ShareWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class ShareWindow : Window
+    public partial class ShareWindow : MahApps.Metro.Controls.MetroWindow
     {
         private ShareViewModel _shareViewModel;
 
