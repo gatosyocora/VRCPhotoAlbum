@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Text;
 using System.Drawing.Imaging;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers

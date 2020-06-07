@@ -1,8 +1,6 @@
-﻿using Gatosyocora.VRCPhotoAlbum.Models;
-using Gatosyocora.VRCPhotoAlbum.ViewModels;
+﻿using Gatosyocora.VRCPhotoAlbum.ViewModels;
+using MahApps.Metro.Controls;
 using System;
-using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
@@ -10,7 +8,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MahApps.Metro.Controls.MetroWindow
+    public partial class MainWindow : MetroWindow
     {
         public static MainWindow Instance { get; private set; }
 
@@ -36,7 +34,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         public void SearchWithUserName(string userName)
         {
-            _mainViewModel.SearchWithUserName(userName); 
+            _mainViewModel.SearchWithUserName(userName);
         }
 
         public void SearchWithWorldName(string worldName)

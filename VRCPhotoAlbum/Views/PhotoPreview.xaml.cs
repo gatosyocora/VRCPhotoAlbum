@@ -1,18 +1,17 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using KoyashiroKohaku.VrcMetaToolSharp;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro.Controls;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
     /// <summary>
     /// PhotoPreview.xaml の相互作用ロジック
     /// </summary>
-    public partial class PhotoPreview : MahApps.Metro.Controls.MetroWindow
+    public partial class PhotoPreview : MetroWindow
     {
         private PhotoPreviewViewModel _photoPreviewViewModel;
 

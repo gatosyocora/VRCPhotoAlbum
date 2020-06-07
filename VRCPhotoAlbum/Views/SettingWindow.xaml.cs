@@ -1,13 +1,14 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using System.Windows;
+using MahApps.Metro.Controls;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
     /// <summary>
     /// SettingWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class SettingWindow : MahApps.Metro.Controls.MetroWindow
+    public partial class SettingWindow : MetroWindow
     {
         protected SettingViewModel _settingViewModel;
 

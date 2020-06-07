@@ -7,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Media.Imaging;
 
@@ -49,7 +47,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             PreviewPhoto.Value = photo;
             _previewPhotoIndex = _photoList.IndexOf(photo);
 
-            Image = PreviewPhoto.Select(p => 
+            Image = PreviewPhoto.Select(p =>
             {
                 var filePath = p?.FilePath ?? string.Empty;
                 return ImageHelper.LoadBitmapImage(filePath);
@@ -68,7 +66,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             Previous.Subscribe(() => PreviousPreview());
             Next.Subscribe(() => NextPreview());
-            OpenTwitter.Subscribe(userName => OpenTwitterWithScreenName(userName));
+            OpenTwitter.Subscribe(OpenTwitterWithScreenName);
             // 回転させるとメタデータが消えてしまうので一旦保留
             //RotateL90.Subscribe(() =>
             //{

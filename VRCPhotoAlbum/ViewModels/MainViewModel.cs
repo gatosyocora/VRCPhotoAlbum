@@ -2,18 +2,13 @@
 using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaToolSharp;
+using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Windows.Media.Imaging;
-using Image = System.Drawing.Image;
-using Reactive.Bindings;
-using System.Windows;
 using System.Text.RegularExpressions;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
@@ -25,9 +20,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public List<string> UserList { get; }
 
-        public ReactiveProperty<string> SearchText { get; set; } = new ReactiveProperty<string>();
-        public ReactiveProperty<DateTime> SearchDate { get; set; } = new ReactiveProperty<DateTime>();
-        public ReactiveProperty<bool> SearchWithDateTime { get; set; } = new ReactiveProperty<bool>();
+        public ReactiveProperty<string> SearchText { get; set; } = new ReactiveProperty<string>(string.Empty);
+        public ReactiveProperty<DateTime> SearchDate { get; set; } = new ReactiveProperty<DateTime>(DateTime.Now);
+        public ReactiveProperty<bool> SearchWithDateTime { get; set; } = new ReactiveProperty<bool>(false);
 
         public ReactiveCommand ClearSearchText { get; set; } = new ReactiveCommand();
         public ReactiveCommand<Photo> ShowPreview { get; set; } = new ReactiveCommand<Photo>();
@@ -71,17 +66,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 Debug.Print($"{e.GetType().Name}: {e.Message}");
             }
 
-            SearchText.Value = string.Empty;
-            SearchDate.Value = DateTime.Now;
-            SearchWithDateTime.Value = false;
             SearchText.Subscribe(searchText => SearchPhoto(searchText, SearchDate.Value, SearchWithDateTime.Value));
             SearchDate.Subscribe(searchDate => SearchPhoto(SearchText.Value, searchDate, SearchWithDateTime.Value));
             SearchWithDateTime.Subscribe(useDateTime => SearchPhoto(SearchText.Value, SearchDate.Value, useDateTime));
 
-            ClearSearchText.Subscribe(_ => SearchText.Value = string.Empty);
+            ClearSearchText.Subscribe(() => SearchText.Value = string.Empty);
             ShowPreview.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _mainWindow); });
-            SearchWithUser.Subscribe(userName => SearchWithUserName(userName));
-            OpenSettingCommand.Subscribe(() => 
+            SearchWithUser.Subscribe(SearchWithUserName);
+            OpenSettingCommand.Subscribe(() =>
             {
                 _settingData = WindowHelper.OpenSettingDialog(_settingData, _mainWindow);
             });

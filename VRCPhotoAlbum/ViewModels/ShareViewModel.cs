@@ -1,11 +1,7 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
 using Reactive.Bindings;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Reactive.Linq;
-using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
@@ -22,7 +18,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ShareViewModel(Photo photo)
         {
             TweetContent = SharePhoto.Select(p => $"Taken by {p?.MetaData?.Photographer ?? string.Empty} in {p?.MetaData?.World ?? string.Empty} #VRCPhotoAlbum").ToReactiveProperty();
-            SharePhotoBitmapImage = SharePhoto.Select(p => 
+            SharePhotoBitmapImage = SharePhoto.Select(p =>
                                     {
                                         if (p != null)
                                         {
