@@ -29,7 +29,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         public void SearchWithUserName(string userName)
         {
-            _mainViewModel.SearchText.Value = userName;
+            _mainViewModel.SearchUserText.Value = userName;
         }
     }
 }

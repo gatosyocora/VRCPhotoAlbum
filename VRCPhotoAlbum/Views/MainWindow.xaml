@@ -16,6 +16,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -26,17 +27,38 @@
             </Grid.ColumnDefinitions>
             <Label Content="Search User"
                    Margin="10"/>
-            <TextBox x:Name="SearchTextBox" 
-                Text="{Binding SearchText.Value, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="SearchUserTextBox" 
+                Text="{Binding SearchUserText.Value, UpdateSourceTrigger=PropertyChanged}"
                 Grid.Column="1"
                 VerticalAlignment="Center"/>
-            <Button x:Name="ClearButton"
+            <Button x:Name="ClearSearchUserButton"
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     Content="x"
                     Margin="2"
-                    Command="{Binding ClearSearchText}"
+                    Command="{Binding ClearSearchUserText}"
+                    Foreground="White"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="12*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Search World"
+                   Margin="10"/>
+            <TextBox x:Name="SearchWorldTextBox" 
+                Text="{Binding SearchWorldText.Value, UpdateSourceTrigger=PropertyChanged}"
+                Grid.Column="1"
+                VerticalAlignment="Center"/>
+            <Button x:Name="ClearSearchWorldButton"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Content="x"
+                    Margin="2"
+                    Command="{Binding ClearSearchWorldText}"
                     Foreground="White"/>
         </Grid>
 
@@ -44,8 +66,7 @@
                 ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                Grid.Column="0"
-                Grid.Row="1">
+                Grid.Column="0" Grid.Row="2">
             <ie:Interaction.Triggers>
                 <ie:EventTrigger EventName="SelectionChanged">
                     <ie:InvokeCommandAction Command="{Binding SearchWithUser}"
@@ -65,8 +86,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid Grid.Column="0"
-              Grid.Row="2"
+        <Grid Grid.Column="0" Grid.Row="3"
               Margin="5 10 5 10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -86,8 +106,7 @@
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            Grid.Column="0"
-            Grid.Row="3"
+            Grid.Column="0" Grid.Row="4"
             SelectionMode="Single">
             <ie:Interaction.Triggers>
                 <ie:EventTrigger EventName="SelectionChanged">
@@ -110,7 +129,7 @@
         </ListBox>
         <Button x:Name="SettingButton"
                 Margin="15 15 25 15"
-                Grid.Row="3"
+                Grid.Row="4"
                 Padding="5"
                 Width="30" Height="30"
                 HorizontalAlignment="Right"

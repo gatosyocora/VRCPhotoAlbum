@@ -24,11 +24,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public List<string> UserList { get; }
 
-        public ReactiveProperty<string> SearchText { get; set; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> SearchUserText { get; set; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> SearchWorldText { get; set; } = new ReactiveProperty<string>();
         public ReactiveProperty<DateTime> SearchDate { get; set; } = new ReactiveProperty<DateTime>();
         public ReactiveProperty<bool> SearchWithDateTime { get; set; } = new ReactiveProperty<bool>();
 
-        public ReactiveCommand ClearSearchText { get; set; } = new ReactiveCommand();
+        public ReactiveCommand ClearSearchUserText { get; set; } = new ReactiveCommand();
+        public ReactiveCommand ClearSearchWorldText { get; set; } = new ReactiveCommand();
         public ReactiveCommand<Photo> ShowPreview { get; set; } = new ReactiveCommand<Photo>();
         public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
         public ReactiveCommand OpenSettingCommand { get; set; } = new ReactiveCommand();
@@ -70,16 +72,19 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 Debug.Print($"{e.GetType().Name}: {e.Message}");
             }
 
-            SearchText.Value = string.Empty;
+            SearchUserText.Value = string.Empty;
+            SearchWorldText.Value = string.Empty;
             SearchDate.Value = DateTime.Now;
             SearchWithDateTime.Value = false;
-            SearchText.Subscribe(searchText => SearchPhotoWithUserNameAndDateTime(searchText, SearchDate.Value, SearchWithDateTime.Value));
-            SearchDate.Subscribe(searchDate => SearchPhotoWithUserNameAndDateTime(SearchText.Value, searchDate, SearchWithDateTime.Value));
-            SearchWithDateTime.Subscribe(useDateTime => SearchPhotoWithUserNameAndDateTime(SearchText.Value, SearchDate.Value, useDateTime));
+            SearchUserText.Subscribe(searchText => SearchPhoto(searchText, SearchWorldText.Value, SearchDate.Value, SearchWithDateTime.Value));
+            SearchWorldText.Subscribe(searchText => SearchPhoto(SearchUserText.Value, searchText, SearchDate.Value, SearchWithDateTime.Value));
+            SearchDate.Subscribe(searchDate => SearchPhoto(SearchUserText.Value, SearchWorldText.Value, searchDate, SearchWithDateTime.Value));
+            SearchWithDateTime.Subscribe(useDateTime => SearchPhoto(SearchUserText.Value, SearchWorldText.Value, SearchDate.Value, useDateTime));
 
-            ClearSearchText.Subscribe(_ => SearchText.Value = string.Empty);
+            ClearSearchUserText.Subscribe(_ => SearchUserText.Value = string.Empty);
+            ClearSearchWorldText.Subscribe(_ => SearchWorldText.Value = string.Empty);
             ShowPreview.Subscribe(photo => { if (!(photo is null)) OpenPhotoPreview(photo); });
-            SearchWithUser.Subscribe(userName => SearchText.Value = userName);
+            SearchWithUser.Subscribe(userName => SearchUserText.Value = userName);
             OpenSettingCommand.Subscribe(() => 
             {
                 _settingData = OpenSetting(_settingData);
@@ -105,11 +110,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                         .ToList();
         }
 
-        public void SearchPhotoWithUserNameAndDateTime(string searchedUserName, DateTime searchedDate, bool useDate)
+        public void SearchPhoto(string searchedUserName, string searchWorldName, DateTime searchedDate, bool useDate)
         {
             ShowedPhotoList.Clear();
             var searchedPhotoList = _photoList
                     .Where(x => x.MetaData.Users.Any(u => u.UserName.StartsWith(searchedUserName)) &&
+                                x.MetaData.World.StartsWith(searchWorldName) &&
                                 (!useDate || x.MetaData.Date?.Date.CompareTo(searchedDate.Date) == 0))
                     .ToList();
 
