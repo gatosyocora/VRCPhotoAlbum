@@ -11,8 +11,12 @@
     <UserSecretsId>57b90247-f63f-4628-9475-c26b8834a74e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\FlipHorizontalImage.png" />
+    <None Remove="Resources\LeftImage.png" />
+    <None Remove="Resources\RightImage.png" />
     <None Remove="Resources\RotateLeft90Image.png" />
     <None Remove="Resources\RotateRight90Image.png" />
+    <None Remove="Resources\SearchImage.png" />
     <None Remove="Resources\SettingButtonImage.png" />
     <None Remove="Resources\Twitter_Social_Icon_Circle_Color.png" />
   </ItemGroup>
@@ -33,8 +37,12 @@
     <PackageReference Include="VrcMetaToolSharp" Version="0.1.2" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\FlipHorizontalImage.png" />
+    <Resource Include="Resources\LeftImage.png" />
+    <Resource Include="Resources\RightImage.png" />
     <Resource Include="Resources\RotateLeft90Image.png" />
     <Resource Include="Resources\RotateRight90Image.png" />
+    <Resource Include="Resources\SearchImage.png" />
     <Resource Include="Resources\SettingButtonImage.png" />
     <Resource Include="Resources\Twitter_Social_Icon_Circle_Color.png" />
   </ItemGroup>

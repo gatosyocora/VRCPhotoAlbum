@@ -42,32 +42,30 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button x:Name="RotateLeft90Button"
-                    Grid.Column="0"
-                    Grid.Row="0"
-                    Margin="5" Padding="0"
-                    Command="{Binding RotateL90}">
+                    Grid.Column="0" Grid.Row="0"
+                    Margin="2" Padding="10 0 10 0"
+                    Command="{Binding RotateL90}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
                 <Image Source="pack://application:,,,/Resources/RotateLeft90Image.png" 
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Width="20"
-                   Height="20"/>
+                   Width="20" Height="20"/>
             </Button>
             <Button x:Name="FlipHorizontalButton"
-                    Content="&lt;--&gt;"
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    Margin="5" Padding="0"
-                    Foreground="White"/>
+                    Grid.Column="1" Grid.Row="0"
+                    Margin="2" Padding="10 0 10 0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Image Source="pack://application:,,,/Resources/FlipHorizontalImage.png" 
+                   Width="20" Height="20"/>
+            </Button>
             <Button x:Name="RotateRight90Button"
-                    Grid.Column="2"
-                    Grid.Row="0"
-                    Margin="5" Padding="0"
-                    Command="{Binding RotateR90}">
+                    Grid.Column="2" Grid.Row="0"
+                    Margin="2" Padding="10 0 10 0"
+                    Command="{Binding RotateR90}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
                 <Image Source="pack://application:,,,/Resources/RotateRight90Image.png" 
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Width="20"
-                   Height="20"/>
+                   Width="20" Height="20"/>
             </Button>
         </Grid>
         <Image x:Name="PreviewImage"
@@ -75,8 +73,7 @@
                HorizontalAlignment="Center"
                Source="{Binding Image.Value}"
                Grid.Row="1"/>
-        <Grid Grid.Column="1"
-              Grid.Row="2">
+        <Grid Grid.Column="1" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -138,7 +135,8 @@
                             <Button.BorderBrush>
                                 <SolidColorBrush Opacity="0"/>
                             </Button.BorderBrush>
-                            <Image Source="../Resources/Twitter_Social_Icon_Circle_Color.png" Width="20" Height="20"/>
+                            <Image Source="../Resources/Twitter_Social_Icon_Circle_Color.png"
+                                   Width="20" Height="20"/>
                         </Button>
                     </Grid>
                 </DataTemplate>
@@ -162,13 +160,15 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
                 <Button x:Name="SearchWithWorldButton"
-                        Content="Search"
-                        Width="60" Height="20"
-                        Margin="0 0 10 0" Padding="0"
+                        Width="30" Height="20"
+                        Margin="0 0 20 0" Padding="0"
                         HorizontalAlignment="Right"
                         Foreground="White"
                         CommandParameter="{Binding PreviewPhoto.Value.MetaData.World}"
-                        Click="SearchWithWorldButton_Click"/>
+                        Click="SearchWithWorldButton_Click">
+                    <Image Source="pack://application:,,,/Resources/SearchImage.png"
+                           Width="18" Height="18"/>
+                </Button>
                 <Label x:Name="PhotoGrapher"
                        Grid.Row="1"
                        Content="{Binding PhotographerName.Value}"
@@ -181,17 +181,21 @@
                        HorizontalAlignment="Center"/>
             </Grid>
             <Button x:Name="PreviousPhotoButton"
-                    Content="Previous"
                     Grid.Column="0"
                     Margin="10"
                     Command="{Binding Previous}"
-                    Foreground="White"/>
+                    Foreground="White">
+                <Image Source="pack://application:,,,/Resources/LeftImage.png"
+                       Margin="2"/>
+            </Button>
             <Button x:Name="NextPhotoButton"
-                    Content="Next"
                     Grid.Column="2"
                     Margin="10"
                     Command="{Binding Next}"
-                    Foreground="White"/>
+                    Foreground="White">
+                <Image Source="pack://application:,,,/Resources/RightImage.png"
+                       Margin="2"/>
+            </Button>
         </Grid>
     </Grid>
 </mahApps:MetroWindow>
