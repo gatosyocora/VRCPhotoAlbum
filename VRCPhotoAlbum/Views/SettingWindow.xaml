@@ -32,7 +32,7 @@
                    HorizontalAlignment="Center"
                    Grid.Column="0"/>
             <TextBox x:Name="FolderPathTextBox"
-                 Text="{Binding FolderName}"
+                 Text="{Binding PhotoFolderName.Value, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Center"
                  Grid.Column="1"/>
         </Grid>
