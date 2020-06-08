@@ -28,46 +28,44 @@
         <Grid Grid.Row="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="RotateLeft90Button"
+            <Grid Grid.Column="0" Grid.Row="0"
+                  HorizontalAlignment="Left"
+                  Margin="10 0 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="RotateLeft90Button"
                     Grid.Column="0" Grid.Row="0"
                     Margin="2" Padding="10 0 10 0"
                     Command="{Binding RotateL90}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-                <Image Source="pack://application:,,,/Resources/RotateLeft90Image.png" 
+                    <Image Source="pack://application:,,,/Resources/RotateLeft90Image.png" 
                    Width="20" Height="20"/>
-            </Button>
-            <Button x:Name="FlipHorizontalButton"
+                </Button>
+                <Button x:Name="FlipHorizontalButton"
                     Grid.Column="1" Grid.Row="0"
                     Margin="2" Padding="10 0 10 0"
                     Command="{Binding FlipHorizontal}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-                <Image Source="pack://application:,,,/Resources/FlipHorizontalImage.png" 
+                    <Image Source="pack://application:,,,/Resources/FlipHorizontalImage.png" 
                    Width="20" Height="20"/>
-            </Button>
-            <Button x:Name="RotateRight90Button"
+                </Button>
+                <Button x:Name="RotateRight90Button"
                     Grid.Column="2" Grid.Row="0"
                     Margin="2" Padding="10 0 10 0"
                     Command="{Binding RotateR90}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-                <Image Source="pack://application:,,,/Resources/RotateRight90Image.png" 
+                    <Image Source="pack://application:,,,/Resources/RotateRight90Image.png" 
                    Width="20" Height="20"/>
-            </Button>
+                </Button>
+            </Grid>
+
         </Grid>
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
