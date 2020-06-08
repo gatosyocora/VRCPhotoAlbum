@@ -41,7 +41,7 @@
             <Button x:Name="SelectFolderButton"
                     Grid.Column="2"
                     Margin="5" Padding="0"
-                    Content="選択"
+                    Content="参照"
                     Foreground="White"
                     Command="{Binding SelectCacheFolderCommand}"/>
         </Grid>
