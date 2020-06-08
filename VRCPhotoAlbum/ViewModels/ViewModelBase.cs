@@ -12,7 +12,21 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public void Dispose()
         {
-            Disposable.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Disposable.Dispose();
+            }
+        }
+
+        ~ViewModelBase()
+        {
+            Dispose(false);
         }
     }
 }
