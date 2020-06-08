@@ -118,9 +118,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
         }
 
-        private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> ImageProcessFunction)
+        private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> imageProcessFunction)
         {
-            ImageProcessFunction(filePath, meta);
+            imageProcessFunction(filePath, meta);
             Cache.Instance.DeleteCacheFile(filePath);
             PreviewPhoto.Value.ThumbnailImage = ImageHelper.GetThumbnailImage(filePath, Cache.Instance.CacheFolderPath);
             Image.Value = ImageHelper.LoadBitmapImage(filePath);
