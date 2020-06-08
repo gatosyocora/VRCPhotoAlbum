@@ -13,25 +13,21 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     {
         protected SettingViewModel _settingViewModel;
 
-        private SettingData _settingData;
-
-        public SettingData SettingData { get; set; }
-        public SettingWindow(SettingData settingData)
+        public SettingWindow()
         {
-            _settingData = settingData;
             InitializeComponent();
             Loaded += SettingWindow_OnLoaded;
         }
 
         private void SettingWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            _settingViewModel = new SettingViewModel(_settingData);
+            _settingViewModel = new SettingViewModel();
             DataContext = _settingViewModel;
         }
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            SettingData = _settingViewModel.CreateSettingData();
+            _settingViewModel.CreateSettingData();
             Close();
         }
 

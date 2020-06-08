@@ -28,7 +28,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static BitmapImage GetThumbnailImage(string filePath, string cashFolderPath)
         {
-            var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileName(filePath)}";
+            var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
 
             if (!File.Exists(thumbnailImageFilePath))
             {
@@ -36,7 +36,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 {
                     var originalImage = Image.FromStream(stream, false, false);
                     var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
-                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Png);
+                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Jpeg);
                     originalImage.Dispose();
                     thumbnailImage.Dispose();
                 }
@@ -129,21 +129,24 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         public static void RotateLeft90AndSave(string filePath, VrcMetaData metaData)
         {
             var image = RotateLeft90(LoadImage(filePath));
-            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            var buffer = Bitmap2Bytes(image);
+            if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
         }
 
         public static void RotateRight90AndSave(string filePath, VrcMetaData metaData)
         {
             var image = RotateRight90(LoadImage(filePath));
-            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            var buffer = Bitmap2Bytes(image);
+            if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
         }
 
         public static void FilpHorizontalAndSave(string filePath, VrcMetaData metaData)
         {
             var image = FlipHorizontal(LoadImage(filePath));
-            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            var buffer = Bitmap2Bytes(image);
+            if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
         }
     }

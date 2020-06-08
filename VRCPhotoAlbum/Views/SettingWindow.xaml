@@ -17,7 +17,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="6*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="5*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -56,7 +58,7 @@
                    Margin="10 0 0 0"/>
             <Label x:Name="CacheDataSize"
                    Content="{Binding CacheDataSize.Value}"
-                   Grid.Column="1"
+                   Grid.Column="1" 
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"/>
             <Button x:Name="CacheClearButton"
@@ -66,14 +68,46 @@
                     Foreground="White"
                     Command="{Binding DeleteCacheCommand}"/>
         </Grid>
-        <Grid Grid.Row="3"
-              Margin="10">
+        <Grid Grid.Row="2" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label x:Name="TestLabel"
+                   Content="テスト機能"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="10 0 0 0"/>
+            <ToggleButton x:Name="TestToggleButton"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          IsChecked="{Binding UseTestFunction.Value}"/>
+            <TextBlock x:Name="TestDetailTextBlock"
+                          Grid.Column="2"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          Text="テスト機能：画像の左右90度回転, 水平方向反転"/>
+            <Label x:Name="TestMessage"
+                   Content="テスト機能は画像データを破壊する可能性があります"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.ColumnSpan="3"
+                   Grid.Row="1"/>
+        </Grid>
+        <Grid Grid.Row="99">
             <Button x:Name="ApplyButton"
                 Content="適用"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
                 Width="100"
                 Height="auto"
+                Padding="0" Margin="0 0 10 0"
                 Click="ApplyButton_Click"
                 Foreground="White"
                 IsEnabled="{Binding CanEnter.Value}"/>
