@@ -87,12 +87,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static byte[] Bitmap2Bytes(Bitmap bitmap)
         {
-            using (var stream = new MemoryStream())
-            {
-                bitmap.Save(stream, ImageFormat.Png);
-                bitmap.Dispose();
-                return stream.GetBuffer();
-            }
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
         }
         #endregion
 
