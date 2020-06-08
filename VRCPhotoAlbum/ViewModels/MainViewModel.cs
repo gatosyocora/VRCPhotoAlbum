@@ -328,7 +328,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             dateString = SearchDate.Value.ToString("yyyy-MM-dd");
 
-            var dateMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*date:"")(?<dateString>.*?)(?<suffix>"".*)");
+            var searchText = Regex.Replace(SearchText.Value, @"\s*since:"".*?""\s*", string.Empty);
+            searchText = Regex.Replace(searchText, @"\s*until:"".*?""\s*", string.Empty);
+
+            var dateMatch = Regex.Match(searchText, @"(?<prefix>.*date:"")(?<dateString>.*?)(?<suffix>"".*)");
 
             if (dateMatch.Success)
             {
@@ -337,11 +340,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             else
             {
                 var space = string.Empty;
-                if (!string.IsNullOrEmpty(SearchText.Value))
+                if (!string.IsNullOrEmpty(searchText))
                 {
                     space = " ";
                 }
-                SearchText.Value += $@"{space}date:""{dateString}""";
+                SearchText.Value = $@"{searchText}{space}date:""{dateString}""";
             }
         }
 
@@ -353,7 +356,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             sinceDateString = DateTime.Parse(sinceDateString).Date.ToString("yyyy-MM-dd");
             untilDateString = DateTime.Parse(untilDateString).Date.ToString("yyyy-MM-dd");
 
-            var sinceDateMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*since:"")(?<dateString>.*?)(?<suffix>"".*)");
+            var searchText = Regex.Replace(SearchText.Value, @"\s*date:"".*?""\s*", string.Empty);
+
+            var sinceDateMatch = Regex.Match(searchText, @"(?<prefix>.*since:"")(?<dateString>.*?)(?<suffix>"".*)");
 
             string searchTextWithSinceDate;
             if (sinceDateMatch.Success)
@@ -363,11 +368,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             else
             {
                 var space = string.Empty;
-                if (!string.IsNullOrEmpty(SearchText.Value))
+                if (!string.IsNullOrEmpty(searchText))
                 {
                     space = " ";
                 }
-                searchTextWithSinceDate = $@"{SearchText.Value}{space}since:""{sinceDateString}""";
+                searchTextWithSinceDate = $@"{searchText}{space}since:""{sinceDateString}""";
             }
 
             var untilDateMatch = Regex.Match(searchTextWithSinceDate, @"(?<prefix>.*until:"")(?<dateString>.*?)(?<suffix>"".*)");
