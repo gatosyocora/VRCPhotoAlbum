@@ -37,7 +37,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         public void DeleteCacheFile(string originalFilePath)
         {
-            var cacheFilePath = CacheFolderPath + Path.DirectorySeparatorChar + Path.GetFileName(originalFilePath);
+            var cacheFilePath = $"{CacheFolderPath}{Path.DirectorySeparatorChar}{Path.GetFileNameWithoutExtension(originalFilePath)}.jpg";
             File.Delete(cacheFilePath);
         }
 
