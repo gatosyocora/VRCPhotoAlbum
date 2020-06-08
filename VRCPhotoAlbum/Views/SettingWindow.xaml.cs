@@ -2,13 +2,14 @@
 using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using System.Windows;
 using MahApps.Metro.Controls;
+using System;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
     /// <summary>
     /// SettingWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class SettingWindow : MetroWindow
+    public partial class SettingWindow : MetroWindow, IDisposable
     {
         protected SettingViewModel _settingViewModel;
 
@@ -32,6 +33,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             SettingData = _settingViewModel.CreateSettingData();
             Close();
+        }
+
+        public void Dispose()
+        {
+            _settingViewModel.Dispose();
         }
     }
 }

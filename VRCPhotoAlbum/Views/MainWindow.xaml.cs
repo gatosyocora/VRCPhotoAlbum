@@ -8,7 +8,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow, IDisposable
     {
         public static MainWindow Instance { get; private set; }
 
@@ -55,6 +55,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PhotoListBox.SelectedItem = null;
+        }
+
+        public void Dispose()
+        {
+            _mainViewModel.Dispose();
         }
     }
 }
