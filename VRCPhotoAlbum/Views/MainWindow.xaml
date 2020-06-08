@@ -21,7 +21,6 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -75,6 +74,37 @@
                     Foreground="White"
                     Command ="{Binding SortUserWithCountCommand}"/>
         </Grid>
+        <Grid Grid.Column="0" Grid.Row="1"
+              HorizontalAlignment="Right"
+              Margin="5 10 5 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="SearchDateLabel"
+                   Content="日付"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="20 0 0 0"/>
+            <DatePicker x:Name="SearchDatePicker"
+                        Margin="5" Padding="0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="100"
+                        SelectedDate="{Binding SearchDate.Value}"
+                        Grid.Column="1"/>
+            <Button x:Name="EnterSearchDateButton"
+                    Grid.Column="2"
+                    Padding="0" Margin="5"
+                    Width="30" Height="30"
+                    HorizontalAlignment="Center"
+                    Command="{Binding SearchWithDate}">
+                <Image x:Name="SearchDateImage"
+                       Source="pack://application:,,,/Resources/SearchImage.png"
+                       Width="18" Height="18"/>
+            </Button>
+        </Grid>
 
         <ListView x:Name="UserListView"
                 ItemsSource="{Binding UserList}"
@@ -100,36 +130,6 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid Grid.Column="0" Grid.Row="3"
-              Margin="5 10 5 10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
-            <Label x:Name="SearchDateLabel"
-                   Content="日付"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Left"
-                   Margin="20 0 0 0"/>
-            <DatePicker x:Name="SearchDatePicker"
-                        Margin="5" Padding="0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        SelectedDate="{Binding SearchDate.Value}"
-                        Grid.Column="1"/>
-            <Button x:Name="EnterSearchDateButton"
-                    Grid.Column="2"
-                    Padding="0" Margin="5"
-                    Width="30" Height="30"
-                    HorizontalAlignment="Center"
-                    Command="{Binding SearchWithDate}">
-                <Image x:Name="SearchDateImage"
-                       Source="pack://application:,,,/Resources/SearchImage.png"
-                       Width="18" Height="18"/>
-            </Button>
-        </Grid>
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
