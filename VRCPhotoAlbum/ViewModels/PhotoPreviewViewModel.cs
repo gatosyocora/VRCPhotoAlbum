@@ -108,8 +108,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ImageProcessFunction(filePath, meta);
             Cache.Instance.DeleteCacheFile(filePath);
             PreviewPhoto.Value.ThumbnailImage = ImageHelper.GetThumbnailImage(filePath, Cache.Instance.CacheFolderPath);
-            //Image.Value = ImageHelper.LoadBitmapImage(filePath);
-            _photoPreviewWindow.Close();
+            Image.Value = ImageHelper.LoadBitmapImage(filePath);
+            MainWindow.Instance.Reload();
         }
 
         public void Dispose()

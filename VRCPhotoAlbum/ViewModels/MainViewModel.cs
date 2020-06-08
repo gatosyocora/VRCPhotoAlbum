@@ -143,6 +143,15 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
         }
 
+        public void UpdatePhotoList()
+        {
+            ShowedPhotoList.Clear();
+            foreach (var photo in _photoList)
+            {
+                ShowedPhotoList.Add(photo);
+            }
+        }
+
         public void SearchWithUserName(string userName)
         {
             var userMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*user:"")(?<userName>.*)(?<suffix>"".*)");
