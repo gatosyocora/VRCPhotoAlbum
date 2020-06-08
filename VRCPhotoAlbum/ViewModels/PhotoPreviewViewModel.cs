@@ -44,7 +44,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             _photoPreviewWindow = photoPreviewWindow;
 
-            PreviewPhoto = new ReactiveProperty<Photo>().AddTo(disposes);
+            PreviewPhoto = new ReactiveProperty<Photo>().AddTo(Disposable);
 
             _photoList = photoList;
             PreviewPhoto.Value = photo;
@@ -55,13 +55,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 var filePath = p?.FilePath ?? string.Empty;
                 return ImageHelper.LoadBitmapImage(filePath);
             })
-            .ToReactiveProperty().AddTo(disposes);
-            UserList = new ReactiveCollection<User>().AddTo(disposes);
-            WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
-            PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
-            PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
-            PhotoNumber = PreviewPhoto.Select(_ => $"{_previewPhotoIndex + 1}/{_photoList.Count}").ToReadOnlyReactiveProperty().AddTo(disposes);
-            UseTestFunction = new ReactiveProperty<bool>().AddTo(disposes);
+            .ToReactiveProperty().AddTo(Disposable);
+            UserList = new ReactiveCollection<User>().AddTo(Disposable);
+            WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
+            PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
+            PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
+            PhotoNumber = PreviewPhoto.Select(_ => $"{_previewPhotoIndex + 1}/{_photoList.Count}").ToReadOnlyReactiveProperty().AddTo(Disposable);
+            UseTestFunction = new ReactiveProperty<bool>().AddTo(Disposable);
 
             UseTestFunction.Value = Setting.Instance.Data.UseTestFunction;
 
@@ -71,14 +71,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 UserList.AddRangeOnScheduler(p?.MetaData?.Users ?? Enumerable.Empty<User>());
             });
 
-            Previous = new ReactiveCommand().AddTo(disposes);
-            Next = new ReactiveCommand().AddTo(disposes);
-            SearchWithUser = new ReactiveCommand<string>().AddTo(disposes);
-            OpenTwitter = new ReactiveCommand<string>().AddTo(disposes);
-            RotateL90 = new ReactiveCommand().AddTo(disposes);
-            RotateR90 = new ReactiveCommand().AddTo(disposes);
-            FlipHorizontal = new ReactiveCommand().AddTo(disposes);
-            ShareToTwitter = new ReactiveCommand().AddTo(disposes);
+            Previous = new ReactiveCommand().AddTo(Disposable);
+            Next = new ReactiveCommand().AddTo(Disposable);
+            SearchWithUser = new ReactiveCommand<string>().AddTo(Disposable);
+            OpenTwitter = new ReactiveCommand<string>().AddTo(Disposable);
+            RotateL90 = new ReactiveCommand().AddTo(Disposable);
+            RotateR90 = new ReactiveCommand().AddTo(Disposable);
+            FlipHorizontal = new ReactiveCommand().AddTo(Disposable);
+            ShareToTwitter = new ReactiveCommand().AddTo(Disposable);
 
             Previous.Subscribe(() => PreviousPreview());
             Next.Subscribe(() => NextPreview());

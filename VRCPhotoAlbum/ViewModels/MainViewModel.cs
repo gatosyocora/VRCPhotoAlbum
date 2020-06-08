@@ -47,16 +47,16 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             Cache.Instance.Create();
 
-            ShowedPhotoList = new ReactiveCollection<Photo>().AddTo(disposes);
-            SearchText = new ReactiveProperty<string>(string.Empty).AddTo(disposes);
-            SearchDate = new ReactiveProperty<DateTime>(DateTime.Now).AddTo(disposes);
-            SearchWithDateTime = new ReactiveProperty<bool>(false).AddTo(disposes);
-            HaveNoShowedPhoto = new ReactiveProperty<bool>(true).AddTo(disposes);
+            ShowedPhotoList = new ReactiveCollection<Photo>().AddTo(Disposable);
+            SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
+            SearchDate = new ReactiveProperty<DateTime>(DateTime.Now).AddTo(Disposable);
+            SearchWithDateTime = new ReactiveProperty<bool>(false).AddTo(Disposable);
+            HaveNoShowedPhoto = new ReactiveProperty<bool>(true).AddTo(Disposable);
 
-            ClearSearchText = new ReactiveCommand().AddTo(disposes);
-            ShowPreview = new ReactiveCommand<Photo>().AddTo(disposes);
-            SearchWithUser = new ReactiveCommand<string>().AddTo(disposes);
-            OpenSettingCommand = new ReactiveCommand().AddTo(disposes);
+            ClearSearchText = new ReactiveCommand().AddTo(Disposable);
+            ShowPreview = new ReactiveCommand<Photo>().AddTo(Disposable);
+            SearchWithUser = new ReactiveCommand<string>().AddTo(Disposable);
+            OpenSettingCommand = new ReactiveCommand().AddTo(Disposable);
 
             ShowedPhotoList.CollectionChanged += PhotoList_OnChanged;
 
