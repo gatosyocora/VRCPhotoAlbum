@@ -31,7 +31,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand ClearSearchText { get; }
         public ReactiveCommand<Photo> ShowPreview { get; }
         public ReactiveCommand<string> SearchWithUser { get; }
-        public ReactiveCommand SearchWithDate { get; }
+        public ReactiveCommand<string> SearchWithDate { get; }
         public ReactiveCommand OpenSettingCommand { get; }
         public ReactiveCommand SortUserWithAlphabetCommand { get; }
         public ReactiveCommand SortUserWithCountCommand { get; }
@@ -52,13 +52,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ShowedPhotoList = new ReactiveCollection<Photo>().AddTo(Disposable);
             UserList = new ReactiveCollection<string>().AddTo(Disposable);
             SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
-            SearchDate = new ReactiveProperty<DateTime>(DateTime.Now).AddTo(Disposable);
+            SearchDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
             HaveNoShowedPhoto = new ReactiveProperty<bool>(true).AddTo(Disposable);
 
             ClearSearchText = new ReactiveCommand().AddTo(Disposable);
             ShowPreview = new ReactiveCommand<Photo>().AddTo(Disposable);
             SearchWithUser = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithDate = new ReactiveCommand().AddTo(Disposable);
+            SearchWithDate = new ReactiveCommand<string>().AddTo(Disposable);
             OpenSettingCommand = new ReactiveCommand().AddTo(Disposable);
             SortUserWithAlphabetCommand = new ReactiveCommand().AddTo(Disposable);
             SortUserWithCountCommand = new ReactiveCommand().AddTo(Disposable);
@@ -68,11 +68,18 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             LoadResources();
 
             SearchText.Subscribe(SearchPhoto);
+            SearchDate.Subscribe(d => SearchWithDateString(d.ToString("yyyy/MM/dd HH:mm:ss")));
 
             ClearSearchText.Subscribe(() => SearchText.Value = string.Empty);
             ShowPreview.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _mainWindow); });
             SearchWithUser.Subscribe(SearchWithUserName);
-            SearchWithDate.Subscribe(() => SearchWithDateString(SearchDate.Value.Date.ToString("yyyy/MM/dd HH:mm:ss")));
+            SearchWithDate.Subscribe(type => 
+            {
+                if (type == "today")
+                {
+                    SearchWithDateString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+                }
+            });
             OpenSettingCommand.Subscribe(() =>
             {
                 WindowHelper.OpenSettingDialog(_mainWindow);
@@ -265,7 +272,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public void SearchWithDateString(string dateString)
         {
-            if (string.IsNullOrEmpty(dateString)) return;
+            if (string.IsNullOrEmpty(dateString) || dateString == "0001/01/01 00:00:00") return;
 
             SearchDate.Value = DateTime.Parse(dateString).Date;
 
