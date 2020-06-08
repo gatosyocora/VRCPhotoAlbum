@@ -75,9 +75,19 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithUser.Subscribe(SearchWithUserName);
             SearchWithDate.Subscribe(type => 
             {
+                var now = DateTime.Now;
+
                 if (type == "today")
                 {
-                    SearchWithDateString(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+                    SearchWithDateString(now.ToString("yyyy/MM/dd HH:mm:ss"));
+                }
+                else if (type == "week")
+                {
+                    SearchWithDatePeriodString(now.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
+                }
+                else if (type == "month")
+                {
+                    SearchWithDatePeriodString(now.AddMonths(-1).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
                 }
             });
             OpenSettingCommand.Subscribe(() =>
@@ -161,10 +171,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         private void SearchPhoto(string searchText)
         {
-            string searchUserName, searchWorldName, searchDateString;
+            string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
             var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*?)"".*");
             var dateMatch = Regex.Match(searchText, @".*date:""(?<dateString>.*?)"".*");
+            var sinceDateMatch = Regex.Match(searchText, @".*since:""(?<dateString>.*?)"".*");
+            var untilDateMatch = Regex.Match(searchText, @".*until:""(?<dateString>.*?)"".*");
             if (userMatch.Success)
             {
                 searchUserName = $"{userMatch.Groups["userName"]}";
@@ -173,6 +185,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 searchUserName = Regex.Replace(searchText, @"\s*world:"".*?""\s*", string.Empty);
                 searchUserName = Regex.Replace(searchUserName, @"\s*date:"".*?""\s*", string.Empty);
+                searchUserName = Regex.Replace(searchUserName, @"\s*since:"".*?""\s*", string.Empty);
+                searchUserName = Regex.Replace(searchUserName, @"\s*until:"".*?""\s*", string.Empty);
             }
 
             if (worldMatch.Success)
@@ -183,6 +197,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 searchWorldName = Regex.Replace(searchText, @"\s*user:"".*?""\s*", string.Empty);
                 searchWorldName = Regex.Replace(searchWorldName, @"\s*date:"".*?""\s*", string.Empty);
+                searchWorldName = Regex.Replace(searchWorldName, @"\s*since:"".*?""\s*", string.Empty);
+                searchWorldName = Regex.Replace(searchWorldName, @"\s*until:"".*?""\s*", string.Empty);
             }
 
             if (dateMatch.Success)
@@ -194,13 +210,47 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 searchDateString = string.Empty;
             }
 
+            if (sinceDateMatch.Success)
+            {
+                searchSinceDateString = $"{sinceDateMatch.Groups["dateString"]}";
+            }
+            else
+            {
+                searchSinceDateString = string.Empty;
+            }
+
+            if (untilDateMatch.Success)
+            {
+                searchUntilDateString = $"{untilDateMatch.Groups["dateString"]}";
+            }
+            else
+            {
+                searchUntilDateString = string.Empty;
+            }
+
             var searchedPhotoList = _photoList.Select(x => x);
 
-            if (dateMatch.Success)
+            if (dateMatch.Success && (!sinceDateMatch.Success && !untilDateMatch.Success))
             {
                 var searchDate = DateTime.Parse(searchDateString).Date;
                 searchedPhotoList = searchedPhotoList
                                         .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchDate) ?? 1) == 0);
+            }
+            else 
+            {
+                if (sinceDateMatch.Success)
+                {
+                    var searchSinceDate = DateTime.Parse(searchSinceDateString).Date;
+                    searchedPhotoList = searchedPhotoList
+                                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchSinceDate) ?? -1) >= 0);
+                }
+
+                if (untilDateMatch.Success)
+                {
+                    var searchUntilDate = DateTime.Parse(searchUntilDateString).Date;
+                    searchedPhotoList = searchedPhotoList
+                                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchUntilDate) ?? 1) <= 0);
+                }
             }
 
             if (!userMatch.Success && !worldMatch.Success)
@@ -292,6 +342,48 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                     space = " ";
                 }
                 SearchText.Value += $@"{space}date:""{dateString}""";
+            }
+        }
+
+        public void SearchWithDatePeriodString(string sinceDateString, string untilDateString)
+        {
+            if (string.IsNullOrEmpty(sinceDateString) || string.IsNullOrEmpty(untilDateString) ||
+                sinceDateString == "0001/01/01 00:00:00" || untilDateString == "0001/01/01 00:00:00") return;
+
+            sinceDateString = DateTime.Parse(sinceDateString).Date.ToString("yyyy-MM-dd");
+            untilDateString = DateTime.Parse(untilDateString).Date.ToString("yyyy-MM-dd");
+
+            var sinceDateMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*since:"")(?<dateString>.*?)(?<suffix>"".*)");
+
+            string searchTextWithSinceDate;
+            if (sinceDateMatch.Success)
+            {
+                searchTextWithSinceDate = $"{sinceDateMatch.Groups["prefix"]}{sinceDateString}{sinceDateMatch.Groups["suffix"]}";
+            }
+            else
+            {
+                var space = string.Empty;
+                if (!string.IsNullOrEmpty(SearchText.Value))
+                {
+                    space = " ";
+                }
+                searchTextWithSinceDate = $@"{SearchText.Value}{space}since:""{sinceDateString}""";
+            }
+
+            var untilDateMatch = Regex.Match(searchTextWithSinceDate, @"(?<prefix>.*until:"")(?<dateString>.*?)(?<suffix>"".*)");
+
+            if (untilDateMatch.Success)
+            {
+                SearchText.Value = $"{untilDateMatch.Groups["prefix"]}{untilDateString}{untilDateMatch.Groups["suffix"]}";
+            }
+            else
+            {
+                var space = string.Empty;
+                if (!string.IsNullOrEmpty(searchTextWithSinceDate))
+                {
+                    space = " ";
+                }
+                SearchText.Value = $@"{searchTextWithSinceDate}{space}until:""{untilDateString}""";
             }
         }
     }

@@ -81,6 +81,8 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Label x:Name="SearchDateLabel"
                    Content="日付"
@@ -98,10 +100,28 @@
                     Content="今日"
                     Grid.Column="2"
                     Padding="0" Margin="5"
-                    Width="60" Height="30"
+                    Width="50" Height="30"
                     HorizontalAlignment="Center"
                     Foreground="White"
                     CommandParameter="today"
+                    Command="{Binding SearchWithDate}"/>
+            <Button x:Name="EnterSearchDateWeekButton"
+                    Content="今週"
+                    Grid.Column="3"
+                    Padding="0" Margin="5"
+                    Width="50" Height="30"
+                    HorizontalAlignment="Center"
+                    Foreground="White"
+                    CommandParameter="week"
+                    Command="{Binding SearchWithDate}"/>
+            <Button x:Name="EnterSearchDateMonthButton"
+                    Content="今月"
+                    Grid.Column="4"
+                    Padding="0" Margin="5"
+                    Width="50" Height="30"
+                    HorizontalAlignment="Center"
+                    Foreground="White"
+                    CommandParameter="month"
                     Command="{Binding SearchWithDate}"/>
 
         </Grid>
