@@ -80,8 +80,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             FlipHorizontal = new ReactiveCommand().AddTo(Disposable);
             ShareToTwitter = new ReactiveCommand().AddTo(Disposable);
 
-            Previous.Subscribe(() => PreviousPreview());
-            Next.Subscribe(() => NextPreview());
+            Previous.Subscribe(PreviousPreview);
+            Next.Subscribe(NextPreview);
             OpenTwitter.Subscribe(OpenTwitterWithScreenName);
             RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateLeft90AndSave));
             RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateRight90AndSave));

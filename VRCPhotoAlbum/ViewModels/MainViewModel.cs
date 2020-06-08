@@ -70,17 +70,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 _photoList = LoadVRCPhotoList(Setting.Instance.Data.FolderPath);
                 UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Alphabet));
 
-                foreach (var photo in _photoList)
-                {
-                    ShowedPhotoList.AddOnScheduler(photo);
-                }
+                ShowedPhotoList.AddRangeOnScheduler(_photoList);
             }
             catch (Exception e)
             {
                 Debug.Print($"{e.GetType().Name}: {e.Message}");
             }
 
-            SearchText.Subscribe(searchText => SearchPhoto(searchText));
+            SearchText.Subscribe(SearchPhoto);
 
             ClearSearchText.Subscribe(() => SearchText.Value = string.Empty);
             ShowPreview.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _mainWindow); });
