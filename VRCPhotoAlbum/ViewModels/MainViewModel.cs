@@ -183,11 +183,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
             else
             {
+                var space = string.Empty;
                 if (!string.IsNullOrEmpty(SearchText.Value))
                 {
-                    SearchText.Value += " ";
+                    space  = " ";
                 }
-                SearchText.Value += $@"user:""{userName}""";
+                SearchText.Value += $@"{space}user:""{userName}""";
             }
         }
 
@@ -201,11 +202,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
             else
             {
+                var space = string.Empty;
                 if (!string.IsNullOrEmpty(SearchText.Value))
                 {
-                    SearchText.Value += " ";
+                    space = " ";
                 }
-                SearchText.Value += $@"world:""{worldName}""";
+                SearchText.Value += $@"{space}world:""{worldName}""";
             }
         }
 
