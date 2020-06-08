@@ -20,7 +20,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
     public class MainViewModel : ViewModelBase
     {
         public ReactiveCollection<Photo> ShowedPhotoList;
-        private List<Photo> _photoList { get; }
+        private List<Photo> _photoList { get; set; }
 
         public ReactiveCollection<string> UserList { get; }
 
@@ -65,17 +65,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             ShowedPhotoList.CollectionChanged += PhotoList_OnChanged;
 
-            try
-            {
-                _photoList = LoadVRCPhotoList(Setting.Instance.Data.FolderPath);
-                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Alphabet));
-
-                ShowedPhotoList.AddRangeOnScheduler(_photoList);
-            }
-            catch (Exception e)
-            {
-                Debug.Print($"{e.GetType().Name}: {e.Message}");
-            }
+            LoadResources();
 
             SearchText.Subscribe(SearchPhoto);
 
@@ -97,6 +87,23 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 UserList.ClearOnScheduler();
                 UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Count));
             });
+        }
+
+        public void LoadResources()
+        {
+            try
+            {
+                _photoList = LoadVRCPhotoList(Setting.Instance.Data.FolderPath);
+                UserList.ClearOnScheduler();
+                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Alphabet));
+
+                ShowedPhotoList.ClearOnScheduler();
+                ShowedPhotoList.AddRangeOnScheduler(_photoList);
+            }
+            catch (Exception e)
+            {
+                Debug.Print($"{e.GetType().Name}: {e.Message}");
+            }
         }
 
         private void PhotoList_OnChanged(object sender, NotifyCollectionChangedEventArgs e)

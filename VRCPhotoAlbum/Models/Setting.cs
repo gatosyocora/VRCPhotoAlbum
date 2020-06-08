@@ -1,4 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
+using KoyashiroKohaku.VrcMetaToolSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,6 +33,15 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     UseTestFunction = false
                 };
             }
+        }
+
+        public SettingData Copy()
+        {
+            return new SettingData()
+            {
+                FolderPath = Data.FolderPath,
+                UseTestFunction = Data.UseTestFunction
+            };
         }
     }
 }

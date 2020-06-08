@@ -36,6 +36,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             _mainViewModel.UpdatePhotoList();
         }
+        public void Reboot()
+        {
+            _mainViewModel.LoadResources();
+        }
+
 
         public void SearchWithUserName(string userName)
         {

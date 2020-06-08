@@ -1,10 +1,12 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.Views;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Diagnostics;
 using System.Reactive.Linq;
+using System.Windows;
 using System.Windows.Forms;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
@@ -20,11 +22,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public ReactiveCommand DeleteCacheCommand { get; }
         public ReactiveCommand SelectCacheFolderCommand { get; }
+        public ReactiveCommand ApplyCommand { get; }
 
 
         public SettingViewModel()
         {
-            _settingData = Setting.Instance.Data;
+            _settingData = Setting.Instance.Copy();
 
             PhotoFolderName = new ReactiveProperty<string>(_settingData.FolderPath).AddTo(Disposable);
             CacheDataSize = new ReactiveProperty<string>().AddTo(Disposable);
@@ -58,10 +61,20 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             });
         }
 
-        public void CreateSettingData()
+        public void ApplySettingData()
         {
             JsonHelper.ExportJsonFile(_settingData, JsonHelper.GetJsonFilePath());
+
+            var isChangedCacheFolder = Setting.Instance.Data.FolderPath != _settingData.FolderPath;
+
             Setting.Instance.Data = _settingData;
+
+            if (isChangedCacheFolder)
+            {
+                Cache.Instance.DeleteCacheFileAll();
+                MainWindow.Instance.Reboot();
+            }
+
         }
     }
 }
