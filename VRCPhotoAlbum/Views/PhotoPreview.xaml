@@ -82,14 +82,14 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Button x:Name="ShareButton"
+            <!--<Button x:Name="ShareButton"
                     Content="Share"
                     Margin="5 0 5 5"
                     Padding="0"
                     Grid.Row="0"
                     Grid.ColumnSpan="3"
                     Command="{Binding ShareToTwitter}"
-                    Foreground="White"/>
+                    Foreground="White"/>-->
             <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber.Value}"
                Grid.Column="0"
