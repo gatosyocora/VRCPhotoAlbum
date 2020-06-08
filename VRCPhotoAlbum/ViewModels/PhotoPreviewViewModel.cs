@@ -29,6 +29,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReadOnlyReactiveProperty<string> PhotographerName { get; }
         public ReadOnlyReactiveProperty<string> PhotoDateTime { get; }
         public ReadOnlyReactiveProperty<string> PhotoNumber { get; }
+        public ReactiveProperty<bool> UseTestFunction { get; }
 
         public ReactiveCommand Previous { get; }
         public ReactiveCommand Next { get; }
@@ -60,6 +61,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
             PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
             PhotoNumber = PreviewPhoto.Select(_ => $"{_previewPhotoIndex + 1}/{_photoList.Count}").ToReadOnlyReactiveProperty().AddTo(disposes);
+            UseTestFunction = new ReactiveProperty<bool>().AddTo(disposes);
+
+            UseTestFunction.Value = Setting.Instance.Data.UseTestFunction;
 
             PreviewPhoto.Subscribe(p =>
             {

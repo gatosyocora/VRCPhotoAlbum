@@ -7,14 +7,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
     public class WindowHelper
     {
-        internal static SettingData OpenSettingDialog(SettingData settingData, Window ownerWindow)
+        internal static void OpenSettingDialog(Window ownerWindow)
         {
-            var settingWindow = new SettingWindow(settingData)
+            var settingWindow = new SettingWindow()
             {
                 Owner = ownerWindow
             };
             settingWindow.ShowDialog();
-            return settingWindow.SettingData;
         }
 
         internal static void OpenPhotoPreviewWindow(Photo photo, List<Photo> photoList, Window ownerWindow)

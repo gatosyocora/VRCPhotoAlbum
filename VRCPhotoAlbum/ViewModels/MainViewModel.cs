@@ -35,20 +35,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         private MainWindow _mainWindow;
 
-        private SettingData _settingData;
-
         public MainViewModel(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
 
-            var jsonFilePath = JsonHelper.GetJsonFilePath();
-            if (File.Exists(jsonFilePath))
+            if (Setting.Instance.Data is null)
             {
-                _settingData = JsonHelper.ImportJsonFile<SettingData>(jsonFilePath);
-            }
-            else
-            {
-                _settingData = WindowHelper.OpenSettingDialog(_settingData, _mainWindow);
+                WindowHelper.OpenSettingDialog(_mainWindow);
             }
 
             Cache.Instance.Create();
@@ -68,7 +61,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             try
             {
-                _photoList = LoadVRCPhotoList(_settingData.FolderPath);
+                _photoList = LoadVRCPhotoList(Setting.Instance.Data.FolderPath);
                 UserList = GetSortedUserList(_photoList);
 
                 foreach (var photo in _photoList)
@@ -90,7 +83,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithUser.Subscribe(SearchWithUserName);
             OpenSettingCommand.Subscribe(() =>
             {
-                _settingData = WindowHelper.OpenSettingDialog(_settingData, _mainWindow);
+                WindowHelper.OpenSettingDialog(_mainWindow);
             });
         }
 
