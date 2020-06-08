@@ -70,7 +70,7 @@
                     Grid.Column="1"
                     Margin="5" Padding="0"
                     Width="60"
-                    Content="Count"
+                    Content="枚数順"
                     Foreground="White"
                     Command ="{Binding SortUserWithCountCommand}"/>
         </Grid>
