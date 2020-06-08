@@ -1,24 +1,18 @@
-﻿using Reactive.Bindings;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.ComponentModel;
-using System.Text;
+using System.Reactive.Disposables;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
-    public class ViewModelBase : INotifyPropertyChanged,IDisposable
+    public class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected Collection<IDisposable> disposes = new Collection<IDisposable>();
+        protected CompositeDisposable Disposable { get; } = new CompositeDisposable();
 
         public void Dispose()
         {
-            foreach (var dispose in disposes)
-            {
-                dispose.Dispose();
-            }
+            Disposable.Dispose();
         }
     }
 }

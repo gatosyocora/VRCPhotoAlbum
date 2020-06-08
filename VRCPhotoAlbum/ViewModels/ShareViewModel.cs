@@ -18,9 +18,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public ShareViewModel(Photo photo)
         {
-            SharePhoto = new ReactiveProperty<Photo>().AddTo(disposes);
+            SharePhoto = new ReactiveProperty<Photo>().AddTo(Disposable);
             TweetContent = SharePhoto.Select(p => $"Taken by {p?.MetaData?.Photographer ?? string.Empty} in {p?.MetaData?.World ?? string.Empty} #VRCPhotoAlbum")
-                                    .ToReactiveProperty().AddTo(disposes);
+                                    .ToReactiveProperty().AddTo(Disposable);
             SharePhotoBitmapImage = SharePhoto.Select(p =>
                                     {
                                         if (p != null)
@@ -31,11 +31,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                         {
                                             return new BitmapImage();
                                         }
-                                    }).ToReactiveProperty().AddTo(disposes);
+                                    }).ToReactiveProperty().AddTo(Disposable);
             SharePhoto.Value = photo;
 
-            Login = new ReactiveCommand().AddTo(disposes);
-            Send = new ReactiveCommand().AddTo(disposes);
+            Login = new ReactiveCommand().AddTo(Disposable);
+            Send = new ReactiveCommand().AddTo(Disposable);
 
             Login.Subscribe(() => LoginToTwitter());
             Send.Subscribe(() => SendToTwitter(SharePhoto.Value.FilePath, TweetContent.Value));

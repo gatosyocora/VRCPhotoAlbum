@@ -37,12 +37,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             PhotoFolderName.Value = _settingData.FolderPath;
             CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
 
-            PhotoFolderName = new ReactiveProperty<string>().AddTo(disposes);
-            CacheDataSize = new ReactiveProperty<string>().AddTo(disposes);
-            CanEnter = PhotoFolderName.Select(_ => !string.IsNullOrEmpty(_)).ToReactiveProperty().AddTo(disposes);
+            PhotoFolderName = new ReactiveProperty<string>().AddTo(Disposable);
+            CacheDataSize = new ReactiveProperty<string>().AddTo(Disposable);
+            CanEnter = PhotoFolderName.Select(_ => !string.IsNullOrEmpty(_)).ToReactiveProperty().AddTo(Disposable);
 
-            DeleteCacheCommand = new ReactiveCommand().AddTo(disposes);
-            SelectCacheFolderCommand = new ReactiveCommand().AddTo(disposes);
+            DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
+            SelectCacheFolderCommand = new ReactiveCommand().AddTo(Disposable);
 
             DeleteCacheCommand.Subscribe(() =>
             {
