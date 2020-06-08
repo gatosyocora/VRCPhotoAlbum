@@ -193,6 +193,7 @@
             <Button x:Name="PreviousPhotoButton"
                     Grid.Column="0"
                     Margin="10"
+                    Width="80"
                     Command="{Binding Previous}"
                     Foreground="White">
                 <Image Source="pack://application:,,,/Resources/LeftImage.png"
@@ -201,6 +202,7 @@
             <Button x:Name="NextPhotoButton"
                     Grid.Column="2"
                     Margin="10"
+                    Width="80"
                     Command="{Binding Next}"
                     Foreground="White">
                 <Image Source="pack://application:,,,/Resources/RightImage.png"

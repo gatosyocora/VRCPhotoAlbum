@@ -53,7 +53,8 @@
         </Grid>
 
         <Grid Grid.Row="1"
-              HorizontalAlignment="Left">
+              HorizontalAlignment="Left"
+              Margin="5 0 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
