@@ -79,19 +79,29 @@
         <Grid Grid.Column="0" Grid.Row="2"
               Margin="5 10 5 10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="49*"/>
-                <ColumnDefinition Width="604*"/>
-                <ColumnDefinition Width="136*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-            <CheckBox x:Name="SearchWithDateTimeCheckBox"
-                      VerticalAlignment="Center"
-                      HorizontalAlignment="Right"
-                      Margin="0 0 10 0"
-                      IsChecked="{Binding SearchWithDateTime.Value}"/>
+            <Label x:Name="SearchDateLabel"
+                   Content="日付"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="20 0 0 0"/>
             <DatePicker x:Name="SearchDatePicker"
-                        Margin="49,0,10,0"
+                        Margin="5" Padding="0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Stretch"
                         SelectedDate="{Binding SearchDate.Value}"
-                        IsEnabled="{Binding SearchWithDateTime.Value}" Grid.ColumnSpan="3"/>
+                        Grid.Column="1"/>
+            <Button x:Name="EnterSearchDateButton"
+                    Grid.Column="2"
+                    Padding="20 0 20 0" Margin="5"
+                    Content="Search"
+                    HorizontalAlignment="Center"
+                    Foreground="White"
+                    Command="{Binding SearchWithDate}"/>
         </Grid>
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
