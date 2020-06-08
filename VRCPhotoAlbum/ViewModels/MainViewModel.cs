@@ -166,11 +166,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public void UpdatePhotoList()
         {
-            ShowedPhotoList.Clear();
-            foreach (var photo in _photoList)
-            {
-                ShowedPhotoList.AddOnScheduler(photo);
-            }
+            SearchPhoto(SearchText.Value, SearchDate.Value, SearchWithDateTime.Value);
         }
 
         public void SearchWithUserName(string userName)
