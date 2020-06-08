@@ -3,9 +3,11 @@ using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,7 +18,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
     public class MainViewModel
     {
-        public ObservableCollection<Photo> ShowedPhotoList = new ObservableCollection<Photo>();
+        public ReactiveCollection<Photo> ShowedPhotoList = new ReactiveCollection<Photo>();
         private List<Photo> _photoList { get; }
 
         public List<string> UserList { get; }
@@ -52,6 +54,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             Cache.Instance.Create();
 
+            ShowedPhotoList.CollectionChanged += PhotoList_OnChanged;
+
             try
             {
                 _photoList = LoadVRCPhotoList(_settingData.FolderPath);
@@ -59,10 +63,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
                 foreach (var photo in _photoList)
                 {
-                    ShowedPhotoList.Add(photo);
+                    ShowedPhotoList.AddOnScheduler(photo);
                 }
-
-                HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
             }
             catch (Exception e)
             {
@@ -80,6 +82,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 _settingData = WindowHelper.OpenSettingDialog(_settingData, _mainWindow);
             });
+        }
+
+        private void PhotoList_OnChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
         }
 
         private List<Photo> LoadVRCPhotoList(string folderPath)
@@ -103,8 +110,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         private void SearchPhoto(string searchText, DateTime searchedDate, bool useDate)
         {
-            ShowedPhotoList.Clear();
-
             string searchUserName, searchWorldName;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
             var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*?)"".*");
@@ -142,12 +147,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                                     (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
             }
 
+            ShowedPhotoList.Clear();
             foreach (var photo in searchedPhotoList.ToList())
             {
-                ShowedPhotoList.Add(photo);
+                ShowedPhotoList.AddOnScheduler(photo);
             }
-
-            HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
         }
 
         public void UpdatePhotoList()
@@ -155,10 +159,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ShowedPhotoList.Clear();
             foreach (var photo in _photoList)
             {
-                ShowedPhotoList.Add(photo);
+                ShowedPhotoList.AddOnScheduler(photo);
             }
-
-            HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
         }
 
         public void SearchWithUserName(string userName)
