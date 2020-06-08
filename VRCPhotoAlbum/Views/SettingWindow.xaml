@@ -106,7 +106,6 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
                 Width="100"
-                Height="auto"
                 Padding="0" Margin="0 0 10 0"
                 Click="ApplyButton_Click"
                 Foreground="White"
