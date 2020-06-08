@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -101,12 +102,34 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                         .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                        .Select(x => 
-                        new Photo
+                        .Select(x =>
                         {
-                            FilePath = x,
-                            ThumbnailImage = ImageHelper.GetThumbnailImage(x, Cache.Instance.CacheFolderPath),
-                            MetaData = VrcMetaDataReader.Read(x)
+                            VrcMetaData meta;
+                            try
+                            {
+                                meta = VrcMetaDataReader.Read(x);
+                            }
+                            catch (Exception)
+                            {
+                                meta = null;
+                            }
+
+                            BitmapImage image;
+                            try
+                            {
+                                image = ImageHelper.GetThumbnailImage(x, Cache.Instance.CacheFolderPath);
+                            }
+                            catch (Exception)
+                            {
+                                image = new BitmapImage(new Uri(@"pack://application:,,,/Resources/noloading.png"));
+                            }
+
+                            return new Photo
+                            {
+                                FilePath = x,
+                                ThumbnailImage = image,
+                                MetaData = meta
+                            };
                         })
                         .ToList();
         }
@@ -135,7 +158,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
 
             var searchedPhotoList = _photoList
-                    .Where(x => (!useDate || x.MetaData.Date?.Date.CompareTo(searchedDate.Date) == 0));
+                    .Where(x => (!useDate || (x.MetaData?.Date?.Date.CompareTo(searchedDate.Date) ?? 1) == 0));
 
             if (!userMatch.Success && !worldMatch.Success)
             {
@@ -209,7 +232,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private List<string> GetSortedUserList(List<Photo> photoList)
         {
             return photoList
-                        .SelectMany(x => x.MetaData.Users)
+                        .SelectMany(x => x.MetaData?.Users ?? Enumerable.Empty<User>())
                         .Select(u => u.UserName)
                         .Distinct()
                         .OrderBy(x => x)

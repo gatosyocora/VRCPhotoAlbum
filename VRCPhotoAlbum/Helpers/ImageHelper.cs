@@ -129,21 +129,24 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         public static void RotateLeft90AndSave(string filePath, VrcMetaData metaData)
         {
             var image = RotateLeft90(LoadImage(filePath));
-            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            var buffer = Bitmap2Bytes(image);
+            if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
         }
 
         public static void RotateRight90AndSave(string filePath, VrcMetaData metaData)
         {
             var image = RotateRight90(LoadImage(filePath));
-            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            var buffer = Bitmap2Bytes(image);
+            if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
         }
 
         public static void FilpHorizontalAndSave(string filePath, VrcMetaData metaData)
         {
             var image = FlipHorizontal(LoadImage(filePath));
-            var buffer = VrcMetaDataWriter.Write(Bitmap2Bytes(image), metaData);
+            var buffer = Bitmap2Bytes(image);
+            if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
         }
     }
