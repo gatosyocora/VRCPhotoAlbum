@@ -24,18 +24,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public SettingViewModel()
         {
-            if (Setting.Instance.Data is null)
-            {
-                _settingData = new SettingData
-                {
-                    FolderPath = string.Empty,
-                    UseTestFunction = false
-                };
-            }
-            else
-            {
-                _settingData = Setting.Instance.Data;
-            }
+            _settingData = Setting.Instance.Data;
 
             PhotoFolderName = new ReactiveProperty<string>(_settingData.FolderPath).AddTo(disposes);
             CacheDataSize = new ReactiveProperty<string>().AddTo(disposes);

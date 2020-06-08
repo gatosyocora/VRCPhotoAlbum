@@ -26,6 +26,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
             else
             {
+                Data = new SettingData
+                {
+                    FolderPath = string.Empty,
+                    UseTestFunction = false
+                };
             }
         }
     }
