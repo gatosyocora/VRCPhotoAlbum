@@ -21,6 +21,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -52,11 +53,34 @@
                     Foreground="White"/>
         </Grid>
 
+        <Grid Grid.Row="1"
+              HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="9*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="UserAtoZButton"
+                    Grid.Column="0"
+                    Margin="5" Padding="0"
+                    Width="60"
+                    Content="A-Z"
+                    Foreground="White"
+                    Command ="{Binding SortUserWithAlphabetCommand}"/>
+            <Button x:Name="UserCountButton"
+                    Grid.Column="1"
+                    Margin="5" Padding="0"
+                    Width="60"
+                    Content="Count"
+                    Foreground="White"
+                    Command ="{Binding SortUserWithCountCommand}"/>
+        </Grid>
+
         <ListView x:Name="UserListView"
                 ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                Grid.Column="0" Grid.Row="1">
+                Grid.Column="0" Grid.Row="2">
             <ie:Interaction.Triggers>
                 <ie:EventTrigger EventName="SelectionChanged">
                     <ie:InvokeCommandAction Command="{Binding SearchWithUser}"
@@ -76,7 +100,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid Grid.Column="0" Grid.Row="2"
+        <Grid Grid.Column="0" Grid.Row="3"
               Margin="5 10 5 10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -109,7 +133,7 @@
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            Grid.Column="0" Grid.Row="3"
+            Grid.Column="0" Grid.Row="4"
             SelectionMode="Single"
             SelectionChanged="PhotoListBox_SelectionChanged">
             <ie:Interaction.Triggers>
@@ -133,7 +157,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <Label x:Name="NotFoundLabel"
-               Grid.Column="0" Grid.Row="3"
+               Grid.Column="0" Grid.Row="4"
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center"
                Content="写真が見つかりませんでした"

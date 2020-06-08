@@ -22,7 +22,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCollection<Photo> ShowedPhotoList;
         private List<Photo> _photoList { get; }
 
-        public List<string> UserList { get; }
+        public ReactiveCollection<string> UserList { get; }
 
         public ReactiveProperty<string> SearchText { get; }
         public ReactiveProperty<DateTime> SearchDate { get; }
@@ -33,6 +33,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<string> SearchWithUser { get; }
         public ReactiveCommand SearchWithDate { get; }
         public ReactiveCommand OpenSettingCommand { get; }
+        public ReactiveCommand SortUserWithAlphabetCommand { get; }
+        public ReactiveCommand SortUserWithCountCommand { get; }
 
         private MainWindow _mainWindow;
 
@@ -48,6 +50,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             Cache.Instance.Create();
 
             ShowedPhotoList = new ReactiveCollection<Photo>().AddTo(Disposable);
+            UserList = new ReactiveCollection<string>().AddTo(Disposable);
             SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
             SearchDate = new ReactiveProperty<DateTime>(DateTime.Now).AddTo(Disposable);
             HaveNoShowedPhoto = new ReactiveProperty<bool>(true).AddTo(Disposable);
@@ -57,13 +60,15 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithUser = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithDate = new ReactiveCommand().AddTo(Disposable);
             OpenSettingCommand = new ReactiveCommand().AddTo(Disposable);
+            SortUserWithAlphabetCommand = new ReactiveCommand().AddTo(Disposable);
+            SortUserWithCountCommand = new ReactiveCommand().AddTo(Disposable);
 
             ShowedPhotoList.CollectionChanged += PhotoList_OnChanged;
 
             try
             {
                 _photoList = LoadVRCPhotoList(Setting.Instance.Data.FolderPath);
-                UserList = GetSortedUserList(_photoList);
+                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Alphabet));
 
                 foreach (var photo in _photoList)
                 {
@@ -84,6 +89,16 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             OpenSettingCommand.Subscribe(() =>
             {
                 WindowHelper.OpenSettingDialog(_mainWindow);
+            });
+            SortUserWithAlphabetCommand.Subscribe(() =>
+            {
+                UserList.ClearOnScheduler();
+                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Alphabet));
+            });
+            SortUserWithCountCommand.Subscribe(() =>
+            {
+                UserList.ClearOnScheduler();
+                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Count));
             });
         }
 
@@ -204,6 +219,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public void SearchWithUserName(string userName)
         {
+            if (string.IsNullOrEmpty(userName)) return;
+
             var userMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*user:"")(?<userName>.*?)(?<suffix>"".*)");
 
             if (userMatch.Success)
@@ -223,6 +240,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public void SearchWithWorldName(string worldName)
         {
+            if (string.IsNullOrEmpty(worldName)) return;
+
             var worldMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*world:"")(?<userName>.*?)(?<suffix>"".*)");
 
             if (worldMatch.Success)
@@ -242,6 +261,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public void SearchWithDateString(string dateString)
         {
+            if (string.IsNullOrEmpty(dateString)) return;
+
             SearchDate.Value = DateTime.Parse(dateString).Date;
 
             dateString = SearchDate.Value.ToString("yyyy-MM-dd");
@@ -261,16 +282,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 }
                 SearchText.Value += $@"{space}date:""{dateString}""";
             }
-        }
-
-        private List<string> GetSortedUserList(List<Photo> photoList)
-        {
-            return photoList
-                        .SelectMany(x => x.MetaData?.Users ?? Enumerable.Empty<User>())
-                        .Select(u => u.UserName)
-                        .Distinct()
-                        .OrderBy(x => x)
-                        .ToList();
         }
     }
 }
