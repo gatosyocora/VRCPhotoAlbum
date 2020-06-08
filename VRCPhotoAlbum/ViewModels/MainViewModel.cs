@@ -188,6 +188,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
         }
 
+        public void SearchWithDateString(string dateString)
+        {
+            SearchWithDateTime.Value = true;
+            SearchDate.Value = DateTime.Parse(dateString).Date;
+        }
+
         private List<string> GetSortedUserList(List<Photo> photoList)
         {
             return photoList

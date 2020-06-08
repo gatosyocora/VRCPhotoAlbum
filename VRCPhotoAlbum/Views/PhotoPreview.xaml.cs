@@ -43,6 +43,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             Close();
         }
 
+        private void SearchWithDateButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedDate = (sender as Button)?.CommandParameter as string ?? string.Empty;
+            MainWindow.Instance.SearchWithDate(selectedDate);
+            Close();
+        }
+
         public void Dispose()
         {
             _photoPreviewViewModel.Dispose();
