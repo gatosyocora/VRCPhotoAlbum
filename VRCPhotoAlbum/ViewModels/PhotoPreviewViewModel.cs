@@ -3,6 +3,7 @@ using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaToolSharp;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,36 +14,36 @@ using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
-    public class PhotoPreviewViewModel : IDisposable, INotifyPropertyChanged
+    public class PhotoPreviewViewModel : ViewModelBase
     {
-        public ReactiveProperty<Photo> PreviewPhoto { get; set; } = new ReactiveProperty<Photo>();
+        public ReactiveProperty<Photo> PreviewPhoto { get; set; }
 
         private List<Photo> _photoList;
         private int _previewPhotoIndex;
 
         private PhotoPreview _photoPreviewWindow;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public ReactiveProperty<BitmapImage> Image { get; }
-        public ReactiveCollection<User> UserList { get; } = new ReactiveCollection<User>();
+        public ReactiveCollection<User> UserList { get; }
         public ReadOnlyReactiveProperty<string> WorldName { get; }
         public ReadOnlyReactiveProperty<string> PhotographerName { get; }
         public ReadOnlyReactiveProperty<string> PhotoDateTime { get; }
         public ReadOnlyReactiveProperty<string> PhotoNumber { get; }
 
-        public ReactiveCommand Previous { get; set; } = new ReactiveCommand();
-        public ReactiveCommand Next { get; set; } = new ReactiveCommand();
-        public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
-        public ReactiveCommand<string> OpenTwitter { get; set; } = new ReactiveCommand<string>();
-        public ReactiveCommand RotateL90 { get; set; } = new ReactiveCommand();
-        public ReactiveCommand RotateR90 { get; set; } = new ReactiveCommand();
-        public ReactiveCommand FlipHorizontal { get; set; } = new ReactiveCommand();
-        public ReactiveCommand ShareToTwitter { get; set; } = new ReactiveCommand();
+        public ReactiveCommand Previous { get; }
+        public ReactiveCommand Next { get; }
+        public ReactiveCommand<string> SearchWithUser { get; }
+        public ReactiveCommand<string> OpenTwitter { get; }
+        public ReactiveCommand RotateL90 { get; }
+        public ReactiveCommand RotateR90 { get; }
+        public ReactiveCommand FlipHorizontal { get; }
+        public ReactiveCommand ShareToTwitter { get; }
 
         public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList)
         {
             _photoPreviewWindow = photoPreviewWindow;
+
+            PreviewPhoto = new ReactiveProperty<Photo>().AddTo(disposes);
 
             _photoList = photoList;
             PreviewPhoto.Value = photo;
@@ -53,17 +54,27 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 var filePath = p?.FilePath ?? string.Empty;
                 return ImageHelper.LoadBitmapImage(filePath);
             })
-            .ToReactiveProperty();
-            WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty();
-            PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty();
-            PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty).ToReadOnlyReactiveProperty();
-            PhotoNumber = PreviewPhoto.Select(_ => $"{_previewPhotoIndex + 1}/{_photoList.Count}").ToReadOnlyReactiveProperty();
+            .ToReactiveProperty().AddTo(disposes);
+            UserList = new ReactiveCollection<User>().AddTo(disposes);
+            WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
+            PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
+            PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(disposes);
+            PhotoNumber = PreviewPhoto.Select(_ => $"{_previewPhotoIndex + 1}/{_photoList.Count}").ToReadOnlyReactiveProperty().AddTo(disposes);
 
             PreviewPhoto.Subscribe(p =>
             {
                 UserList.Clear();
                 UserList.AddRangeOnScheduler(p?.MetaData?.Users ?? Enumerable.Empty<User>());
             });
+
+            Previous = new ReactiveCommand().AddTo(disposes);
+            Next = new ReactiveCommand().AddTo(disposes);
+            SearchWithUser = new ReactiveCommand<string>().AddTo(disposes);
+            OpenTwitter = new ReactiveCommand<string>().AddTo(disposes);
+            RotateL90 = new ReactiveCommand().AddTo(disposes);
+            RotateR90 = new ReactiveCommand().AddTo(disposes);
+            FlipHorizontal = new ReactiveCommand().AddTo(disposes);
+            ShareToTwitter = new ReactiveCommand().AddTo(disposes);
 
             Previous.Subscribe(() => PreviousPreview());
             Next.Subscribe(() => NextPreview());
@@ -110,21 +121,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             PreviewPhoto.Value.ThumbnailImage = ImageHelper.GetThumbnailImage(filePath, Cache.Instance.CacheFolderPath);
             Image.Value = ImageHelper.LoadBitmapImage(filePath);
             MainWindow.Instance.Reload();
-        }
-
-        public void Dispose()
-        {
-            PreviewPhoto.Dispose();
-            Image.Dispose();
-            UserList.Dispose();
-            WorldName.Dispose();
-            PhotographerName.Dispose();
-            PhotoNumber.Dispose();
-            PhotoDateTime.Dispose();
-
-            Previous.Dispose();
-            Next.Dispose();
-            SearchWithUser.Dispose();
         }
     }
 }

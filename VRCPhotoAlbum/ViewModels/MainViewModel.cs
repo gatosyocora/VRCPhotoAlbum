@@ -16,23 +16,22 @@ using System.Text.RegularExpressions;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : ViewModelBase
     {
-        public ReactiveCollection<Photo> ShowedPhotoList = new ReactiveCollection<Photo>();
+        public ReactiveCollection<Photo> ShowedPhotoList;
         private List<Photo> _photoList { get; }
 
         public List<string> UserList { get; }
 
-        public ReactiveProperty<string> SearchText { get; set; } = new ReactiveProperty<string>(string.Empty);
-        public ReactiveProperty<DateTime> SearchDate { get; set; } = new ReactiveProperty<DateTime>(DateTime.Now);
-        public ReactiveProperty<bool> SearchWithDateTime { get; set; } = new ReactiveProperty<bool>(false);
+        public ReactiveProperty<string> SearchText { get; }
+        public ReactiveProperty<DateTime> SearchDate { get; }
+        public ReactiveProperty<bool> SearchWithDateTime { get; }
+        public ReactiveProperty<bool> HaveNoShowedPhoto { get; }
 
-        public ReactiveProperty<bool> HaveNoShowedPhoto { get; set; } = new ReactiveProperty<bool>(true);
-
-        public ReactiveCommand ClearSearchText { get; set; } = new ReactiveCommand();
-        public ReactiveCommand<Photo> ShowPreview { get; set; } = new ReactiveCommand<Photo>();
-        public ReactiveCommand<string> SearchWithUser { get; set; } = new ReactiveCommand<string>();
-        public ReactiveCommand OpenSettingCommand { get; set; } = new ReactiveCommand();
+        public ReactiveCommand ClearSearchText { get; }
+        public ReactiveCommand<Photo> ShowPreview { get; }
+        public ReactiveCommand<string> SearchWithUser { get; }
+        public ReactiveCommand OpenSettingCommand { get; }
 
         private MainWindow _mainWindow;
 
@@ -53,6 +52,17 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             }
 
             Cache.Instance.Create();
+
+            ShowedPhotoList = new ReactiveCollection<Photo>().AddTo(disposes);
+            SearchText = new ReactiveProperty<string>(string.Empty).AddTo(disposes);
+            SearchDate = new ReactiveProperty<DateTime>(DateTime.Now).AddTo(disposes);
+            SearchWithDateTime = new ReactiveProperty<bool>(false).AddTo(disposes);
+            HaveNoShowedPhoto = new ReactiveProperty<bool>(true).AddTo(disposes);
+
+            ClearSearchText = new ReactiveCommand().AddTo(disposes);
+            ShowPreview = new ReactiveCommand<Photo>().AddTo(disposes);
+            SearchWithUser = new ReactiveCommand<string>().AddTo(disposes);
+            OpenSettingCommand = new ReactiveCommand().AddTo(disposes);
 
             ShowedPhotoList.CollectionChanged += PhotoList_OnChanged;
 
