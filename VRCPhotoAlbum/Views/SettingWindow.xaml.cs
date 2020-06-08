@@ -28,7 +28,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             DataContext = _settingViewModel;
         }
 
-        private void EnterButton_Click(object sender, RoutedEventArgs e)
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             SettingData = _settingViewModel.CreateSettingData();
             Close();

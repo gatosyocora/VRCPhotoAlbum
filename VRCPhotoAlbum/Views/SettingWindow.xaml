@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Label x:Name="FolderPathLabel" 
-                   Content="FolderPath"
+                   Content="画像フォルダ"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
                    Grid.Column="0"
@@ -39,7 +39,7 @@
             <Button x:Name="SelectFolderButton"
                     Grid.Column="2"
                     Margin="5" Padding="0"
-                    Content="Select"
+                    Content="選択"
                     Foreground="White"
                     Command="{Binding SelectCacheFolderCommand}"/>
         </Grid>
@@ -50,10 +50,10 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Label x:Name="CacheLabel"
-                   Content="Cache"
+                   Content="キャッシュ"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Margin="20 0 0 0"/>
+                   Margin="10 0 0 0"/>
             <Label x:Name="CacheDataSize"
                    Content="{Binding CacheDataSize.Value}"
                    Grid.Column="1"
@@ -62,19 +62,19 @@
             <Button x:Name="CacheClearButton"
                     Grid.Column="2"
                     Margin="5" Padding="0"
-                    Content="Delete"
+                    Content="削除"
                     Foreground="White"
                     Command="{Binding DeleteCacheCommand}"/>
         </Grid>
         <Grid Grid.Row="3"
               Margin="10">
-            <Button x:Name="EnterButton"
-                Content="Enter"
+            <Button x:Name="ApplyButton"
+                Content="適用"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
                 Width="100"
                 Height="auto"
-                Click="EnterButton_Click"
+                Click="ApplyButton_Click"
                 Foreground="White"
                 IsEnabled="{Binding CanEnter.Value}"/>
         </Grid>
