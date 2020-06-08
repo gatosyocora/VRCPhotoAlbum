@@ -8,6 +8,11 @@
         xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="VRCPhotoAlbum" Height="450" Width="800">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -114,6 +119,13 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Label x:Name="NotFoundLabel"
+               Grid.Column="0" Grid.Row="3"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               Content="写真が見つかりませんでした"
+               Foreground="Gray"
+               Visibility="{Binding HaveNoShowedPhoto.Value, Converter={StaticResource BoolVisibilityConverter}}"/>
         <Button x:Name="SettingButton"
                 Margin="15 15 25 15"
                 Grid.Row="4"

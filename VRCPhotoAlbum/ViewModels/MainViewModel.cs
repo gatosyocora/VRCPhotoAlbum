@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text.RegularExpressions;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
@@ -23,6 +24,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<string> SearchText { get; set; } = new ReactiveProperty<string>(string.Empty);
         public ReactiveProperty<DateTime> SearchDate { get; set; } = new ReactiveProperty<DateTime>(DateTime.Now);
         public ReactiveProperty<bool> SearchWithDateTime { get; set; } = new ReactiveProperty<bool>(false);
+
+        public ReactiveProperty<bool> HaveNoShowedPhoto { get; set; } = new ReactiveProperty<bool>(true);
 
         public ReactiveCommand ClearSearchText { get; set; } = new ReactiveCommand();
         public ReactiveCommand<Photo> ShowPreview { get; set; } = new ReactiveCommand<Photo>();
@@ -58,6 +61,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 {
                     ShowedPhotoList.Add(photo);
                 }
+
+                HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
             }
             catch (Exception e)
             {
@@ -141,6 +146,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 ShowedPhotoList.Add(photo);
             }
+
+            HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
         }
 
         public void UpdatePhotoList()
@@ -150,6 +157,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 ShowedPhotoList.Add(photo);
             }
+
+            HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
         }
 
         public void SearchWithUserName(string userName)
