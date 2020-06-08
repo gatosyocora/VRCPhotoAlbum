@@ -1,5 +1,6 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
+using Reactive.Bindings;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -7,7 +8,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
     {
         private SettingData _settingData;
 
-        public string FolderName { get; set; } = @"D:\VRTools\vrc_meta_tool\meta_pic";
+        public ReactiveProperty<string> PhotoFolderName { get; set; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> CacheDataSize { get; set; } = new ReactiveProperty<string>();
+
+        public ReactiveCommand DeleteCacheCommand { get; set; } = new ReactiveCommand();
+
 
         public SettingViewModel(SettingData settingData)
         {
@@ -15,7 +20,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 _settingData = new SettingData
                 {
-                    FolderPath = FolderName
+                    FolderPath = @"D:\VRTools\vrc_meta_tool\meta_pic"
                 };
             }
             else
@@ -23,7 +28,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 _settingData = settingData;
             }
 
-            FolderName = _settingData.FolderPath;
+            PhotoFolderName.Value = _settingData.FolderPath;
+            CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
+
+            DeleteCacheCommand.Subscribe(() =>
+            {
+                Cache.Instance.DeleteCacheFileAll();
+                CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
+            });
         }
 
         public SettingData CreateSettingData()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -38,6 +39,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             var cacheFilePath = CacheFolderPath + Path.DirectorySeparatorChar + Path.GetFileName(originalFilePath);
             File.Delete(cacheFilePath);
+        }
+
+        public void DeleteCacheFileAll()
+        {
+            foreach (var file in new DirectoryInfo(CacheFolderPath).GetFiles())
+            {
+                File.Delete(file.FullName);
+            }
         }
     }
 }
