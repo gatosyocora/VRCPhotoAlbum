@@ -6,8 +6,6 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Media.Imaging;
@@ -89,12 +87,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             DateSelectCommand = new ReactiveCommand<DateTime>().AddTo(Disposable);
             WindowCloseCommand = new ReactiveCommand<PhotoPreview>().AddTo(Disposable);
 
-            Previous.Subscribe(() => 
+            Previous.Subscribe(() =>
             {
                 _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
             });
-            Next.Subscribe(() => 
+            Next.Subscribe(() =>
             {
                 _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
@@ -110,6 +108,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             WindowCloseCommand.Subscribe(w => w.Close());
         }
 
+        // TODO: 命名をどうにかする
         private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> imageProcessFunction)
         {
             imageProcessFunction(filePath, meta);

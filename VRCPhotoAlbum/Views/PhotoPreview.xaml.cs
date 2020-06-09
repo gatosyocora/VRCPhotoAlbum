@@ -1,12 +1,10 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.ViewModels;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using MahApps.Metro.Controls;
-using System;
-using Gatosyocora.VRCPhotoAlbum.Helpers;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
@@ -24,6 +22,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             DataContext = _photoPreviewViewModel;
         }
 
+        // TODO: コマンド実行化できなかったので保留
         private void TwitterButton_Click(object sender, RoutedEventArgs e)
         {
             var displayName = (sender as Button)?.CommandParameter as string ?? string.Empty;

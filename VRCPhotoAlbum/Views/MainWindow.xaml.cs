@@ -41,22 +41,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             await _mainViewModel.LoadResourcesAsync();
         }
 
-
-        public void SearchWithUserName(string userName)
-        {
-            _mainViewModel.SearchWithUserNameCommand.Execute(userName);
-        }
-
-        public void SearchWithWorldName(string worldName)
-        {
-            _mainViewModel.SearchWithWorldNameCommand.Execute(worldName);
-        }
-
-        public void SearchWithDate(string dateString)
-        {
-            _mainViewModel.SearchWithDateCommand.Execute(dateString);
-        }
-
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PhotoListBox.SelectedItem = null;

@@ -8,8 +8,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     {
         [DataMember(Name = "folderPath")]
         public String FolderPath { get; set; }
-        
+
         [DataMember(Name = "useTestFunction")]
-        public bool UseTestFunction { get; set; } 
+        public bool UseTestFunction { get; set; }
     }
 }

@@ -1,14 +1,11 @@
-﻿using System;
+﻿using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models
 {
@@ -23,7 +20,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public ReactiveProperty<string> SearchedWorldName { get; }
         public ReactiveProperty<DateTime> SearchedDate { get; }
         public ReactiveProperty<DateTime> SearchedSinceDate { get; }
-        public ReactiveProperty<DateTime> SearchedUntilDate{ get; }
+        public ReactiveProperty<DateTime> SearchedUntilDate { get; }
 
         public SearchResult(ReactiveCollection<Photo> photoList)
         {
@@ -46,13 +43,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                             .ToReadOnlyReactiveCollection()
                             .AddTo(Disposable);
 
+            // TODO: 読み込み時と検索時に変更されるようにしないといけない
             ShowedPhotoList = Observable.CombineLatest(
-                                    SearchText, 
+                                    SearchText,
                                     _photoList.ObserveAddChanged(),
                                     (s, p) => new { IsLoading = string.IsNullOrEmpty(s), Photo = p, SearchText = s })
                                 .SelectMany(p =>
                                 {
-                                    if (p.IsLoading) 
+                                    if (p.IsLoading)
                                     {
                                         return new Photo[] { p.Photo };
                                     }
@@ -61,7 +59,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                         return SearchPhoto(p.SearchText ?? string.Empty);
                                     }
                                 })
-                                .ToReadOnlyReactiveCollection()
+                                .ToReadOnlyReactiveCollection(
+                                    onReset: SearchText.Select(_ => Unit.Default))
                                 .AddTo(Disposable);
         }
 
@@ -180,6 +179,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
             else
             {
+                // 既に何か入力されていたらスペースをいれて入力する
+                // TODO: もう少しいい感じにしたい
+                // TODO: 下のメソッドと記述がだいたい同じなので共通化させたい
                 var space = string.Empty;
                 if (!string.IsNullOrEmpty(SearchText.Value))
                 {
@@ -266,6 +268,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         public void SearchWithDatePeriodString(string sinceDateString, string untilDateString)
         {
+            // TODO: ここの判定が甘い. 0001/01/01 00:00:00でないほうがあればそれだけで検索をしたい
             if (string.IsNullOrEmpty(sinceDateString) || string.IsNullOrEmpty(untilDateString) ||
                 sinceDateString == "0001/01/01 00:00:00" || untilDateString == "0001/01/01 00:00:00") return;
 
@@ -313,6 +316,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             var shouldSearchSinceDate = (sinceDate.Date.CompareTo(new DateTime().Date) != 0);
             var shouldSearchUntilDate = (untilDate.Date.CompareTo(new DateTime().Date) != 0);
 
+            // TODO: ここの判定が甘い. 0001/01/01 00:00:00でないほうがあればそれだけで検索をしたい
             if (!shouldSearchSinceDate && !shouldSearchUntilDate) return;
 
             var sinceDateString = sinceDate.Date.ToString("yyyy-MM-dd");

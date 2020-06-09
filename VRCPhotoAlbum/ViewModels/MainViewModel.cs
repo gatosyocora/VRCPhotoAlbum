@@ -5,17 +5,13 @@ using KoyashiroKohaku.VrcMetaToolSharp;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using System.Reactive;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -51,7 +47,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         #region UserList
         public ReadOnlyReactiveCollection<string> UserList { get; }
 
-        public ReactiveProperty<MetaDataHelper.UserSortType> CurrentUserSortType { get; }
+        public ReactiveProperty<UserSortType> CurrentUserSortType { get; }
         public ReactiveCommand SortUserWithAlphabetCommand { get; }
         public ReactiveCommand SortUserWithCountCommand { get; }
         #endregion
@@ -82,7 +78,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                 .ObserveAddChangedItems()
                                 .SelectMany(p => p)
                                 .ToReadOnlyReactiveCollection(
-                                    onReset:SearchText.Select(_ => Unit.Default))
+                                    onReset: SearchText.Select(_ => Unit.Default))
                                 .AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
 
@@ -114,22 +110,22 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ClearSearchText = new ReactiveCommand().AddTo(Disposable);
             ClearSearchText.Subscribe(() => SearchText.Value = string.Empty).AddTo(Disposable);
 
-            CurrentUserSortType = new ReactiveProperty<MetaDataHelper.UserSortType>().AddTo(Disposable);
+            CurrentUserSortType = new ReactiveProperty<UserSortType>().AddTo(Disposable);
             CurrentUserSortType.Subscribe(type =>
             {
-                _users.SortCommand.Execute(Enum.GetName(typeof(MetaDataHelper.UserSortType), CurrentUserSortType.Value));
+                _users.SortCommand.Execute(Enum.GetName(typeof(UserSortType), CurrentUserSortType.Value));
             }).AddTo(Disposable);
             UserList = _users.SortedUserList
                             .ObserveAddChanged()
                             .Select(u => u.Name)
                             .ToReadOnlyReactiveCollection(
-                                onReset:CurrentUserSortType.Select(_ => Unit.Default))
+                                onReset: CurrentUserSortType.Select(_ => Unit.Default))
                             .AddTo(Disposable);
 
             SortUserWithAlphabetCommand = new ReactiveCommand().AddTo(Disposable);
             SortUserWithCountCommand = new ReactiveCommand().AddTo(Disposable);
-            SortUserWithAlphabetCommand.Subscribe(() => CurrentUserSortType.Value = MetaDataHelper.UserSortType.Alphabet).AddTo(Disposable);
-            SortUserWithCountCommand.Subscribe(() => CurrentUserSortType.Value = MetaDataHelper.UserSortType.Count).AddTo(Disposable);
+            SortUserWithAlphabetCommand.Subscribe(() => CurrentUserSortType.Value = UserSortType.Alphabet).AddTo(Disposable);
+            SortUserWithCountCommand.Subscribe(() => CurrentUserSortType.Value = UserSortType.Count).AddTo(Disposable);
 
             OpenPhotoPreviewCommand = new ReactiveCommand<Photo>().AddTo(Disposable);
             OpenPhotoPreviewCommand.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _searchResult, _mainWindow); }).AddTo(Disposable);

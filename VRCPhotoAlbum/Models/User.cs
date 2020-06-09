@@ -1,9 +1,4 @@
-﻿using KoyashiroKohaku.VrcMetaToolSharp;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Gatosyocora.VRCPhotoAlbum.Models
+﻿namespace Gatosyocora.VRCPhotoAlbum.Models
 {
     public class User
     {

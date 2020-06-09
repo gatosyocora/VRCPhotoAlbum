@@ -1,14 +1,9 @@
-﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
-using KoyashiroKohaku.VrcMetaToolSharp;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using User = KoyashiroKohaku.VrcMetaToolSharp.User;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models
 {
@@ -51,8 +46,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// <returns></returns>
         public IEnumerable<User> SortWith(string type)
         {
-            if (type == nameof(MetaDataHelper.UserSortType.Alphabet)) return SortWithAlphabet();
-            else if (type == nameof(MetaDataHelper.UserSortType.Count)) return SortWithCount();
+            if (type == nameof(UserSortType.Alphabet)) return SortWithAlphabet();
+            else if (type == nameof(UserSortType.Count)) return SortWithCount();
             else return CreateUserList();
         }
 

@@ -4,9 +4,7 @@ using Gatosyocora.VRCPhotoAlbum.Views;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Diagnostics;
 using System.Reactive.Linq;
-using System.Windows;
 using System.Windows.Forms;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels

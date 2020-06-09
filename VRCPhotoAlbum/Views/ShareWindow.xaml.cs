@@ -1,8 +1,8 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.ViewModels;
-using System.Windows;
 using MahApps.Metro.Controls;
 using System;
+using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
