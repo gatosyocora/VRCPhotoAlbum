@@ -43,7 +43,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<User> UserSelectCommand { get; }
         public ReactiveCommand<PhotoPreview> WindowCloseCommand { get; }
 
-        public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList)
+        public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList, SearchResult searchResult)
         {
             _photoPreviewWindow = photoPreviewWindow;
 
@@ -92,7 +92,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateRight90AndSave));
             FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.FilpHorizontalAndSave));
             ShareToTwitter.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, _photoPreviewWindow));
-            UserSelectCommand.Subscribe(u => /* ここでModelのSearchTextを変更する */ Debug.Print(u.UserName));
+            UserSelectCommand.Subscribe(u =>
+            {
+                searchResult.SearchedUserName.Value = u.UserName;
+                Debug.Print(u.UserName);
+            });
             WindowCloseCommand.Subscribe(w => w.Close());
         }
 

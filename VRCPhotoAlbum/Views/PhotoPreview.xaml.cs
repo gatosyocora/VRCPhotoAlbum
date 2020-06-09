@@ -16,10 +16,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     {
         private PhotoPreviewViewModel _photoPreviewViewModel;
 
-        public PhotoPreview(Photo photo, List<Photo> photoList)
+        public PhotoPreview(Photo photo, List<Photo> photoList, SearchResult searchResult)
         {
             InitializeComponent();
-            _photoPreviewViewModel = new PhotoPreviewViewModel(this, photo, photoList);
+            _photoPreviewViewModel = new PhotoPreviewViewModel(this, photo, photoList, searchResult);
             DataContext = _photoPreviewViewModel;
         }
 

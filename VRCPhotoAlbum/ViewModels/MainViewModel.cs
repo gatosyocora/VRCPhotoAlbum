@@ -86,7 +86,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                 .AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
 
-            SearchDate = _searchResult.SearchDate.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
+            SearchDate = _searchResult.SearchedDate.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
             SearchWithUserNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithUserNameCommand.Subscribe(_searchResult.SearchWithUserName).AddTo(Disposable);
             SearchWithWorldNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
@@ -132,7 +132,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SortUserWithCountCommand.Subscribe(() => CurrentUserSortType.Value = MetaDataHelper.UserSortType.Count).AddTo(Disposable);
 
             OpenPhotoPreviewCommand = new ReactiveCommand<Photo>().AddTo(Disposable);
-            OpenPhotoPreviewCommand.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _mainWindow); }).AddTo(Disposable);
+            OpenPhotoPreviewCommand.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _searchResult, _mainWindow); }).AddTo(Disposable);
             OpenSettingCommand = new ReactiveCommand().AddTo(Disposable);
             OpenSettingCommand.Subscribe(() => WindowHelper.OpenSettingDialog(_mainWindow)).AddTo(Disposable);
 

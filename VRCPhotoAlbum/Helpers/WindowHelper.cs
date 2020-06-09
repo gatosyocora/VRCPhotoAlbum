@@ -16,9 +16,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             settingWindow.ShowDialog();
         }
 
-        internal static void OpenPhotoPreviewWindow(Photo photo, List<Photo> photoList, Window ownerWindow)
+        internal static void OpenPhotoPreviewWindow(Photo photo, List<Photo> photoList, SearchResult searchResult, Window ownerWindow)
         {
-            var photoPreview = new PhotoPreview(photo, photoList)
+            var photoPreview = new PhotoPreview(photo, photoList, searchResult)
             {
                 Owner = ownerWindow
             };
