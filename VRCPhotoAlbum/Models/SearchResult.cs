@@ -35,7 +35,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                 .ToReadOnlyReactiveCollection(onReset: SearchText.Select(_ => Unit.Default))
                                 .AddTo(Disposable);
 
-            SearchText.Subscribe(x => Debug.Print(x));
             SearchDate.Subscribe(d => SearchWithDateString(d.ToString("yyyy/MM/dd HH:mm:ss")));
         }
 

@@ -52,9 +52,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             _mainViewModel.SearchWithWorldNameCommand.Execute(worldName);
         }
 
-        public void SearchWithDate(string date)
+        public void SearchWithDate(string dateString)
         {
-            //_mainViewModel.SearchWithDateString(date);
+            _mainViewModel.SearchWithDateCommand.Execute(dateString);
         }
 
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

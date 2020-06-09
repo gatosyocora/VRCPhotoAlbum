@@ -42,8 +42,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public ReactiveCommand<string> SearchWithUserNameCommand { get; }
         public ReactiveCommand<string> SearchWithWorldNameCommand { get; }
-        //public ReactiveCommand<string> SearchWithDate { get; }
         public ReactiveCommand<string> SearchWithDateCommand { get; }
+        public ReactiveCommand<string> SearchWithDateTypeCommand { get; }
 
         public ReactiveCommand ClearSearchText { get; }
         #endregion
@@ -84,7 +84,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                 .ToReadOnlyReactiveCollection(
                                     onReset:SearchText.Select(_ => Unit.Default))
                                 .AddTo(Disposable);
-            _searchResult.ShowedPhotoList.ObserveAddChanged().Subscribe(x => Debug.Print(x.FilePath)).AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
 
             SearchDate = _searchResult.SearchDate.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
@@ -92,10 +91,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithUserNameCommand.Subscribe(_searchResult.SearchWithUserName).AddTo(Disposable);
             SearchWithWorldNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithWorldNameCommand.Subscribe(_searchResult.SearchWithWorldName).AddTo(Disposable);
-            //SearchWithDate = new ReactiveCommand<string>().AddTo(Disposable);
-            //SearchWithDate.Subscribe(_searchResult.SearchWithDateString).AddTo(Disposable);
             SearchWithDateCommand = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithDateCommand.Subscribe(type =>
+            SearchWithDateCommand.Subscribe(_searchResult.SearchWithDateString).AddTo(Disposable);
+            SearchWithDateTypeCommand = new ReactiveCommand<string>().AddTo(Disposable);
+            SearchWithDateTypeCommand.Subscribe(type =>
             {
                 var now = DateTime.Now;
 
