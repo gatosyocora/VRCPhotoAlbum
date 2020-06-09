@@ -145,8 +145,9 @@
                             <Button.BorderBrush>
                                 <SolidColorBrush Opacity="0"/>
                             </Button.BorderBrush>
-                            <Image Source="../Resources/Twitter_Social_Icon_Circle_Color.png"
+                            <Image Source="pack://application:,,,/Resources/Twitter_Social_Icon_Circle_Color.png"
                                    Width="20" Height="20"/>
+
                         </Button>
                     </Grid>
                 </DataTemplate>
@@ -174,10 +175,17 @@
                         Margin="0 0 20 0" Padding="0"
                         HorizontalAlignment="Right"
                         Grid.Row="0"
-                        CommandParameter="{Binding PreviewPhoto.Value.MetaData.World}"
-                        Click="SearchWithWorldButton_Click">
+                        CommandParameter="{Binding PreviewPhoto.Value.MetaData.World}">
                     <Image Source="pack://application:,,,/Resources/SearchImage.png"
                            Width="18" Height="18"/>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding WorldSelectCommand}"
+                                           CommandParameter="{Binding ElementName=SearchWithWorldButton, Path=CommandParameter}" />
+                            <i:InvokeCommandAction Command="{Binding WindowCloseCommand}"
+                                           CommandParameter="{Binding ElementName=PhotoPreviewWindow}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </Button>
                 <Label x:Name="PhotoGrapher"
                        Grid.Row="1"
@@ -194,10 +202,17 @@
                         Margin="0 0 20 0" Padding="0"
                         HorizontalAlignment="Right"
                         Grid.Row="2"
-                        CommandParameter="{Binding PhotoDateTime.Value}"
-                        Click="SearchWithDateButton_Click">
+                        CommandParameter="{Binding PreviewPhoto.Value.MetaData.Date}">
                     <Image Source="pack://application:,,,/Resources/SearchImage.png"
                            Width="18" Height="18"/>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding DateSelectCommand}"
+                                           CommandParameter="{Binding ElementName=SearchWithDateButton, Path=CommandParameter}" />
+                            <i:InvokeCommandAction Command="{Binding WindowCloseCommand}"
+                                           CommandParameter="{Binding ElementName=PhotoPreviewWindow}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </Button>
             </Grid>
             <Button x:Name="PreviousPhotoButton"

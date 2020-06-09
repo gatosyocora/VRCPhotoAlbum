@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
 using System;
+using Gatosyocora.VRCPhotoAlbum.Helpers;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
@@ -23,31 +24,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             DataContext = _photoPreviewViewModel;
         }
 
-        private void UserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedUser = UserListView.SelectedItem as KoyashiroKohaku.VrcMetaToolSharp.User;
-            MainWindow.Instance.SearchWithUserName(selectedUser.UserName);
-            Close();
-        }
-
         private void TwitterButton_Click(object sender, RoutedEventArgs e)
         {
             var displayName = (sender as Button)?.CommandParameter as string ?? string.Empty;
-            _photoPreviewViewModel.OpenTwitter.Execute(displayName);
-        }
-
-        private void SearchWithWorldButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedWorld = (sender as Button)?.CommandParameter as string ?? string.Empty;
-            MainWindow.Instance.SearchWithWorldName(selectedWorld);
-            Close();
-        }
-
-        private void SearchWithDateButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedDate = (sender as Button)?.CommandParameter as string ?? string.Empty;
-            MainWindow.Instance.SearchWithDate(selectedDate);
-            Close();
+            _photoPreviewViewModel.OpenTwitterCommand.Execute(displayName);
         }
 
         public void Dispose()
