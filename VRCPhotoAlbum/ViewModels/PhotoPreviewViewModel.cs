@@ -25,7 +25,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private PhotoPreview _photoPreviewWindow;
 
         public ReactiveProperty<BitmapImage> Image { get; }
-        public ReactiveCollection<KoyashiroKohaku.VrcMetaToolSharp.User> UserList { get; }
+        public ReactiveCollection<User> UserList { get; }
         public ReadOnlyReactiveProperty<string> WorldName { get; }
         public ReadOnlyReactiveProperty<string> PhotographerName { get; }
         public ReadOnlyReactiveProperty<string> PhotoDateTime { get; }
