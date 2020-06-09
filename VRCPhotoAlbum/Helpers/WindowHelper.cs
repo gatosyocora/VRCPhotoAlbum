@@ -1,6 +1,8 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.Views;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
@@ -32,6 +34,23 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 Owner = ownerWindow
             };
             shareWindow.ShowDialog();
+        }
+
+        public static void OpenTwitterWithScreenName(string twitterScreenName)
+        {
+            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
+            try
+            {
+                var startInfo = new ProcessStartInfo(uri)
+                {
+                    UseShellExecute = true
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception exception)
+            {
+                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
+            }
         }
     }
 }

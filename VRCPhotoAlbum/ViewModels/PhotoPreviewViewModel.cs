@@ -87,7 +87,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             Previous.Subscribe(PreviousPreview);
             Next.Subscribe(NextPreview);
-            OpenTwitter.Subscribe(OpenTwitterWithScreenName);
+            OpenTwitter.Subscribe(WindowHelper.OpenTwitterWithScreenName);
             RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateLeft90AndSave));
             RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateRight90AndSave));
             FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.FilpHorizontalAndSave));
@@ -110,23 +110,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
             PreviewPhoto.Value = _photoList[_previewPhotoIndex];
-        }
-
-        private void OpenTwitterWithScreenName(string twitterScreenName)
-        {
-            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
-            try
-            {
-                var startInfo = new ProcessStartInfo(uri)
-                {
-                    UseShellExecute = true
-                };
-                Process.Start(startInfo);
-            }
-            catch (Exception exception)
-            {
-                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
-            }
         }
 
         private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> imageProcessFunction)
