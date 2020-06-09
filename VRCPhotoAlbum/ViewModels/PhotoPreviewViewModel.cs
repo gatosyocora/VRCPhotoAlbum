@@ -85,8 +85,16 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             UserSelectCommand = new ReactiveCommand<User>().AddTo(Disposable);
             WindowCloseCommand = new ReactiveCommand<PhotoPreview>().AddTo(Disposable);
 
-            Previous.Subscribe(PreviousPreview);
-            Next.Subscribe(NextPreview);
+            Previous.Subscribe(() => 
+            {
+                _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
+                PreviewPhoto.Value = _photoList[_previewPhotoIndex];
+            });
+            Next.Subscribe(() => 
+            {
+                _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
+                PreviewPhoto.Value = _photoList[_previewPhotoIndex];
+            });
             OpenTwitter.Subscribe(WindowHelper.OpenTwitterWithScreenName);
             RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateLeft90AndSave));
             RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateRight90AndSave));
@@ -98,18 +106,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 Debug.Print(u.UserName);
             });
             WindowCloseCommand.Subscribe(w => w.Close());
-        }
-
-        private void PreviousPreview()
-        {
-            _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
-            PreviewPhoto.Value = _photoList[_previewPhotoIndex];
-        }
-
-        private void NextPreview()
-        {
-            _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
-            PreviewPhoto.Value = _photoList[_previewPhotoIndex];
         }
 
         private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> imageProcessFunction)
