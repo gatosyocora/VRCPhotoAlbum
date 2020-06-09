@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum"
-        xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="VRCPhotoAlbum" Height="600" Width="800">
 
@@ -132,12 +132,12 @@
                 SelectionMode="Single"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
                 Grid.Column="0" Grid.Row="2">
-            <ie:Interaction.Triggers>
-                <ie:EventTrigger EventName="SelectionChanged">
-                    <ie:InvokeCommandAction Command="{Binding SearchWithUserNameCommand}"
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding SearchWithUserNameCommand}"
                                             CommandParameter="{Binding ElementName=UserListView, Path=SelectedItem}"/>
-                </ie:EventTrigger>
-            </ie:Interaction.Triggers>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
@@ -157,12 +157,12 @@
             Grid.Column="0" Grid.Row="4"
             SelectionMode="Single"
             SelectionChanged="PhotoListBox_SelectionChanged">
-            <ie:Interaction.Triggers>
-                <ie:EventTrigger EventName="SelectionChanged">
-                    <ie:InvokeCommandAction Command="{Binding OpenPhotoPreviewCommand}"
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding OpenPhotoPreviewCommand}"
                                             CommandParameter="{Binding ElementName=PhotoListBox, Path=SelectedItem}"/>
-                </ie:EventTrigger>
-            </ie:Interaction.Triggers>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel
