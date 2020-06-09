@@ -48,14 +48,15 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             ShowedPhotoList = SearchText
                                 .SelectMany(_ => SearchPhoto(SearchText?.Value ?? string.Empty))
-                                .ToReadOnlyReactiveCollection(onReset: SearchText.Select(_ => Unit.Default))
+                                .ToReadOnlyReactiveCollection()
                                 .AddTo(Disposable);
-
-            SearchedDate.Subscribe(d => SearchWithDateString(d.ToString("yyyy/MM/dd HH:mm:ss")));
         }
 
         private IEnumerable<Photo> SearchPhoto(string searchText)
         {
+            // スペースだけならString.Emptyと同じ扱いにする
+            searchText = Regex.Replace(searchText, @"^\s*", string.Empty);
+
             string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
             var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*?)"".*");
