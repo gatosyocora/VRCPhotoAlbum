@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Media.Imaging;
+using User = KoyashiroKohaku.VrcMetaToolSharp.User;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -24,7 +25,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private PhotoPreview _photoPreviewWindow;
 
         public ReactiveProperty<BitmapImage> Image { get; }
-        public ReactiveCollection<User> UserList { get; }
+        public ReactiveCollection<KoyashiroKohaku.VrcMetaToolSharp.User> UserList { get; }
         public ReadOnlyReactiveProperty<string> WorldName { get; }
         public ReadOnlyReactiveProperty<string> PhotographerName { get; }
         public ReadOnlyReactiveProperty<string> PhotoDateTime { get; }

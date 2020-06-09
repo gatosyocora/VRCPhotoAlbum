@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using User = KoyashiroKohaku.VrcMetaToolSharp.User;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
@@ -14,7 +15,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             Alphabet, Count
         }
 
-        public static List<string> GetSortedUserList(IList<Photo> photoList, UserSortType sortType)
+        public static IEnumerable<string> GetSortedUserList(IList<Photo> photoList, UserSortType sortType)
         {
             var sortedList = photoList
                                 .SelectMany(x => x.MetaData?.Users ?? Enumerable.Empty<User>())

@@ -44,17 +44,17 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         public void SearchWithUserName(string userName)
         {
-            _mainViewModel.SearchWithUserName(userName);
+            _mainViewModel.SearchWithUserNameCommand.Execute(userName);
         }
 
         public void SearchWithWorldName(string worldName)
         {
-            _mainViewModel.SearchWithWorldName(worldName);
+            _mainViewModel.SearchWithWorldNameCommand.Execute(worldName);
         }
 
         public void SearchWithDate(string date)
         {
-            _mainViewModel.SearchWithDateString(date);
+            //_mainViewModel.SearchWithDateString(date);
         }
 
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

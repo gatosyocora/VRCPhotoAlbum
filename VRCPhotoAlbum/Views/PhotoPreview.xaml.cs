@@ -25,7 +25,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private void UserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedUser = UserListView.SelectedItem as User;
+            var selectedUser = UserListView.SelectedItem as KoyashiroKohaku.VrcMetaToolSharp.User;
             MainWindow.Instance.SearchWithUserName(selectedUser.UserName);
             Close();
         }
