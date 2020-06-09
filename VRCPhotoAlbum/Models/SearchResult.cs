@@ -46,8 +46,21 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                             .ToReadOnlyReactiveCollection()
                             .AddTo(Disposable);
 
-            ShowedPhotoList = SearchText
-                                .SelectMany(_ => SearchPhoto(SearchText?.Value ?? string.Empty))
+            ShowedPhotoList = Observable.CombineLatest(
+                                    SearchText, 
+                                    _photoList.ObserveAddChanged(),
+                                    (s, p) => new { IsLoading = string.IsNullOrEmpty(s), Photo = p, SearchText = s })
+                                .SelectMany(p =>
+                                {
+                                    if (p.IsLoading) 
+                                    {
+                                        return new Photo[] { p.Photo };
+                                    }
+                                    else
+                                    {
+                                        return SearchPhoto(p.SearchText ?? string.Empty);
+                                    }
+                                })
                                 .ToReadOnlyReactiveCollection()
                                 .AddTo(Disposable);
         }
