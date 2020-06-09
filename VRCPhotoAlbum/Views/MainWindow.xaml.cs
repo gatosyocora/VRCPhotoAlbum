@@ -36,9 +36,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             _mainViewModel.UpdatePhotoList();
         }
-        public void Reboot()
+        public async void Reboot()
         {
-            _mainViewModel.LoadResources();
+            await _mainViewModel.LoadResourcesAsync();
         }
 
 

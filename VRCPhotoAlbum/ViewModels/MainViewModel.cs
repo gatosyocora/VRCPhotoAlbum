@@ -13,14 +13,16 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Reactive;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        public ReactiveCollection<Photo> ShowedPhotoList;
-        private List<Photo> _photoList { get; set; }
+        public ReadOnlyReactiveCollection<Photo> ShowedPhotoList;
+        public ReactiveCollection<Photo> PhotoList { get; set; }
 
         public ReactiveCollection<string> UserList { get; }
 
@@ -49,9 +51,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             Cache.Instance.Create();
 
-            ShowedPhotoList = new ReactiveCollection<Photo>().AddTo(Disposable);
-            UserList = new ReactiveCollection<string>().AddTo(Disposable);
             SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
+            PhotoList = new ReactiveCollection<Photo>().AddTo(Disposable);
+            ShowedPhotoList = SearchText.SelectMany(_ => SearchPhoto(SearchText.Value))
+                                .ToReadOnlyReactiveCollection(onReset:SearchText.Select(_ => Unit.Default));
+            UserList = new ReactiveCollection<string>().AddTo(Disposable);
             SearchDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
             HaveNoShowedPhoto = new ReactiveProperty<bool>(true).AddTo(Disposable);
 
@@ -63,11 +67,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SortUserWithAlphabetCommand = new ReactiveCommand().AddTo(Disposable);
             SortUserWithCountCommand = new ReactiveCommand().AddTo(Disposable);
 
-            ShowedPhotoList.CollectionChanged += PhotoList_OnChanged;
+            ShowedPhotoList.ObserveAddChangedItems().Subscribe(_ =>
+            {
+                HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
+            });
 
-            LoadResources();
-
-            SearchText.Subscribe(SearchPhoto);
             SearchDate.Subscribe(d => SearchWithDateString(d.ToString("yyyy/MM/dd HH:mm:ss")));
 
             ClearSearchText.Subscribe(() => SearchText.Value = string.Empty);
@@ -97,25 +101,24 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SortUserWithAlphabetCommand.Subscribe(() =>
             {
                 UserList.ClearOnScheduler();
-                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Alphabet));
+                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(PhotoList, MetaDataHelper.UserSortType.Alphabet));
             });
             SortUserWithCountCommand.Subscribe(() =>
             {
                 UserList.ClearOnScheduler();
-                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Count));
+                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(PhotoList, MetaDataHelper.UserSortType.Count));
             });
+
+            _ = LoadResourcesAsync();
         }
 
-        public void LoadResources()
+        public async Task LoadResourcesAsync()
         {
             try
             {
-                _photoList = LoadVRCPhotoList(Setting.Instance.Data.FolderPath);
+                PhotoList.AddRangeOnScheduler(await LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath));
                 UserList.ClearOnScheduler();
-                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(_photoList, MetaDataHelper.UserSortType.Alphabet));
-
-                ShowedPhotoList.ClearOnScheduler();
-                ShowedPhotoList.AddRangeOnScheduler(_photoList);
+                UserList.AddRangeOnScheduler(MetaDataHelper.GetSortedUserList(PhotoList, MetaDataHelper.UserSortType.Alphabet));
             }
             catch (Exception e)
             {
@@ -128,16 +131,21 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             HaveNoShowedPhoto.Value = !ShowedPhotoList.Any();
         }
 
-        private List<Photo> LoadVRCPhotoList(string folderPath)
+        private void PhotoList_OnChanged2(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            HaveNoShowedPhoto.Value = !PhotoList.Any();
+        }
+
+        private Task<Photo[]> LoadVRCPhotoListAsync(string folderPath)
         {
             if (!Directory.Exists(folderPath))
             {
                 throw new ArgumentException($"{folderPath} is not exist.");
             }
 
-            return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+            return Task.WhenAll(Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                         .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                        .Select(x =>
+                        .Select(async x =>
                         {
                             VrcMetaData meta;
                             try
@@ -152,7 +160,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                             BitmapImage image;
                             try
                             {
-                                image = ImageHelper.GetThumbnailImage(x, Cache.Instance.CacheFolderPath);
+                                image = await ImageHelper.GetThumbnailImageAsync(x, Cache.Instance.CacheFolderPath);
                             }
                             catch (Exception)
                             {
@@ -166,11 +174,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                 MetaData = meta
                             };
                         })
-                        .ToList();
+                        .ToList());
         }
 
-        private void SearchPhoto(string searchText)
+        private IEnumerable<Photo> SearchPhoto(string searchText)
         {
+            if (string.IsNullOrEmpty(searchText)) return Enumerable.Empty<Photo>();
+
             string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
             var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*?)"".*");
@@ -228,7 +238,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 searchUntilDateString = string.Empty;
             }
 
-            var searchedPhotoList = _photoList.Select(x => x);
+            var searchedPhotoList = PhotoList.Select(x => x);
 
             if (dateMatch.Success && (!sinceDateMatch.Success && !untilDateMatch.Success))
             {
@@ -266,11 +276,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                                     (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
             }
 
-            ShowedPhotoList.Clear();
-            foreach (var photo in searchedPhotoList.ToList())
-            {
-                ShowedPhotoList.AddOnScheduler(photo);
-            }
+            return searchedPhotoList;
         }
 
         public void UpdatePhotoList()
