@@ -1,4 +1,5 @@
 ﻿<mahApps:MetroWindow x:Class="Gatosyocora.VRCPhotoAlbum.Views.PhotoPreview"
+        x:Name="PhotoPreviewWindow"
         xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -105,8 +106,17 @@
                   ItemsSource="{Binding UserList}"
                   SelectionMode="Single"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  Grid.Column="1" Grid.Row="1"
-                  SelectionChanged="UserListView_SelectionChanged">
+                  Grid.Column="1" Grid.Row="1" >
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding UserSelectCommand}"
+                                           CommandParameter="{Binding ElementName=UserListView, Path=SelectedItem}" />
+                    <i:InvokeCommandAction Command="{Binding WindowCloseCommand}"
+                                           CommandParameter="{Binding ElementName=PhotoPreviewWindow}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel/>
