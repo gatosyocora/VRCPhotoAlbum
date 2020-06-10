@@ -118,7 +118,7 @@ MITライセンスです。詳しくは[LICENSE](https://github.com/gatosyocora/
 * .NET Core 3.1
 * Visual Studio 2019
 
-## 利用ライブラリ
+## 使用ライブラリ
 * VrcMetaTool.NET [[MIT License](https://github.com/KoyashiroKohaku/VrcMetaTool.NET/blob/master/LICENSE)]
 * ReactiveProperty [[MIT License](https://github.com/runceel/ReactiveProperty/blob/master/LICENSE.txt)]
 * Microsoft.Xaml.Behaviors.Wpf [[MIT License](https://github.com/microsoft/XamlBehaviorsWpf/blob/master/LICENSE)]
