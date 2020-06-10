@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
@@ -22,6 +25,20 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             }
 
             return $"{dataSize} {_unit[divCount]}";
+        }
+
+        public static void OutputErrorLogFile(Exception error)
+        {
+            if (error is null) return;
+
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append($"[{DateTime.Now}] ");
+            stringBuilder.Append($"{error.GetType().FullName}:");
+            stringBuilder.Append($"{error.Message}\n");
+
+            File.AppendAllText(
+                $"{Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)}/errorlog.txt", 
+                stringBuilder.ToString());
         }
     }
 }

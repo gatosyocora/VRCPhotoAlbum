@@ -29,13 +29,20 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private void MainWindow_OnLoaded(object sender, EventArgs args)
         {
-            _mainViewModel = new MainViewModel(this);
-            DataContext = _mainViewModel;
-            PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
-
-            if (Setting.Instance.Data is null)
+            try
             {
-                WindowHelper.OpenSettingDialog(this);
+                _mainViewModel = new MainViewModel(this);
+                DataContext = _mainViewModel;
+                PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
+
+                if (Setting.Instance.Data is null)
+                {
+                    WindowHelper.OpenSettingDialog(this);
+                }
+            }
+            catch (Exception e)
+            {
+                FileHelper.OutputErrorLogFile(e);
             }
         }
 
