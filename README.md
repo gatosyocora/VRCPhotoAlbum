@@ -98,12 +98,12 @@ MITライセンスです。詳しくは[LICENSE](https://github.com/gatosyocora/
 インストールしたフォルダごと削除する
 
 ## 利用ライブラリ
-* VrcMetaTool.NET ![MIT License](https://github.com/KoyashiroKohaku/VrcMetaTool.NET/blob/master/LICENSE)
-* ReactiveProperty ![MIT License](https://github.com/runceel/ReactiveProperty/blob/master/LICENSE.txt)
-* Microsoft.Xaml.Behaviors.Wpf ![MIT License](https://github.com/microsoft/XamlBehaviorsWpf/blob/master/LICENSE)
-* MahApps.Metro ![MIT License](https://github.com/MahApps/MahApps.Metro/blob/develop/LICENSE)
-* MaterialDesignInXamlToolkit ![MIT License](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/blob/master/LICENSE)
-- MaterialDesignThemes.MahApps
-- MaterialDesignThemes
-- MaterialDesignColors
+* VrcMetaTool.NET [[MIT License](https://github.com/KoyashiroKohaku/VrcMetaTool.NET/blob/master/LICENSE)]
+* ReactiveProperty [[MIT License](https://github.com/runceel/ReactiveProperty/blob/master/LICENSE.txt)]
+* Microsoft.Xaml.Behaviors.Wpf [[MIT License](https://github.com/microsoft/XamlBehaviorsWpf/blob/master/LICENSE)]
+* MahApps.Metro [[MIT License](https://github.com/MahApps/MahApps.Metro/blob/develop/LICENSE)]
+* MaterialDesignInXamlToolkit [[MIT License](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/blob/master/LICENSE)]
+  * MaterialDesignThemes.MahApps
+  * MaterialDesignThemes
+  * MaterialDesignColors
 
