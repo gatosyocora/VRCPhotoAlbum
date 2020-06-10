@@ -78,7 +78,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                 .ObserveAddChanged()
                                 .ToReadOnlyReactiveCollection(
                                     onReset: Observable.Merge(
-                                                    SearchText,
+                                                    _searchResult.SearchText,
                                                     _searchResult.ResearchCommand)
                                             .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
