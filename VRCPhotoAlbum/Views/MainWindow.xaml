@@ -131,7 +131,8 @@
                 ItemsSource="{Binding UserList}"
                 SelectionMode="Single"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                Grid.Column="0" Grid.Row="2">
+                Grid.Column="0" Grid.Row="2"
+                SelectionChanged="UserListView_SelectionChanged">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding SearchWithUserNameCommand}"

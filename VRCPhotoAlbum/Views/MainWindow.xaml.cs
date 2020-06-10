@@ -39,7 +39,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // 選択状態を保たないために選択されると未選択状態に切り替える
             PhotoListBox.SelectedItem = null;
+        }
+
+        private void UserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // 選択状態を保たないために選択されると未選択状態に切り替える
+            UserListView.SelectedItem = null;
         }
 
         public void Dispose()
