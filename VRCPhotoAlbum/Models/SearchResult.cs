@@ -33,13 +33,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             _defaultDate = new DateTime();
 
-            SearchText = new ReactiveProperty<string>(string.Empty, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
+            SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
 
-            SearchedUserName = new ReactiveProperty<string>(string.Empty, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
-            SearchedWorldName = new ReactiveProperty<string>(string.Empty, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
-            SearchedDate = new ReactiveProperty<DateTime>(_defaultDate, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
-            SearchedSinceDate = new ReactiveProperty<DateTime>(_defaultDate, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
-            SearchedUntilDate = new ReactiveProperty<DateTime>(_defaultDate, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
+            SearchedUserName = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
+            SearchedWorldName = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
+            SearchedDate = new ReactiveProperty<DateTime>(_defaultDate).AddTo(Disposable);
+            SearchedSinceDate = new ReactiveProperty<DateTime>(_defaultDate).AddTo(Disposable);
+            SearchedUntilDate = new ReactiveProperty<DateTime>(_defaultDate).AddTo(Disposable);
 
             ResearchCommand = new ReactiveCommand().AddTo(Disposable);
             ResetCommand = new ReactiveCommand().AddTo(Disposable);
