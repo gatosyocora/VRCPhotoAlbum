@@ -27,26 +27,28 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         private DateTime _defaultDate;
 
+        private bool _IsSearching = false;
+
         public SearchResult(ReactiveCollection<Photo> photoList)
         {
-            SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
+            _defaultDate = new DateTime();
 
-            SearchedUserName = new ReactiveProperty<string>().AddTo(Disposable);
-            SearchedWorldName = new ReactiveProperty<string>().AddTo(Disposable);
-            SearchedDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
-            SearchedSinceDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
-            SearchedUntilDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
+            SearchText = new ReactiveProperty<string>(string.Empty, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
+
+            SearchedUserName = new ReactiveProperty<string>(string.Empty, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
+            SearchedWorldName = new ReactiveProperty<string>(string.Empty, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
+            SearchedDate = new ReactiveProperty<DateTime>(_defaultDate, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
+            SearchedSinceDate = new ReactiveProperty<DateTime>(_defaultDate, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
+            SearchedUntilDate = new ReactiveProperty<DateTime>(_defaultDate, ReactivePropertyMode.RaiseLatestValueOnSubscribe).AddTo(Disposable);
 
             ResearchCommand = new ReactiveCommand().AddTo(Disposable);
             ResetCommand = new ReactiveCommand().AddTo(Disposable);
 
-            SearchedUserName.Subscribe(SearchWithUserName).AddTo(Disposable);
-            SearchedWorldName.Subscribe(SearchWithWorldName).AddTo(Disposable);
-            SearchedDate.Subscribe(SearchWithDate).AddTo(Disposable);
-            SearchedSinceDate.Subscribe(d => SearchWithDatePeriod(d, SearchedUntilDate.Value)).AddTo(Disposable);
-            SearchedUntilDate.Subscribe(d => SearchWithDatePeriod(SearchedUntilDate.Value, d)).AddTo(Disposable);
-
-            _defaultDate = new DateTime();
+            SearchedUserName.Subscribe(u => { if (!_IsSearching) { SearchWithUserName(u); } }).AddTo(Disposable);
+            SearchedWorldName.Subscribe(w => { if (!_IsSearching) { SearchWithWorldName(w); } }).AddTo(Disposable);
+            SearchedDate.Subscribe(d => { if (!_IsSearching) { SearchWithDate(d); } }).AddTo(Disposable);
+            SearchedSinceDate.Subscribe(d => { if (!_IsSearching) { SearchWithDatePeriod(d, SearchedUntilDate.Value); } }).AddTo(Disposable);
+            SearchedUntilDate.Subscribe(d => { if (!_IsSearching) { SearchWithDatePeriod(SearchedUntilDate.Value, d); } }).AddTo(Disposable);
 
             _photoList = photoList.ObserveAddChanged()
                             .Select(p => p)
@@ -78,8 +80,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         private IEnumerable<Photo> SearchPhoto(string searchText)
         {
-            // スペースだけならString.Emptyと同じ扱いにする
+            _IsSearching = true;
+
+            // 最初と最後にスペースが連なっているものはString.Emptyと同じ扱いにする
             searchText = Regex.Replace(searchText, @"^\s*", string.Empty);
+            searchText = Regex.Replace(searchText, @"\s*$", string.Empty);
 
             string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
@@ -183,53 +188,40 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                                     (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
             }
 
+            _IsSearching = false;
+
             return searchedPhotoList;
         }
 
-        public void SearchWithUserName(string userName)
+        public void SearchWithTemplate(string name, string type)
         {
-            if (string.IsNullOrEmpty(userName)) return;
+            if (string.IsNullOrEmpty(name)) return;
 
-            var userMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*user:"")(?<userName>.*?)(?<suffix>"".*)");
-
-            if (userMatch.Success)
+            // プレフィックスつきで既に入力されているか調べる
+            var prefixMatch = Regex.Match(SearchText.Value, @$"(?<prefix>.*{type}:"")(?<name>.*?)(?<suffix>"".*)");
+            if (prefixMatch.Success)
             {
-                SearchText.Value = $"{userMatch.Groups["prefix"]}{userName}{userMatch.Groups["suffix"]}";
+                // 内側だけ差し替える
+                SearchText.Value = $"{prefixMatch.Groups["prefix"]}{name}{prefixMatch.Groups["suffix"]}";
             }
             else
             {
+                var searchText = SearchText.Value;
+
+                // プレフィックスつき以外で入力されているか調べる
+                var freeMatch = Regex.Match(searchText, @$"\s*{name}\s*");
+                if (freeMatch.Success)
+                {
+                    searchText = searchText.Replace(freeMatch.Value, string.Empty);
+                }
+
                 // 既に何か入力されていたらスペースをいれて入力する
-                // TODO: もう少しいい感じにしたい
-                // TODO: 下のメソッドと記述がだいたい同じなので共通化させたい
-                var space = string.Empty;
-                if (!string.IsNullOrEmpty(SearchText.Value))
-                {
-                    space = " ";
-                }
-                SearchText.Value += $@"{space}user:""{userName}""";
+                SearchText.Value = $@"{searchText}{(searchText.Any()?" ":string.Empty)}{type}:""{name}""";
             }
         }
 
-        public void SearchWithWorldName(string worldName)
-        {
-            if (string.IsNullOrEmpty(worldName)) return;
-
-            var worldMatch = Regex.Match(SearchText.Value, @"(?<prefix>.*world:"")(?<userName>.*?)(?<suffix>"".*)");
-
-            if (worldMatch.Success)
-            {
-                SearchText.Value = $"{worldMatch.Groups["prefix"]}{worldName}{worldMatch.Groups["suffix"]}";
-            }
-            else
-            {
-                var space = string.Empty;
-                if (!string.IsNullOrEmpty(SearchText.Value))
-                {
-                    space = " ";
-                }
-                SearchText.Value += $@"{space}world:""{worldName}""";
-            }
-        }
+        public void SearchWithUserName(string userName) => SearchWithTemplate(userName, "user");
+        public void SearchWithWorldName(string worldName) => SearchWithTemplate(worldName, "world");
 
         public void SearchWithDateString(string dateString)
         {
