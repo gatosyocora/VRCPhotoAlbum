@@ -98,9 +98,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
             });
             OpenTwitterCommand.Subscribe(WindowHelper.OpenTwitterWithScreenName);
-            RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateLeft90AndSave));
-            RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateRight90AndSave));
-            FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.FilpHorizontalAndSave));
+            RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateLeft90AndSave));
+            RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateRight90AndSave));
+            FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.FilpHorizontalAndSave));
             ShareToTwitter.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, _photoPreviewWindow));
             UserSelectCommand.Subscribe(u => searchResult.SearchedUserName.Value = u.UserName);
             WorldSelectCommand.Subscribe(w => searchResult.SearchedWorldName.Value = w);
@@ -109,13 +109,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         }
 
         // TODO: 命名をどうにかする
-        private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> imageProcessFunction)
+        private void ImageProcessing(string filePath, VrcMetaData meta, SearchResult searchResult, Action<string, VrcMetaData> imageProcessFunction)
         {
             imageProcessFunction(filePath, meta);
             Cache.Instance.DeleteCacheFile(filePath);
             PreviewPhoto.Value.ThumbnailImage = ImageHelper.GetThumbnailImage(filePath, Cache.Instance.CacheFolderPath);
             Image.Value = ImageHelper.LoadBitmapImage(filePath);
-            MainWindow.Instance.Reload();
+            searchResult.ResearchCommand.Execute();
         }
     }
 }

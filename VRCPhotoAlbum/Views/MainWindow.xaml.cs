@@ -32,10 +32,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
         }
 
-        public void Reload()
-        {
-            _mainViewModel.UpdatePhotoList();
-        }
         public async void Reboot()
         {
             await _mainViewModel.LoadResourcesAsync();

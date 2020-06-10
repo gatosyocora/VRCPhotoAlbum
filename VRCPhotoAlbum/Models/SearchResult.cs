@@ -22,6 +22,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public ReactiveProperty<DateTime> SearchedSinceDate { get; }
         public ReactiveProperty<DateTime> SearchedUntilDate { get; }
 
+        public ReactiveCommand ResearchCommand { get; }
+
         public SearchResult(ReactiveCollection<Photo> photoList)
         {
             SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
@@ -31,6 +33,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             SearchedDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
             SearchedSinceDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
             SearchedUntilDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
+
+            ResearchCommand = new ReactiveCommand().AddTo(Disposable);
 
             SearchedUserName.Subscribe(SearchWithUserName).AddTo(Disposable);
             SearchedWorldName.Subscribe(SearchWithWorldName).AddTo(Disposable);
@@ -43,24 +47,24 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                             .ToReadOnlyReactiveCollection()
                             .AddTo(Disposable);
 
-            // TODO: 読み込み時と検索時に変更されるようにしないといけない
-            ShowedPhotoList = Observable.CombineLatest(
-                                    SearchText,
+            // 読み込み時は_photoList.ObserveAddChanged()で1つずつPhotoが追加されていく
+            ShowedPhotoList = Observable.Merge(
                                     _photoList.ObserveAddChanged(),
-                                    (s, p) => new { IsLoading = string.IsNullOrEmpty(s), Photo = p, SearchText = s })
-                                .SelectMany(p =>
+                                    SearchText,
+                                    ResearchCommand)
+                                .SelectMany(x =>
                                 {
-                                    if (p.IsLoading)
+                                    if (x is Photo photo)
                                     {
-                                        return new Photo[] { p.Photo };
+                                        return new Photo[] { photo };
                                     }
                                     else
                                     {
-                                        return SearchPhoto(p.SearchText ?? string.Empty);
+                                        return SearchPhoto(SearchText?.Value ?? string.Empty);
                                     }
                                 })
                                 .ToReadOnlyReactiveCollection(
-                                    onReset: SearchText.Select(_ => Unit.Default))
+                                    onReset: Observable.Merge(SearchText, ResearchCommand).Select(_ => Unit.Default))
                                 .AddTo(Disposable);
         }
 

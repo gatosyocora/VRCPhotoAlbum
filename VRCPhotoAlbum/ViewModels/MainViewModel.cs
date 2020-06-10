@@ -77,7 +77,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ShowedPhotoList = _searchResult.ShowedPhotoList
                                 .ObserveAddChanged()
                                 .ToReadOnlyReactiveCollection(
-                                    onReset: SearchText.Select(_ => Unit.Default))
+                                    onReset: Observable.Merge(
+                                                    SearchText,
+                                                    _searchResult.ResearchCommand)
+                                            .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
 
@@ -194,11 +197,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                             };
                         })
                         .ToList());
-        }
-
-        public void UpdatePhotoList()
-        {
-            //SearchPhoto(_photoList, SearchText.Value);
         }
     }
 }
