@@ -16,7 +16,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="5*"/>
@@ -40,7 +40,7 @@
                  Grid.Column="1"/>
             <Button x:Name="SelectFolderButton"
                     Grid.Column="2"
-                    Margin="5" Padding="0"
+                    Margin="5 0 5 0" Padding="0"
                     Content="参照"
                     Foreground="White"
                     Command="{Binding SelectCacheFolderCommand}"/>
@@ -51,6 +51,10 @@
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <Label x:Name="CacheLabel"
                    Content="キャッシュ"
                    VerticalAlignment="Center"
@@ -63,10 +67,16 @@
                    HorizontalAlignment="Center"/>
             <Button x:Name="CacheClearButton"
                     Grid.Column="2"
-                    Margin="5" Padding="0"
+                    Margin="5 0 5 0" Padding="0"
                     Content="削除"
                     Foreground="White"
                     Command="{Binding DeleteCacheCommand}"/>
+            <Label x:Name="CacheFolderPath"
+                   Content="{Binding CacheFolderPath.Value}"
+                   Grid.Column="1" Grid.Row="1"
+                   Grid.ColumnSpan="2"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"/>
         </Grid>
         <Grid Grid.Row="2" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>

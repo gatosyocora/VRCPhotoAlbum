@@ -15,6 +15,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public ReactiveProperty<string> PhotoFolderName { get; }
         public ReactiveProperty<string> CacheDataSize { get; }
+        public ReactiveProperty<string> CacheFolderPath { get; }
         public ReactiveProperty<bool> CanEnter { get; }
         public ReactiveProperty<bool> UseTestFunction { get; }
 
@@ -40,6 +41,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             PhotoFolderName = new ReactiveProperty<string>(_settingData.FolderPath).AddTo(Disposable);
             CacheDataSize = new ReactiveProperty<string>().AddTo(Disposable);
+            CacheFolderPath = new ReactiveProperty<string>().AddTo(Disposable);
             CanEnter = PhotoFolderName.Select(_ => !string.IsNullOrEmpty(_)).ToReactiveProperty().AddTo(Disposable);
             UseTestFunction = new ReactiveProperty<bool>(_settingData.UseTestFunction).AddTo(Disposable);
 
@@ -48,6 +50,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             PhotoFolderName.Value = _settingData.FolderPath;
             CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
+            CacheFolderPath.Value = Cache.Instance.CacheFolderPath;
 
             PhotoFolderName.Subscribe(f => _settingData.FolderPath = f);
             UseTestFunction.Subscribe(b => _settingData.UseTestFunction = b);
