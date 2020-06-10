@@ -2,6 +2,6 @@
 {
     public enum UserSortType
     {
-        Alphabet, Count
+        None, Alphabet, Count
     }
 }

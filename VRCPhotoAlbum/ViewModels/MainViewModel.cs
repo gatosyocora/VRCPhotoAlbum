@@ -112,10 +112,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ClearSearchText = new ReactiveCommand().AddTo(Disposable);
             ClearSearchText.Subscribe(() => SearchText.Value = string.Empty).AddTo(Disposable);
 
-            CurrentUserSortType = new ReactiveProperty<UserSortType>().AddTo(Disposable);
+            CurrentUserSortType = new ReactiveProperty<UserSortType>(UserSortType.None).AddTo(Disposable);
             CurrentUserSortType.Subscribe(type =>
             {
-                _users.SortCommand.Execute(Enum.GetName(typeof(UserSortType), CurrentUserSortType.Value));
+                _users.SortType.Value = CurrentUserSortType.Value;
+                _users.SortCommand.Execute(CurrentUserSortType.Value);
             }).AddTo(Disposable);
             UserList = _users.SortedUserList
                             .ObserveAddChanged()

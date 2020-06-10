@@ -1,5 +1,6 @@
 ﻿using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -22,7 +23,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// <summary>
         /// ソートを実行させるコマンド
         /// </summary>
-        public ReactiveCommand<string> SortCommand { get; }
+        public ReactiveCommand SortCommand { get; }
+        public ReactiveProperty<UserSortType> SortType { get; }
 
         public Users(ReactiveCollection<Photo> photoList)
         {
@@ -31,9 +33,33 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                             .Select(u => u.UserName)
                             .ToReadOnlyReactiveCollection()
                             .AddTo(Disposable);
-            SortCommand = new ReactiveCommand<string>();
-            SortedUserList = SortCommand
-                                .SelectMany(type => SortWith(type))
+            SortCommand = new ReactiveCommand();
+            SortType = new ReactiveProperty<UserSortType>(UserSortType.None);
+            SortedUserList = Observable.Merge(
+                                    _userList.ObserveAddChanged(),
+                                    SortCommand)
+                                .SelectMany(x =>
+                                {
+                                    if (x is string userName)
+                                    {
+                                        // 既に同じuserNameの要素があったら追加しない
+                                        if (SortedUserList
+                                            .Select((u, i) => new { u.Name, i })
+                                            .Where(x => x.Name == userName)
+                                            .Any()) 
+                                        {
+                                            return Enumerable.Empty<User>();
+                                        }
+                                        else
+                                        {
+                                            return new User[] { new User { Name = userName, PhotoCount = 1 } };
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return SortWith(SortType.Value);
+                                    }
+                                })
                                 .ToReadOnlyReactiveCollection(
                                     onReset: SortCommand.Select(_ => Unit.Default))
                                 .AddTo(Disposable);
@@ -44,10 +70,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// </summary>
         /// <param name="type">ソートの種類</param>
         /// <returns></returns>
-        public IEnumerable<User> SortWith(string type)
+        public IEnumerable<User> SortWith(UserSortType type)
         {
-            if (type == nameof(UserSortType.Alphabet)) return SortWithAlphabet();
-            else if (type == nameof(UserSortType.Count)) return SortWithCount();
+            if (type == UserSortType.Alphabet) return SortWithAlphabet();
+            else if (type == UserSortType.Count) return SortWithCount();
             else return CreateUserList();
         }
 
