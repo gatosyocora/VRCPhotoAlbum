@@ -26,12 +26,16 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public ReactiveCommand SortCommand { get; }
         public ReactiveProperty<UserSortType> SortType { get; }
 
+        public ReactiveCommand ResetCommand { get; }
+
         public Users(ReactiveCollection<Photo> photoList)
         {
+            ResetCommand = new ReactiveCommand().AddTo(Disposable);
             _userList = photoList.ObserveAddChanged()
                             .SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<KoyashiroKohaku.VrcMetaToolSharp.User>())
                             .Select(u => u.UserName)
-                            .ToReadOnlyReactiveCollection()
+                            .ToReadOnlyReactiveCollection(
+                                onReset: ResetCommand.Select(_ => Unit.Default))
                             .AddTo(Disposable);
             SortCommand = new ReactiveCommand();
             SortType = new ReactiveProperty<UserSortType>(UserSortType.None);
@@ -61,7 +65,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     }
                                 })
                                 .ToReadOnlyReactiveCollection(
-                                    onReset: SortCommand.Select(_ => Unit.Default))
+                                    onReset: Observable.Merge(SortCommand, ResetCommand).Select(_ => Unit.Default))
                                 .AddTo(Disposable);
         }
 

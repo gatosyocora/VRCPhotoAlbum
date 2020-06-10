@@ -57,6 +57,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand OpenSettingCommand { get; }
         #endregion
 
+        public ReactiveCommand RebootCommand { get; }
+
         public MainViewModel(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
@@ -79,7 +81,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                 .ToReadOnlyReactiveCollection(
                                     onReset: Observable.Merge(
                                                     _searchResult.SearchText,
-                                                    _searchResult.ResearchCommand)
+                                                    _searchResult.ResearchCommand,
+                                                    _searchResult.ResetCommand)
                                             .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
@@ -122,7 +125,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                             .ObserveAddChanged()
                             .Select(u => u.Name)
                             .ToReadOnlyReactiveCollection(
-                                onReset: CurrentUserSortType.Select(_ => Unit.Default))
+                                onReset: Observable.CombineLatest(CurrentUserSortType, _users.ResetCommand, (t, _) => Unit.Default).Select(_ => Unit.Default))
                             .AddTo(Disposable);
 
             SortUserWithAlphabetCommand = new ReactiveCommand().AddTo(Disposable);
@@ -134,6 +137,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             OpenPhotoPreviewCommand.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _searchResult, _mainWindow); }).AddTo(Disposable);
             OpenSettingCommand = new ReactiveCommand().AddTo(Disposable);
             OpenSettingCommand.Subscribe(() => WindowHelper.OpenSettingDialog(_mainWindow)).AddTo(Disposable);
+
+            RebootCommand = new ReactiveCommand().AddTo(Disposable);
+            RebootCommand.Subscribe(() =>
+            {
+                _searchResult.ResetCommand.Execute();
+                _users.ResetCommand.Execute();
+                _ = LoadResourcesAsync();
+            });
 
             _ = LoadResourcesAsync();
         }

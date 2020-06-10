@@ -34,7 +34,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         public async void Reboot()
         {
-            await _mainViewModel.LoadResourcesAsync();
+            _mainViewModel.RebootCommand.Execute();
         }
 
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

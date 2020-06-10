@@ -23,6 +23,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public ReactiveProperty<DateTime> SearchedUntilDate { get; }
 
         public ReactiveCommand ResearchCommand { get; }
+        public ReactiveCommand ResetCommand { get; }
 
         public SearchResult(ReactiveCollection<Photo> photoList)
         {
@@ -35,6 +36,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             SearchedUntilDate = new ReactiveProperty<DateTime>().AddTo(Disposable);
 
             ResearchCommand = new ReactiveCommand().AddTo(Disposable);
+            ResetCommand = new ReactiveCommand().AddTo(Disposable);
 
             SearchedUserName.Subscribe(SearchWithUserName).AddTo(Disposable);
             SearchedWorldName.Subscribe(SearchWithWorldName).AddTo(Disposable);
@@ -44,7 +46,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             _photoList = photoList.ObserveAddChanged()
                             .Select(p => p)
-                            .ToReadOnlyReactiveCollection()
+                            .ToReadOnlyReactiveCollection(
+                                onReset:ResetCommand.Select(_ => Unit.Default)
+                            )
                             .AddTo(Disposable);
 
             // 読み込み時は_photoList.ObserveAddChanged()で1つずつPhotoが追加されていく
@@ -64,7 +68,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     }
                                 })
                                 .ToReadOnlyReactiveCollection(
-                                    onReset: Observable.Merge(SearchText, ResearchCommand).Select(_ => Unit.Default))
+                                    onReset: Observable.Merge(SearchText, ResearchCommand, ResetCommand).Select(_ => Unit.Default))
                                 .AddTo(Disposable);
         }
 
