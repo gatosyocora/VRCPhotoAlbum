@@ -86,6 +86,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             searchText = Regex.Replace(searchText, @"^\s*", string.Empty);
             searchText = Regex.Replace(searchText, @"\s*$", string.Empty);
 
+            if (!searchText.Any()) return _photoList;
+
             string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
             var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*?)"".*");
