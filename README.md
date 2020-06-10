@@ -97,6 +97,11 @@ MITライセンスです。詳しくは[LICENSE](https://github.com/gatosyocora/
 ## アンインストール
 インストールしたフォルダごと削除する
 
+## 開発環境
+* Windows 10
+* .Net Core 3.1
+* Visual Studio 2019
+
 ## 利用ライブラリ
 * VrcMetaTool.NET [[MIT License](https://github.com/KoyashiroKohaku/VrcMetaTool.NET/blob/master/LICENSE)]
 * ReactiveProperty [[MIT License](https://github.com/runceel/ReactiveProperty/blob/master/LICENSE.txt)]
