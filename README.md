@@ -1,7 +1,7 @@
 # VRCPhotoAlbum
 
 
-<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_previewimage.png" width="50%"/>
+<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/VRCPhotoAlbum_previewimage.png" width="50%"/>
 
 
 VRChatで撮影した写真をながめるためのWindows向けアプリケーションです
@@ -14,20 +14,20 @@ latest release : ver 0.3
 ## 画面構成
 
 ### 写真一覧画面
-<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_topimage.png" width="50%"/>
+<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/VRCPhotoAlbum_topimage.png" width="50%"/>
 
 画像フォルダ以下にある写真をすべて表示した画面です.  
 検索機能などがあります.
 
 ### 写真詳細画面
-<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_previewimage.png" width="50%"/>
+<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/VRCPhotoAlbum_previewimage.png" width="50%"/>
 
 選択した写真の詳細を表示した画面です.  
 写真に埋め込まれたメタ情報などを表示しています.  
 各情報を選択することで絞り込み検索ができます.
 
 ### 設定画面
-<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_settingimage.png" width="50%"/>
+<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/master/images/VRCPhotoAlbum_settingimage.png" width="50%"/>
 
 設定を確認および変更できる画面です.
 以下, 現在できることです.
