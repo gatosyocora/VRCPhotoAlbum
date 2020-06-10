@@ -18,7 +18,9 @@ namespace VRCPhotoAlbumTest.Models
         /// → SearchTextの変化によってShowedPhotoListを更新(全削除→SearchPhoto()の検索結果を追加)
         /// </summary>
 
+        #region Mock
         private IEnumerable<Photo> _photoList;
+        #endregion
 
         public SearchResultWorldNameTest()
         {
