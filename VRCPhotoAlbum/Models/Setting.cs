@@ -22,13 +22,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
             else
             {
-                Data = new SettingData
-                {
-                    FolderPath = string.Empty,
-                    UseTestFunction = false
-                };
+                Data = null;
             }
         }
+
+        // インスタンス生成のための空メソッド
+        public void Create() { }
 
         public SettingData Copy()
         {

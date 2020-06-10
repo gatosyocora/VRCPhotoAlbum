@@ -25,7 +25,18 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public SettingViewModel()
         {
-            _settingData = Setting.Instance.Copy();
+            if (Setting.Instance.Data is null)
+            {
+                _settingData = new SettingData
+                {
+                    FolderPath = string.Empty,
+                    UseTestFunction = false
+                };
+            }
+            else
+            {
+                _settingData = Setting.Instance.Copy();
+            }
 
             PhotoFolderName = new ReactiveProperty<string>(_settingData.FolderPath).AddTo(Disposable);
             CacheDataSize = new ReactiveProperty<string>().AddTo(Disposable);
@@ -63,11 +74,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             JsonHelper.ExportJsonFile(_settingData, JsonHelper.GetJsonFilePath());
 
-            var isChangedCacheFolder = Setting.Instance.Data.FolderPath != _settingData.FolderPath;
+            var isChangedPhotoFolder = (Setting.Instance.Data?.FolderPath ?? string.Empty) != _settingData.FolderPath;
 
             Setting.Instance.Data = _settingData;
 
-            if (isChangedCacheFolder)
+            if (isChangedPhotoFolder)
             {
                 Cache.Instance.DeleteCacheFileAll();
                 MainWindow.Instance.Reboot();

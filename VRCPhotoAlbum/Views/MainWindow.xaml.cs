@@ -1,4 +1,6 @@
-﻿using Gatosyocora.VRCPhotoAlbum.ViewModels;
+﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
+using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using MahApps.Metro.Controls;
 using System;
 using System.Windows.Controls;
@@ -30,9 +32,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             _mainViewModel = new MainViewModel(this);
             DataContext = _mainViewModel;
             PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
+
+            if (Setting.Instance.Data is null)
+            {
+                WindowHelper.OpenSettingDialog(this);
+            }
         }
 
-        public async void Reboot()
+        public void Reboot()
         {
             _mainViewModel.RebootCommand.Execute();
         }

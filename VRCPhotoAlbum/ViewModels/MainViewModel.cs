@@ -63,10 +63,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             _mainWindow = mainWindow;
 
-            if (Setting.Instance.Data is null)
-            {
-                WindowHelper.OpenSettingDialog(_mainWindow);
-            }
+            Setting.Instance.Create();
 
             Cache.Instance.Create();
 
@@ -146,7 +143,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 _ = LoadResourcesAsync();
             });
 
-            _ = LoadResourcesAsync();
+            if (!(Setting.Instance.Data is null))
+            {
+                _ = LoadResourcesAsync();
+            }
         }
 
         /// <summary>
