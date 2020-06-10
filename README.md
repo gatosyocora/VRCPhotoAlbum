@@ -115,7 +115,7 @@ MITライセンスです。詳しくは[LICENSE](https://github.com/gatosyocora/
 
 ## 開発環境
 * Windows 10
-* .Net Core 3.1
+* .NET Core 3.1
 * Visual Studio 2019
 
 ## 利用ライブラリ
