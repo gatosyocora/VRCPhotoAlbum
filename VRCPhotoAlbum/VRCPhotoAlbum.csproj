@@ -10,6 +10,11 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <UserSecretsId>57b90247-f63f-4628-9475-c26b8834a74e</UserSecretsId>
     <Version>0.3.0</Version>
+    <RepositoryUrl>https://github.com/gatosyocora/VRCPhotoAlbum</RepositoryUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\FlipHorizontalImage.png" />
