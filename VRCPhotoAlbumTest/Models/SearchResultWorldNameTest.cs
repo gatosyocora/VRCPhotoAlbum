@@ -40,8 +40,8 @@ namespace VRCPhotoAlbumTest.Models
                                     }));
         }
 
-        // "SearchedWorldNameで検索時にSearchTextに正しい文字列が入力されるか"
-        [DataTestMethod()]
+        [TestMethod("SearchedWorldNameで検索時にSearchTextに正しい文字列が入力されるか")]
+        [DataTestMethod]
         [DataRow("a")]
         [DataRow("b")]
         [DataRow("c")]
@@ -54,8 +54,8 @@ namespace VRCPhotoAlbumTest.Models
             searchResultModel.SearchText.Subscribe(_ => Assert.AreEqual(@$"world:""{worldName}""", searchResultModel.SearchText.Value));
         }
 
-        // "ワールド名の所定フォーマットから内部メソッドが正しく取得できているか"
-        [DataTestMethod()]
+        [TestMethod("ワールド名の所定フォーマットから内部メソッドが正しく取得できているか")]
+        [DataTestMethod]
         [DataRow("a")]
         [DataRow("b")]
         [DataRow("c")]
@@ -76,8 +76,8 @@ namespace VRCPhotoAlbumTest.Models
             Assert.IsTrue(searchedPhotoList.All(p => p.MetaData.World == worldName));
         }
 
-        // "ワールド名の所定フォーマットから内部メソッドが正しい個数取得できているか"
-        [DataTestMethod()]
+        [TestMethod("ワールド名の所定フォーマットから内部メソッドが正しい個数取得できているか")]
+        [DataTestMethod]
         [DataRow("a", 3)]
         [DataRow("b", 2)]
         [DataRow("c", 5)]
@@ -98,8 +98,8 @@ namespace VRCPhotoAlbumTest.Models
             Assert.AreEqual(hitCount, searchedPhotoList.Count());
         }
 
-        // "SearchTestに検索するワールド名の所定フォーマットを入力して正しく取得できているか"
-        [DataTestMethod()]
+        [TestMethod("SearchTestに検索するワールド名の所定フォーマットを入力して正しく取得できているか")]
+        [DataTestMethod]
         [DataRow("a", 3)]
         [DataRow("b", 2)]
         [DataRow("c", 5)]
@@ -119,13 +119,12 @@ namespace VRCPhotoAlbumTest.Models
                 .Subscribe(_ => Assert.AreEqual(hitCount, searchResultModel.ShowedPhotoList.Count));
         }
 
-        // "SearchTestに検索するワールド名の所定フォーマットを入力して正しく取得できているか"
-        [DataTestMethod()]
+        [TestMethod("SearchTestに検索するワールド名の所定フォーマットを入力して正しく取得できているか")]
+        [DataTestMethod]
         [DataRow("a", 3)]
         [DataRow("b", 2)]
         [DataRow("c", 5)]
         [DataRow("d", 10)]
-        [TestMethod("SearchedWorldNameに検索するワールド名を入力して正しく取得できているか")]
         public void CanGetCorrectPhotoWhenSearchWithWorldName(string worldName, int hitCount)
         {
             var photoList = new ReactiveCollection<Photo>();
