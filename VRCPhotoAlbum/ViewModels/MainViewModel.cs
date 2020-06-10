@@ -113,16 +113,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ClearSearchText.Subscribe(() => SearchText.Value = string.Empty).AddTo(Disposable);
 
             CurrentUserSortType = new ReactiveProperty<UserSortType>(UserSortType.None).AddTo(Disposable);
-            CurrentUserSortType.Subscribe(type =>
-            {
-                _users.SortType.Value = CurrentUserSortType.Value;
-                _users.SortCommand.Execute(CurrentUserSortType.Value);
-            }).AddTo(Disposable);
+            CurrentUserSortType.Subscribe(type => _users.SortType.Value = CurrentUserSortType.Value).AddTo(Disposable);
             UserList = _users.SortedUserList
                             .ObserveAddChanged()
                             .Select(u => u.Name)
                             .ToReadOnlyReactiveCollection(
-                                onReset: Observable.CombineLatest(CurrentUserSortType, _users.ResetCommand, (t, _) => Unit.Default).Select(_ => Unit.Default))
+                                onReset: Observable.Merge(_users.SortCommand, _users.ResetCommand).Select(_ => Unit.Default))
                             .AddTo(Disposable);
 
             SortUserWithAlphabetCommand = new ReactiveCommand().AddTo(Disposable);

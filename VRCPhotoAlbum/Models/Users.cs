@@ -39,6 +39,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                             .AddTo(Disposable);
             SortCommand = new ReactiveCommand();
             SortType = new ReactiveProperty<UserSortType>(UserSortType.None);
+            SortType.Subscribe(_ => SortCommand.Execute());
             SortedUserList = Observable.Merge(
                                     _userList.ObserveAddChanged(),
                                     SortCommand)
