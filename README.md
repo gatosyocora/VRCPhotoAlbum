@@ -14,17 +14,30 @@ latest release : ver 0.3
 ## 画面構成
 
 ### 写真一覧画面
-<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_topimage.png" width="40%"/>
+<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_topimage.png" width="50%"/>
+
+画像フォルダ以下にある写真をすべて表示した画面です.  
+検索機能などがあります.
 
 ### 写真詳細画面
-<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_previewimage.png" width="40%"/>
+<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_previewimage.png" width="50%"/>
+
+選択した写真の詳細を表示した画面です.  
+写真に埋め込まれたメタ情報などを表示しています.  
+各情報を選択することで絞り込み検索ができます.
 
 ### 設定画面
-<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_settingimage.png" width="40%"/>
+<img src="https://github.com/gatosyocora/VRCPhotoAlbum/blob/develop/images/VRCPhotoAlbum_settingimage.png" width="50%"/>
+
+設定を確認および変更できる画面です.
+以下, 現在できることです.
+* 表示する写真が入ったフォルダの選択
+* キャッシュ情報とキャッシュの削除
+* テスト機能の有効無効の切り替え
 
 ## 使い方
 ### 初回起動時
-1. 設定画面が表示されるのでフォルダパス横の「参照」を選択し, 写真が入ったフォルダを選択します.
+1. 設定画面が表示されるので「画像フォルダ」横の「参照」を選択し, 写真が入ったフォルダを選択します.
 2. 「適用」を選択します.
 
 
@@ -47,7 +60,14 @@ C. 写真一覧画面にある日付入力欄で日付を選択する.
 D. 写真一覧画面にある「今週」「今月」ボタンを選択する.  
 (選択した期間に撮影されたものを検索します)
 
-### 
+### 管理する写真フォルダを変更
+1. 写真詳細画面の右下にある「歯車ボタン」を選択し, 設定画面を開く.
+2. 設定画面上部の「画像フォルダ」横の「参照」ボタンを選択し, 対象フォルダを選択する.
+3. 画面下の「適用」ボタンを選択する.
+
+### 写真にうつった人のTwitterを探す
+[vrc_meta_tool](https://github.com/27Cobalter/vrc_meta_tool)の機能でTwitter情報も写真に埋め込んでいる場合,  
+その写真の写真詳細画面のユーザー一覧の対象ユーザー横に「Twitterボタン」が表示されます.
 
 ## 更新履歴
 (ver0.3)
