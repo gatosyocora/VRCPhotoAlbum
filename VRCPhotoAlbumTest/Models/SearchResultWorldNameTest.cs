@@ -19,6 +19,7 @@ namespace VRCPhotoAlbumTest.Models
         /// → SearchTextの変化によってShowedPhotoListを更新(全削除→SearchPhoto()の検索結果を追加)
         /// </summary>
 
+        // IsSearchingのブロックがなくなれば成功する
         [TestMethod("SearchedWorldNameで検索時にSearchTextに正しい文字列が入力されるか")]
         public void CanSetCorrectSearchTextWhenSearchWithWorldName()
         {
@@ -47,13 +48,18 @@ namespace VRCPhotoAlbumTest.Models
                                 .SelectMany((i, offset) =>
                                     Enumerable.Range(0, i)
                                         .Select(_ =>
-                                            new Photo
+                                        {
+                                            var meta = new VrcMetaData
                                             {
-                                                MetaData = new VrcMetaData
-                                                {
-                                                    World = $"{(char)('a' + offset)}"
-                                                }
-                                            }));
+                                                World = $"{(char)('a' + offset)}"
+                                            };
+                                            // ワールド検索だけどUserがnullだと自動的に検索から除外されてしまう
+                                            meta.Users.Add(new KoyashiroKohaku.VrcMetaToolSharp.User { UserName = "userName" });
+                                            return new Photo
+                                            {
+                                                MetaData = meta
+                                            };
+                                        }));
 
             foreach (var photo in _photoList)
             {
@@ -85,13 +91,18 @@ namespace VRCPhotoAlbumTest.Models
                                 .SelectMany((i, offset) =>
                                     Enumerable.Range(0, i)
                                         .Select(_ =>
-                                            new Photo
+                                        {
+                                            var meta = new VrcMetaData
                                             {
-                                                MetaData = new VrcMetaData
-                                                {
-                                                    World = $"{(char)('a' + offset)}"
-                                                }
-                                            }));
+                                                World = $"{(char)('a' + offset)}"
+                                            };
+                                            // ワールド検索だけどUserがnullだと自動的に検索から除外されてしまう
+                                            meta.Users.Add(new KoyashiroKohaku.VrcMetaToolSharp.User { UserName = "userName" });
+                                            return new Photo
+                                            {
+                                                MetaData = meta
+                                            };
+                                        }));
 
             foreach (var photo in _photoList)
             {
@@ -100,7 +111,7 @@ namespace VRCPhotoAlbumTest.Models
 
             var privateObject = new PrivateObject(searchResultModel);
 
-            var searchedPhotoList = privateObject.Invoke("SearchPhoto", @"world:""a""") as IEnumerable<Photo>;
+            var searchedPhotoList = (IEnumerable<Photo>)privateObject.Invoke("SearchPhoto", @"world:""a""");
             Assert.AreEqual(3, searchedPhotoList.Count());
 
             searchedPhotoList = privateObject.Invoke("SearchPhoto", @"world:""b""") as IEnumerable<Photo>;
@@ -123,15 +134,24 @@ namespace VRCPhotoAlbumTest.Models
                                 .SelectMany((i, offset) =>
                                     Enumerable.Range(0, i)
                                         .Select(_ =>
-                                            new Photo
+                                        {
+                                            var meta = new VrcMetaData
                                             {
-                                                MetaData = new VrcMetaData
-                                                {
-                                                    World = $"{(char)('a' + offset)}"
-                                                }
-                                            }));
+                                                World = $"{(char)('a' + offset)}"
+                                            };
+                                            // ワールド検索だけどUserがnullだと自動的に検索から除外されてしまう
+                                            meta.Users.Add(new KoyashiroKohaku.VrcMetaToolSharp.User { UserName = "userName" });
+                                            return new Photo
+                                            {
+                                                MetaData = meta
+                                            };
+                                        }));
 
-            photoList.AddRangeOnScheduler(_photoList);
+
+            foreach (var photo in _photoList)
+            {
+                photoList.Add(photo);
+            }
 
             searchResultModel.SearchText.Value = @"world:""a""";
             Assert.AreEqual(3, searchResultModel.ShowedPhotoList.Count);
@@ -156,13 +176,18 @@ namespace VRCPhotoAlbumTest.Models
                                 .SelectMany((i, offset) =>
                                     Enumerable.Range(0, i)
                                         .Select(_ =>
-                                            new Photo
+                                        {
+                                            var meta = new VrcMetaData
                                             {
-                                                MetaData = new VrcMetaData
-                                                {
-                                                    World = $"{(char)('a' + offset)}"
-                                                }
-                                            }));
+                                                World = $"{(char)('a' + offset)}"
+                                            };
+                                            // ワールド検索だけどUserがnullだと自動的に検索から除外されてしまう
+                                            meta.Users.Add(new KoyashiroKohaku.VrcMetaToolSharp.User { UserName = "userName" });
+                                            return new Photo
+                                            {
+                                                MetaData = meta
+                                            };
+                                        }));
 
             foreach (var photo in _photoList)
             {
