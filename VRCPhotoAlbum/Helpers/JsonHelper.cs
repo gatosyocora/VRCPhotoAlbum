@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
@@ -8,20 +10,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
     {
         public static bool ExportJsonFile<T>(T jsonClassData, string jsonFilePath)
         {
-            var jsonText = JsonSerializer.Serialize(jsonClassData, typeof(T));
-            File.WriteAllText(jsonFilePath, jsonText);
+            File.WriteAllText(jsonFilePath, JsonSerializer.Serialize(jsonClassData, typeof(T)));
             return File.Exists(jsonFilePath);
         }
 
-        public static T ImportJsonFile<T>(string path) where T : class
-        {
-            return JsonSerializer.Deserialize(File.ReadAllText(path), typeof(T)) as T;
-        }
+        public static T ImportJsonFile<T>(string path) where T : class => JsonSerializer.Deserialize(File.ReadAllText(path), typeof(T)) as T;
 
-        public static string GetJsonFilePath()
-        {
-            var executeFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            return executeFolderPath + @"/settings.json";
-        }
+        public static string GetJsonFilePath() => $@"{Directory.GetCurrentDirectory()}/settings.json";
     }
 }
