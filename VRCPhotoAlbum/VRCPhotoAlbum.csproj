@@ -9,6 +9,7 @@
     <Authors>gatosyocora</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <UserSecretsId>57b90247-f63f-4628-9475-c26b8834a74e</UserSecretsId>
+    <Version>0.3.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\FlipHorizontalImage.png" />
