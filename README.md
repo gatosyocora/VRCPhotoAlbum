@@ -11,6 +11,10 @@ VRChatで撮影した写真をながめるためのWindows向けアプリケー�
 
 latest release : ver 0.3
 
+## 動作確認環境
+* Windows10 64bit バージョン1903
+* Intel i7-7000
+
 ## 画面構成
 
 ### 写真一覧画面
