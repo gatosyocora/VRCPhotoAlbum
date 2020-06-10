@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
@@ -17,7 +14,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         public static string DataSize2String(long dataSize)
         {
             int divCount = 0;
-            
+
             while (dataSize >= 1024)
             {
                 dataSize /= 1024;

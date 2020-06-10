@@ -32,29 +32,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
         }
 
-        public void Reload()
+        public async void Reboot()
         {
-            _mainViewModel.UpdatePhotoList();
-        }
-        public void Reboot()
-        {
-            _mainViewModel.LoadResources();
-        }
-
-
-        public void SearchWithUserName(string userName)
-        {
-            _mainViewModel.SearchWithUserName(userName);
-        }
-
-        public void SearchWithWorldName(string worldName)
-        {
-            _mainViewModel.SearchWithWorldName(worldName);
-        }
-
-        public void SearchWithDate(string date)
-        {
-            _mainViewModel.SearchWithDateString(date);
+            await _mainViewModel.LoadResourcesAsync();
         }
 
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

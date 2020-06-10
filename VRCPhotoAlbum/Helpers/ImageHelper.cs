@@ -3,8 +3,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
@@ -26,6 +25,23 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             return bitmapImage;
         }
 
+        public static async Task<BitmapImage> LoadBitmapImageAsync(string filePath)
+        {
+            return await Task.Run(() =>
+            {
+                using (var stream = File.OpenRead(filePath))
+                {
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = stream;
+                    bitmapImage.EndInit();
+                    bitmapImage.Freeze();
+                    return bitmapImage;
+                }
+            });
+        }
+
         public static BitmapImage GetThumbnailImage(string filePath, string cashFolderPath)
         {
             var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
@@ -42,6 +58,27 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 }
             }
             return LoadBitmapImage(thumbnailImageFilePath);
+        }
+
+        public async static Task<BitmapImage> GetThumbnailImageAsync(string filePath, string cashFolderPath)
+        {
+            return await Task.Run(() =>
+            {
+                var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
+
+                if (!File.Exists(thumbnailImageFilePath))
+                {
+                    using (var stream = File.OpenRead(filePath))
+                    {
+                        var originalImage = Image.FromStream(stream, false, false);
+                        var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
+                        thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Jpeg);
+                        originalImage.Dispose();
+                        thumbnailImage.Dispose();
+                    }
+                }
+                return LoadBitmapImageAsync(thumbnailImageFilePath);
+            });
         }
         #endregion
 

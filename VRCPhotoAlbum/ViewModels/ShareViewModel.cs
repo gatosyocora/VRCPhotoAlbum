@@ -14,7 +14,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<string> TweetContent { get; }
 
         public ReactiveCommand Login { get; }
-        public ReactiveCommand Send { get; } 
+        public ReactiveCommand Send { get; }
 
         public ShareViewModel(Photo photo)
         {

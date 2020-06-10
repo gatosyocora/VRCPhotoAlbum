@@ -6,11 +6,10 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Media.Imaging;
+using User = KoyashiroKohaku.VrcMetaToolSharp.User;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -34,13 +33,17 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand Previous { get; }
         public ReactiveCommand Next { get; }
         public ReactiveCommand<string> SearchWithUser { get; }
-        public ReactiveCommand<string> OpenTwitter { get; }
+        public ReactiveCommand<string> OpenTwitterCommand { get; }
         public ReactiveCommand RotateL90 { get; }
         public ReactiveCommand RotateR90 { get; }
         public ReactiveCommand FlipHorizontal { get; }
         public ReactiveCommand ShareToTwitter { get; }
+        public ReactiveCommand<User> UserSelectCommand { get; }
+        public ReactiveCommand<string> WorldSelectCommand { get; }
+        public ReactiveCommand<DateTime> DateSelectCommand { get; }
+        public ReactiveCommand<PhotoPreview> WindowCloseCommand { get; }
 
-        public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList)
+        public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList, SearchResult searchResult)
         {
             _photoPreviewWindow = photoPreviewWindow;
 
@@ -74,57 +77,45 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             Previous = new ReactiveCommand().AddTo(Disposable);
             Next = new ReactiveCommand().AddTo(Disposable);
             SearchWithUser = new ReactiveCommand<string>().AddTo(Disposable);
-            OpenTwitter = new ReactiveCommand<string>().AddTo(Disposable);
+            OpenTwitterCommand = new ReactiveCommand<string>().AddTo(Disposable);
             RotateL90 = new ReactiveCommand().AddTo(Disposable);
             RotateR90 = new ReactiveCommand().AddTo(Disposable);
             FlipHorizontal = new ReactiveCommand().AddTo(Disposable);
             ShareToTwitter = new ReactiveCommand().AddTo(Disposable);
+            UserSelectCommand = new ReactiveCommand<User>().AddTo(Disposable);
+            WorldSelectCommand = new ReactiveCommand<string>().AddTo(Disposable);
+            DateSelectCommand = new ReactiveCommand<DateTime>().AddTo(Disposable);
+            WindowCloseCommand = new ReactiveCommand<PhotoPreview>().AddTo(Disposable);
 
-            Previous.Subscribe(PreviousPreview);
-            Next.Subscribe(NextPreview);
-            OpenTwitter.Subscribe(OpenTwitterWithScreenName);
-            RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateLeft90AndSave));
-            RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.RotateRight90AndSave));
-            FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, ImageHelper.FilpHorizontalAndSave));
+            Previous.Subscribe(() =>
+            {
+                _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
+                PreviewPhoto.Value = _photoList[_previewPhotoIndex];
+            });
+            Next.Subscribe(() =>
+            {
+                _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
+                PreviewPhoto.Value = _photoList[_previewPhotoIndex];
+            });
+            OpenTwitterCommand.Subscribe(WindowHelper.OpenTwitterWithScreenName);
+            RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateLeft90AndSave));
+            RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateRight90AndSave));
+            FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.FilpHorizontalAndSave));
             ShareToTwitter.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, _photoPreviewWindow));
+            UserSelectCommand.Subscribe(u => searchResult.SearchedUserName.Value = u.UserName);
+            WorldSelectCommand.Subscribe(w => searchResult.SearchedWorldName.Value = w);
+            DateSelectCommand.Subscribe(d => searchResult.SearchedDate.Value = d);
+            WindowCloseCommand.Subscribe(w => w.Close());
         }
 
-        private void PreviousPreview()
-        {
-            _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
-            PreviewPhoto.Value = _photoList[_previewPhotoIndex];
-        }
-
-        private void NextPreview()
-        {
-            _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
-            PreviewPhoto.Value = _photoList[_previewPhotoIndex];
-        }
-
-        private void OpenTwitterWithScreenName(string twitterScreenName)
-        {
-            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
-            try
-            {
-                var startInfo = new ProcessStartInfo(uri)
-                {
-                    UseShellExecute = true
-                };
-                Process.Start(startInfo);
-            }
-            catch (Exception exception)
-            {
-                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
-            }
-        }
-
-        private void ImageProcessing(string filePath, VrcMetaData meta, Action<string, VrcMetaData> imageProcessFunction)
+        // TODO: 命名をどうにかする
+        private void ImageProcessing(string filePath, VrcMetaData meta, SearchResult searchResult, Action<string, VrcMetaData> imageProcessFunction)
         {
             imageProcessFunction(filePath, meta);
             Cache.Instance.DeleteCacheFile(filePath);
             PreviewPhoto.Value.ThumbnailImage = ImageHelper.GetThumbnailImage(filePath, Cache.Instance.CacheFolderPath);
             Image.Value = ImageHelper.LoadBitmapImage(filePath);
-            MainWindow.Instance.Reload();
+            searchResult.ResearchCommand.Execute();
         }
     }
 }
