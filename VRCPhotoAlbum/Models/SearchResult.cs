@@ -25,6 +25,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public ReactiveCommand ResearchCommand { get; }
         public ReactiveCommand ResetCommand { get; }
 
+        private DateTime _defaultDate;
+
         public SearchResult(ReactiveCollection<Photo> photoList)
         {
             SearchText = new ReactiveProperty<string>(string.Empty).AddTo(Disposable);
@@ -43,6 +45,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             SearchedDate.Subscribe(SearchWithDate).AddTo(Disposable);
             SearchedSinceDate.Subscribe(d => SearchWithDatePeriod(d, SearchedUntilDate.Value)).AddTo(Disposable);
             SearchedUntilDate.Subscribe(d => SearchWithDatePeriod(SearchedUntilDate.Value, d)).AddTo(Disposable);
+
+            _defaultDate = new DateTime();
 
             _photoList = photoList.ObserveAddChanged()
                             .Select(p => p)
@@ -93,6 +97,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 searchUserName = Regex.Replace(searchUserName, @"\s*date:"".*?""\s*", string.Empty);
                 searchUserName = Regex.Replace(searchUserName, @"\s*since:"".*?""\s*", string.Empty);
                 searchUserName = Regex.Replace(searchUserName, @"\s*until:"".*?""\s*", string.Empty);
+
+                SearchedUserName.Value = searchUserName;
             }
 
             if (worldMatch.Success)
@@ -105,6 +111,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 searchWorldName = Regex.Replace(searchWorldName, @"\s*date:"".*?""\s*", string.Empty);
                 searchWorldName = Regex.Replace(searchWorldName, @"\s*since:"".*?""\s*", string.Empty);
                 searchWorldName = Regex.Replace(searchWorldName, @"\s*until:"".*?""\s*", string.Empty);
+
+                SearchedWorldName.Value = searchWorldName;
             }
 
             if (dateMatch.Success)
@@ -114,6 +122,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             else
             {
                 searchDateString = string.Empty;
+                SearchedDate.Value = _defaultDate;
             }
 
             if (sinceDateMatch.Success)
@@ -123,6 +132,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             else
             {
                 searchSinceDateString = string.Empty;
+                SearchedSinceDate.Value = _defaultDate;
             }
 
             if (untilDateMatch.Success)
@@ -132,6 +142,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             else
             {
                 searchUntilDateString = string.Empty;
+                SearchedUntilDate.Value = _defaultDate;
             }
 
             var searchedPhotoList = _photoList.Select(x => x);
