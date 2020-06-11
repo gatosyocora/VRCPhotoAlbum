@@ -76,8 +76,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             SearchText = _searchResult.SearchText.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
 
-            ShowedPhotoList = _searchResult.ShowedPhotoList
-                                .ObserveAddChanged()
+            ShowedPhotoList = _searchResult.ShowedPhotoList.ObserveAddChanged()
                                 .ToReadOnlyReactiveCollection(
                                     onReset: Observable.Merge(
                                                     _searchResult.SearchText,
@@ -117,8 +116,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             CurrentUserSortType = new ReactiveProperty<UserSortType>(UserSortType.None).AddTo(Disposable);
             CurrentUserSortType.Subscribe(type => _users.SortType.Value = CurrentUserSortType.Value).AddTo(Disposable);
-            UserList = _users.SortedUserList
-                            .ObserveAddChanged()
+            UserList = _users.SortedUserList.ObserveAddChanged()
                             .Select(u => u.Name)
                             .ToReadOnlyReactiveCollection(
                                 onReset: Observable.Merge(_users.SortCommand, _users.ResetCommand).Select(_ => Unit.Default))
