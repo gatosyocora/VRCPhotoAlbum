@@ -4,6 +4,7 @@ using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     public class VrcPhotographs
     {
         public ReactiveCollection<Photo> Collection { get; }
+
+        private static BitmapImage _failedImage => new BitmapImage(new Uri(@"pack://application:,,,/Resources/noloading.png"));
 
         public VrcPhotographs()
         {
@@ -53,47 +56,51 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             return Task.WhenAll(Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                         .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
                         .Select(async filePath =>
+                        new Photo
                         {
-                            VrcMetaData meta;
-                            try
-                            {
-                                meta = VrcMetaDataReader.Read(filePath);
-                            }
-                            catch (Exception)
-                            {
-                                var vrcPhotoMatch = Regex.Match(filePath,
-                                        @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
-                                if (vrcPhotoMatch.Success)
-                                {
-                                    meta = new VrcMetaData
-                                    {
-                                        Date = DateTime.Parse($"{vrcPhotoMatch.Groups["datetime"]}")
-                                    };
-                                }
-                                else
-                                {
-                                    meta = null;
-                                }
-                            }
-
-                            BitmapImage image;
-                            try
-                            {
-                                image = await ImageHelper.GetThumbnailImageAsync(filePath, Cache.Instance.CacheFolderPath);
-                            }
-                            catch (Exception)
-                            {
-                                image = new BitmapImage(new Uri(@"pack://application:,,,/Resources/noloading.png"));
-                            }
-
-                            return new Photo
-                            {
-                                FilePath = filePath,
-                                ThumbnailImage = image,
-                                MetaData = meta
-                            };
+                            FilePath = filePath,
+                            ThumbnailImage = await GetThumbnailImage(filePath),
+                            MetaData = GetVrcMetaData(filePath)
                         })
                         .ToList());
+        }
+
+        private async Task<BitmapImage> GetThumbnailImage(string filePath)
+        {
+            BitmapImage image;
+            try
+            {
+                image = await ImageHelper.GetThumbnailImageAsync(filePath, Cache.Instance.CacheFolderPath);
+            }
+            catch (Exception)
+            {
+                image = _failedImage;
+            }
+            return image;
+        }
+
+        private VrcMetaData GetVrcMetaData(string filePath)
+        {
+            if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
+            {
+                var vrcPhotoMatch = Regex.Match(filePath,
+                        @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
+                if (vrcPhotoMatch.Success)
+                {
+                    if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
+                                                "yyyy-MM-dd_HH-mm-ss.fff",
+                                                new CultureInfo("en", false),
+                                                DateTimeStyles.None,
+                                                out DateTime date))
+                    {
+                        meta = new VrcMetaData
+                        {
+                            Date = date
+                        };
+                    }
+                }
+            }
+            return meta;
         }
     }
 }
