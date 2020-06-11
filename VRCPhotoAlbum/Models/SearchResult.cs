@@ -74,7 +74,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     }
                                 })
                                 .ToReadOnlyReactiveCollection(
-                                    onReset: Observable.Merge(SearchText, ResearchCommand, ResetCommand).Select(_ => Unit.Default))
+                                    onReset: Observable.Merge(
+                                                SearchText, 
+                                                ResearchCommand, 
+                                                ResetCommand)
+                                            .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
         }
 
@@ -156,40 +160,49 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             if (dateMatch.Success && (!sinceDateMatch.Success && !untilDateMatch.Success))
             {
-                var searchDate = DateTime.Parse(searchDateString).Date;
-                searchedPhotoList = searchedPhotoList
-                                        .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchDate) ?? 1) == 0);
+                if (DateTime.TryParse(searchDateString, out var searchDate))
+                {
+                    searchedPhotoList = searchedPhotoList
+                        .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchDate) ?? 1) == 0);
+                }
             }
             else
             {
                 if (sinceDateMatch.Success)
                 {
-                    var searchSinceDate = DateTime.Parse(searchSinceDateString).Date;
-                    searchedPhotoList = searchedPhotoList
-                                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchSinceDate) ?? -1) >= 0);
+                    if (DateTime.TryParse(searchSinceDateString, out var searchSinceDate))
+                    {
+                        searchedPhotoList = searchedPhotoList
+                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchSinceDate.Date) ?? -1) >= 0);
+                    }
                 }
 
                 if (untilDateMatch.Success)
                 {
-                    var searchUntilDate = DateTime.Parse(searchUntilDateString).Date;
-                    searchedPhotoList = searchedPhotoList
-                                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchUntilDate) ?? 1) <= 0);
+                    if (DateTime.TryParse(searchUntilDateString, out var searchUntilDate))
+                    {
+                        searchedPhotoList = searchedPhotoList
+                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchUntilDate.Date) ?? 1) <= 0);
+                    }
                 }
             }
 
-            // TODO: 写真名からDateTimeを含めた写真はUsersとWorldがnullなので検索にヒットしない
             // ユーザーでもワールドでも検索していない場合
             if (!userMatch.Success && !worldMatch.Success)
             {
+                // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
                 searchedPhotoList = searchedPhotoList
-                                        .Where(x => (x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) ||
+                                        .Where(x => (x?.MetaData?.Users?.Count() <= 0 && x?.MetaData?.World is null && !(x?.MetaData?.Date is null)) ||
+                                                    (x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) ||
                                                     (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
             }
             else
             {
+                // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
                 searchedPhotoList = searchedPhotoList
-                                        .Where(x => (x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) &&
-                                                    (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
+                                        .Where(x => (x?.MetaData?.Users?.Count() <= 0 && x?.MetaData?.World is null && !(x?.MetaData?.Date is null)) || 
+                                                    ((x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) &&
+                                                    (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false)));
             }
 
             _IsSearching = false;
