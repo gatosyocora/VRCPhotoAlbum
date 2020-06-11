@@ -3,6 +3,7 @@ using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.ViewModels;
 using MahApps.Metro.Controls;
 using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
@@ -29,6 +30,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private void MainWindow_OnLoaded(object sender, EventArgs args)
         {
+            Title += " ver. " + GetApplicationVersion();
+
             try
             {
                 _mainViewModel = new MainViewModel(this);
@@ -61,6 +64,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             // 選択状態を保たないために選択されると未選択状態に切り替える
             UserListView.SelectedItem = null;
+        }
+
+        private string GetApplicationVersion()
+        {
+            return FileVersionInfo.GetVersionInfo(typeof(App).Assembly.Location).FileVersion;
         }
 
         public void Dispose()
