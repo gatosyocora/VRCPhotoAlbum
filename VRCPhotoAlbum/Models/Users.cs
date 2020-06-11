@@ -51,7 +51,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                         if (SortedUserList
                                             .Select((u, i) => new { u.Name, i })
                                             .Where(x => x.Name == userName)
-                                            .Any())
+                                            .Any()) 
                                         {
                                             return Enumerable.Empty<User>();
                                         }
