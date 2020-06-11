@@ -177,6 +177,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 }
             }
 
+            // TODO: 写真名からDateTimeを含めた写真はUsersとWorldがnullなので検索にヒットしない
+            // ユーザーでもワールドでも検索していない場合
             if (!userMatch.Success && !worldMatch.Success)
             {
                 searchedPhotoList = searchedPhotoList
