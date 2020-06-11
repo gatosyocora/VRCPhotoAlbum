@@ -30,7 +30,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private void MainWindow_OnLoaded(object sender, EventArgs args)
         {
-            Title += " ver. " + GetApplicationVersion();
+            Title += $" {GetApplicationVersion()}";
 
             try
             {
