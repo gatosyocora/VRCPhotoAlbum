@@ -32,7 +32,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             ResetCommand = new ReactiveCommand().AddTo(Disposable);
             _userList = photoList.ObserveAddChanged()
-                            .SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<KoyashiroKohaku.VrcMetaToolSharp.User>())
+                            .SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<KoyashiroKohaku.VrcMetaTool.User>())
                             .Select(u => u.UserName)
                             .ToReadOnlyReactiveCollection(
                                 onReset: ResetCommand.Select(_ => Unit.Default))

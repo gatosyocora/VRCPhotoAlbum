@@ -1,5 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using KoyashiroKohaku.VrcMetaTool;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -31,7 +31,7 @@ namespace VRCPhotoAlbumTest.Models
                             World = "worldName"
                         };
                         meta.Users.Add(
-                            new KoyashiroKohaku.VrcMetaToolSharp.User
+                            new KoyashiroKohaku.VrcMetaTool.User
                             {
                                 UserName = $"{(char)('a' + offset)}"
                             });

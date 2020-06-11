@@ -1,4 +1,4 @@
-﻿using KoyashiroKohaku.VrcMetaToolSharp;
+﻿using KoyashiroKohaku.VrcMetaTool;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models

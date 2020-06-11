@@ -1,7 +1,7 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.Views;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Media.Imaging;
-using User = KoyashiroKohaku.VrcMetaToolSharp.User;
+using User = KoyashiroKohaku.VrcMetaTool.User;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {

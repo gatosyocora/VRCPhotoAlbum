@@ -1,7 +1,7 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.Views;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;

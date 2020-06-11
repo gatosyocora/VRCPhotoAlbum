@@ -1,4 +1,4 @@
-﻿using KoyashiroKohaku.VrcMetaToolSharp;
+﻿using KoyashiroKohaku.VrcMetaTool;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;

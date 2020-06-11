@@ -44,7 +44,7 @@
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.4" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="ReactiveProperty" Version="7.1.0" />
-    <PackageReference Include="VrcMetaToolSharp" Version="0.1.3" />
+    <PackageReference Include="VrcMetaTool.NET" Version="0.1.6" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\FlipHorizontalImage.png" />

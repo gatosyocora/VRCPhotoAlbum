@@ -1,5 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Models;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using KoyashiroKohaku.VrcMetaTool;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -34,7 +34,7 @@ namespace VRCPhotoAlbumTest.Models
                                             World = $"{(char)('a' + offset)}"
                                         };
                                         // ワールド検索だけどUserがnullだと自動的に検索から除外されてしまう
-                                        meta.Users.Add(new KoyashiroKohaku.VrcMetaToolSharp.User { UserName = "userName" });
+                                        meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User { UserName = "userName" });
                                         return new Photo
                                         {
                                             MetaData = meta

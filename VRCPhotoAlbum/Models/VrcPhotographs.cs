@@ -1,5 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
