@@ -24,6 +24,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         #region Model
         private SearchResult _searchResult;
         private Users _users;
+        private VrcPhotographs _vrcPhotographs;
         #endregion
 
         #region Photo
@@ -64,12 +65,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             _mainWindow = mainWindow;
 
             Setting.Instance.Create();
-
             Cache.Instance.Create();
 
-            _photoList = new ReactiveCollection<Photo>();
-            _searchResult = new SearchResult(_photoList);
-            _users = new Users(_photoList);
+            _vrcPhotographs = new VrcPhotographs();
+            _searchResult = new SearchResult(_vrcPhotographs.Collection);
+            _users = new Users(_vrcPhotographs.Collection);
 
             SearchText = _searchResult.SearchText.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
 
@@ -136,75 +136,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 _searchResult.ResetCommand.Execute();
                 _users.ResetCommand.Execute();
-                _ = LoadResourcesAsync();
+                _ = _vrcPhotographs.LoadResourcesAsync(Setting.Instance.Data.FolderPath);
             });
 
             if (!(Setting.Instance.Data is null))
             {
-                _ = LoadResourcesAsync();
+                _ = _vrcPhotographs.LoadResourcesAsync(Setting.Instance.Data.FolderPath);
             }
-        }
-
-        /// <summary>
-        /// 非同期でデータを読み込む
-        /// </summary>
-        /// <returns></returns>
-        public async Task LoadResourcesAsync()
-        {
-            try
-            {
-                _photoList.AddRangeOnScheduler(await LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath));
-            }
-            catch (Exception e)
-            {
-                Debug.Print($"{e.GetType().Name}: {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// 非同期で画像を読み込む
-        /// </summary>
-        /// <param name="folderPath"></param>
-        /// <returns></returns>
-        private Task<Photo[]> LoadVRCPhotoListAsync(string folderPath)
-        {
-            if (!Directory.Exists(folderPath))
-            {
-                throw new ArgumentException($"{folderPath} is not exist.");
-            }
-
-            return Task.WhenAll(Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                        .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                        .Select(async x =>
-                        {
-                            VrcMetaData meta;
-                            try
-                            {
-                                meta = VrcMetaDataReader.Read(x);
-                            }
-                            catch (Exception)
-                            {
-                                meta = null;
-                            }
-
-                            BitmapImage image;
-                            try
-                            {
-                                image = await ImageHelper.GetThumbnailImageAsync(x, Cache.Instance.CacheFolderPath);
-                            }
-                            catch (Exception)
-                            {
-                                image = new BitmapImage(new Uri(@"pack://application:,,,/Resources/noloading.png"));
-                            }
-
-                            return new Photo
-                            {
-                                FilePath = x,
-                                ThumbnailImage = image,
-                                MetaData = meta
-                            };
-                        })
-                        .ToList());
         }
     }
 }
