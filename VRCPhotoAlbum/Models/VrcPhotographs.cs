@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -51,22 +52,34 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             return Task.WhenAll(Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                         .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                        .Select(async x =>
+                        .Select(async filePath =>
                         {
                             VrcMetaData meta;
                             try
                             {
-                                meta = VrcMetaDataReader.Read(x);
+                                meta = VrcMetaDataReader.Read(filePath);
                             }
                             catch (Exception)
                             {
-                                meta = null;
+                                var vrcPhotoMatch = Regex.Match(filePath,
+                                        @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
+                                if (vrcPhotoMatch.Success)
+                                {
+                                    meta = new VrcMetaData
+                                    {
+                                        Date = DateTime.Parse($"{vrcPhotoMatch.Groups["datetime"]}")
+                                    };
+                                }
+                                else
+                                {
+                                    meta = null;
+                                }
                             }
 
                             BitmapImage image;
                             try
                             {
-                                image = await ImageHelper.GetThumbnailImageAsync(x, Cache.Instance.CacheFolderPath);
+                                image = await ImageHelper.GetThumbnailImageAsync(filePath, Cache.Instance.CacheFolderPath);
                             }
                             catch (Exception)
                             {
@@ -75,7 +88,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
                             return new Photo
                             {
-                                FilePath = x,
+                                FilePath = filePath,
                                 ThumbnailImage = image,
                                 MetaData = meta
                             };
