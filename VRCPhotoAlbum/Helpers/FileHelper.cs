@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
@@ -37,7 +36,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             stringBuilder.Append($"{error.Message}\n");
 
             File.AppendAllText(
-                $"{Directory.GetCurrentDirectory()}/errorlog.txt", 
+                $"{Directory.GetCurrentDirectory()}/errorlog.txt",
                 stringBuilder.ToString());
         }
     }
