@@ -2,9 +2,11 @@
 using KoyashiroKohaku.VrcMetaToolSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +16,50 @@ namespace VRCPhotoAlbumTest.Models
     [TestClass]
     public class UsersTest
     {
+        IEnumerable<Photo> _photoListForAlphabet;
+        IEnumerable<Photo> _photoListForCount;
+
+        public UsersTest()
+        {
+            _photoListForAlphabet = new int[] { 0, 3, 1, 2, 4 } // 各写真のユーザーの文字offset
+                                        .Select(i =>
+                                        {
+                                            var meta = new VrcMetaData
+                                            {
+                                                World = "worldName"
+                                            };
+                                            meta.Users.Add(
+                                                new KoyashiroKohaku.VrcMetaToolSharp.User
+                                                {
+                                                    UserName = $"{(char)('a' + i)}"
+                                                });
+                                            return new Photo
+                                            {
+                                                MetaData = meta
+                                            };
+                                        });
+
+            _photoListForCount = new int[] { 3, 5, 1, 4, 2 } // 各写真のユーザー数
+                                        .Select(i =>
+                                        {
+                                            var meta = new VrcMetaData
+                                            {
+                                                World = "worldName"
+                                            };
+                                            meta.Users.AddRange(
+                                                Enumerable.Range(0, i)
+                                                    .Select(ii =>
+                                                        new KoyashiroKohaku.VrcMetaToolSharp.User
+                                                        {
+                                                            UserName = $"{(char)('a' + i)}"
+                                                        }));
+                                            return new Photo
+                                            {
+                                                MetaData = meta
+                                            };
+                                        });
+        }
+
         [TestMethod("始めのソートタイプがNoneである")]
         public void IsNoneWhenDefaultStateOfSortType()
         {
@@ -203,26 +249,15 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            var _photoList = new int[] {0, 3, 1, 2, 4}
-                .Select(i =>
-                {
-                    var meta = new VrcMetaData();
-                    meta.Users.Add(
-                        new KoyashiroKohaku.VrcMetaToolSharp.User
-                        {
-                            UserName = ('a' + i).ToString()
-                        });
-                    return new Photo
-                    {
-                        MetaData = meta
-                    };
-                });
-
-            photoList.AddRangeOnScheduler(_photoList);
+            foreach (var photo in _photoListForAlphabet)
+            {
+                photoList.Add(photo);
+            }
 
             usersModel.SortType.Value = UserSortType.Alphabet;
 
-            Assert.AreEqual(5, usersModel.SortedUserList.Count);
+            usersModel.SortedUserList.ObserveAddChangedItems()
+                .Subscribe(_ => Assert.AreEqual(5, usersModel.SortedUserList.Count));
         }
 
         [TestMethod("ユーザーリストがアルファベット順にソートされるか")]
@@ -231,30 +266,24 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            var _photoList = new int[] { 0, 3, 1, 2, 4 } // 各写真のユーザーの文字offset
-                .Select(i =>
-                {
-                    var meta = new VrcMetaData();
-                    meta.Users.Add(
-                        new KoyashiroKohaku.VrcMetaToolSharp.User
-                        {
-                            UserName = ('a' + i).ToString()
-                        });
-                    return new Photo
-                    {
-                        MetaData = meta
-                    };
-                });
-
-            photoList.AddRangeOnScheduler(_photoList);
+            foreach (var photo in _photoListForAlphabet)
+            {
+                photoList.Add(photo);
+            }
 
             usersModel.SortType.Value = UserSortType.Alphabet;
 
             var list = usersModel.SortedUserList;
-            for (int i = 0; i < 4; i++)
-            {
-                Assert.IsTrue(list[i].Name.CompareTo(list[i + 1].Name) <= 0);
-            }
+
+            usersModel.SortedUserList.ObserveAddChangedItems()
+                .Subscribe(_ => 
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Assert.IsTrue(list[i].Name.CompareTo(list[i + 1].Name) <= 0);
+                    }
+                });
+            
         }
 
         [TestMethod("ユーザーリストの要素数が枚数順ソートで変化しないか")]
@@ -263,29 +292,38 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            var _photoList = new int[] {3, 5, 1, 4, 2} // 各写真のユーザー数
-                .Select(i =>
-                {
-                    // どういう写真リストでテストするか未定
-                    var meta = new VrcMetaData();
-                    meta.Users.AddRange(
-                        Enumerable.Range(0, i)
-                            .Select(ii =>
-                                new KoyashiroKohaku.VrcMetaToolSharp.User
-                                {
-                                    UserName = ('a' + ii).ToString()
-                                }));
-                    return new Photo
-                    {
-                        MetaData = meta
-                    };
-                });
-
-            photoList.AddRangeOnScheduler(_photoList);
+            photoList.AddRangeOnScheduler(_photoListForCount);
 
             usersModel.SortType.Value = UserSortType.Count;
 
-            Assert.AreEqual(5, usersModel.SortedUserList.Count);
+            usersModel.SortedUserList.ObserveAddChangedItems()
+                .Subscribe(_ => Assert.AreEqual(5, usersModel.SortedUserList.Count));
+        }
+
+        [TestMethod("ユーザーリストが枚数順にソートされるか")]
+        public void CanSortOrderToCount()
+        {
+            var photoList = new ReactiveCollection<Photo>();
+            var usersModel = new Users(photoList);
+
+            foreach (var photo in _photoListForAlphabet)
+            {
+                photoList.Add(photo);
+            }
+
+            usersModel.SortType.Value = UserSortType.Count;
+
+            var list = usersModel.SortedUserList;
+
+            usersModel.SortedUserList.ObserveAddChangedItems()
+                .Subscribe(_ =>
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Assert.IsTrue(list[i].PhotoCount.CompareTo(list[i + 1].PhotoCount) <= 0);
+                    }
+                });
+
         }
     }
 }
