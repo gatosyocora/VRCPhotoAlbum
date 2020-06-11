@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -72,14 +71,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             _searchResult = new SearchResult(_photoList);
             _users = new Users(_photoList);
 
-            SearchText = _searchResult.OnChangedSearchKeyword
-                            .Select(_ => ToSearchText(_searchResult))
-                            .ToReactiveProperty().AddTo(Disposable);
-            SearchText.Subscribe(t =>
-            {
-                _searchResult.SearchText.Value = t;
-                Debug.Print("viewModel:SearchText");
-            }).AddTo(Disposable);
+            SearchText = _searchResult.SearchText.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
 
             ShowedPhotoList = _searchResult.ShowedPhotoList
                                 .ObserveAddChanged()
@@ -87,19 +79,18 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                     onReset: Observable.Merge(
                                                     _searchResult.SearchText,
                                                     _searchResult.ResearchCommand,
-                                                    _searchResult.ResetCommand,
-                                                    _searchResult.ResetSearchKeywordsCommand)
+                                                    _searchResult.ResetCommand)
                                             .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
 
             SearchDate = _searchResult.SearchedDate.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
             SearchWithUserNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithUserNameCommand.Subscribe(u => _searchResult.SearchedUserName.Value = u).AddTo(Disposable);
+            SearchWithUserNameCommand.Subscribe(_searchResult.SearchWithUserName).AddTo(Disposable);
             SearchWithWorldNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithWorldNameCommand.Subscribe(w => _searchResult.SearchedWorldName.Value = w).AddTo(Disposable);
+            SearchWithWorldNameCommand.Subscribe(_searchResult.SearchWithWorldName).AddTo(Disposable);
             SearchWithDateCommand = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithDateCommand.Subscribe(dateString =>  _searchResult.SearchedDate.Value = DateTime.Parse(dateString)).AddTo(Disposable);
+            SearchWithDateCommand.Subscribe(dateString =>  _searchResult.SearchWithDate(DateTime.Parse(dateString))).AddTo(Disposable);
             SearchWithDateTypeCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithDateTypeCommand.Subscribe(type =>
             {
@@ -111,21 +102,15 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 }
                 else if (type == "week")
                 {
-                    _searchResult.SearchedSinceDate.Value = now.AddDays(-7);
-                    _searchResult.SearchedUntilDate.Value = now;
+                    _searchResult.SearchWithDatePeriodString(now.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
                 }
                 else if (type == "month")
                 {
-                    _searchResult.SearchedSinceDate.Value = now.AddMonths(-1);
-                    _searchResult.SearchedUntilDate.Value = now;
+                    _searchResult.SearchWithDatePeriodString(now.AddMonths(-1).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
                 }
             });
             ClearSearchText = new ReactiveCommand().AddTo(Disposable);
-            ClearSearchText.Subscribe(() =>
-            {
-                _searchResult.ResetSearchKeywordsCommand.Execute();
-            })
-            .AddTo(Disposable);
+            ClearSearchText.Subscribe(() => SearchText.Value = string.Empty).AddTo(Disposable);
 
             CurrentUserSortType = new ReactiveProperty<UserSortType>(UserSortType.None).AddTo(Disposable);
             CurrentUserSortType.Subscribe(type => _users.SortType.Value = CurrentUserSortType.Value).AddTo(Disposable);
@@ -220,30 +205,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                             };
                         })
                         .ToList());
-        }
-
-        private string ToSearchText(SearchResult result)
-        {
-            var useUser = result.SearchedUserName.Value.Any();
-            var userWorld = result.SearchedWorldName.Value.Any();
-            var useDate = result.SearchedDate.Value.Date.CompareTo(new DateTime().Date) != 0;
-            var useSinceDate = result.SearchedSinceDate.Value.Date.CompareTo(new DateTime().Date) != 0;
-            var useUntilDate = result.SearchedUntilDate.Value.Date.CompareTo(new DateTime().Date) != 0;
-
-            var stringBuilder = new StringBuilder();
-            if (useUser)
-                stringBuilder.Append(@$"user:""{result.SearchedUserName.Value}"" ");
-            if (userWorld)
-                stringBuilder.Append(@$"world:""{result.SearchedWorldName.Value}"" ");
-
-            if (useDate && !useSinceDate && !useUntilDate)
-                stringBuilder.Append(@$"date:""{result.SearchedDate.Value.Date.ToString("yyyy-MM-dd")}"" ");
-            if (useSinceDate)
-                stringBuilder.Append(@$"since:""{result.SearchedSinceDate.Value.Date.ToString("yyyy-MM-dd")}"" ");
-            if (useUntilDate)
-                stringBuilder.Append(@$"until:""{result.SearchedUntilDate.Value.Date.ToString("yyyy-MM-dd")}""");
-
-            return stringBuilder.ToString();
         }
     }
 }

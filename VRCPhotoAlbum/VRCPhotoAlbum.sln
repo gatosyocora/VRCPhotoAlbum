@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRCPhotoAlbum", "VRCPhotoAlbum.csproj", "{E51B4D98-D135-4617-9E78-53A66D6C6070}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRCPhotoAlbumTest", "..\VRCPhotoAlbumTest\VRCPhotoAlbumTest.csproj", "{5FD3E0D0-4A32-4BFF-A54D-C4B57F2052E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRCPhotoAlbumTest", "..\VRCPhotoAlbumTest\VRCPhotoAlbumTest.csproj", "{5FD3E0D0-4A32-4BFF-A54D-C4B57F2052E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
