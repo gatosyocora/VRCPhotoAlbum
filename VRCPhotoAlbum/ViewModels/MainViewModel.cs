@@ -58,7 +58,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand OpenSettingCommand { get; }
         #endregion
 
+        #region System
         public ReactiveCommand RebootCommand { get; }
+        public ReactiveProperty<bool> ActiveProgressRing { get; }
+        #endregion
 
         public MainViewModel(MainWindow mainWindow)
         {
@@ -138,6 +141,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 _users.ResetCommand.Execute();
                 _ = _vrcPhotographs.LoadResourcesAsync(Setting.Instance.Data.FolderPath);
             });
+
+            ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);
+            _vrcPhotographs.Collection.ObserveAddChangedItems().Subscribe(_ => ActiveProgressRing.Value = false).AddTo(Disposable);
+            _vrcPhotographs.Collection.ObserveResetChanged().Subscribe(_ => ActiveProgressRing.Value = true).AddTo(Disposable);
 
             if (!(Setting.Instance.Data is null))
             {

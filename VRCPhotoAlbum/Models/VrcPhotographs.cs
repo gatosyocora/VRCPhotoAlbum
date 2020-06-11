@@ -31,6 +31,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// <returns></returns>
         public async Task LoadResourcesAsync(string folderPath)
         {
+            Collection.ClearOnScheduler();
             try
             {
                 Collection.AddRangeOnScheduler(await LoadVRCPhotoListAsync(folderPath));
