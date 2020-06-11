@@ -206,5 +206,23 @@
                    Width="20"
                    Height="20"/>
         </Button>
+        <Grid x:Name="PageChangeButtons"
+              Grid.ColumnSpan="100"
+              Grid.RowSpan="100"
+              VerticalAlignment="Bottom"
+              Margin="100 20 100 20">
+            <Button x:Name="PreviousPageButtton"
+                    Content="Previous"
+                    Foreground="White"
+                    HorizontalAlignment="Left"
+                    Width="100"
+                    Command="{Binding ChangePreviousPageCommand}"/>
+            <Button x:Name="NextPageButtton"
+                    Content="Next"
+                    Foreground="White"
+                    HorizontalAlignment="Right"
+                    Width="100"
+                    Command="{Binding ChangeNextPageCommand}"/>
+        </Grid>
     </Grid>
 </mahApps:MetroWindow>
