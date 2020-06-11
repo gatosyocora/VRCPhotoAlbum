@@ -225,34 +225,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public void SearchWithUserName(string userName) => SearchWithTemplate(userName, "user");
         public void SearchWithWorldName(string worldName) => SearchWithTemplate(worldName, "world");
 
-        public void SearchWithDateString(string dateString)
-        {
-            if (string.IsNullOrEmpty(dateString) || dateString == "0001/01/01 00:00:00") return;
-
-            SearchedDate.Value = DateTime.Parse(dateString).Date;
-
-            dateString = SearchedDate.Value.ToString("yyyy-MM-dd");
-
-            var searchText = Regex.Replace(SearchText?.Value ?? string.Empty, @"\s*since:"".*?""\s*", string.Empty);
-            searchText = Regex.Replace(searchText, @"\s*until:"".*?""\s*", string.Empty);
-
-            var dateMatch = Regex.Match(searchText, @"(?<prefix>.*date:"")(?<dateString>.*?)(?<suffix>"".*)");
-
-            if (dateMatch.Success)
-            {
-                SearchText.Value = $"{dateMatch.Groups["prefix"]}{dateString}{dateMatch.Groups["suffix"]}";
-            }
-            else
-            {
-                var space = string.Empty;
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    space = " ";
-                }
-                SearchText.Value = $@"{searchText}{space}date:""{dateString}""";
-            }
-        }
-
         public void SearchWithDate(DateTime dateTime)
         {
             if (dateTime.Date.CompareTo(new DateTime().Date) == 0) return;
