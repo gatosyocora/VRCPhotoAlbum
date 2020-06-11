@@ -19,11 +19,11 @@ namespace VRCPhotoAlbumTest.Models
         /// → SearchTextの変化によってShowedPhotoListを更新(全削除→SearchPhoto()の検索結果を追加)
         /// </summary>
 
-        private List<Photo> _photoList;
+        private IEnumerable<Photo> _photoList;
 
         public SearchResultUserNameTest()
         {
-            var _photoList = new int[] { 3, 2, 5, 10 } // 各人が含まれる写真の数
+            _photoList = new int[] { 3, 2, 5, 10 } // 各人が含まれる写真の数
                     .SelectMany((i, offset) =>
                     {
                         var meta = new VrcMetaData 

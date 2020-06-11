@@ -2,6 +2,7 @@
 using KoyashiroKohaku.VrcMetaToolSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,13 @@ namespace VRCPhotoAlbumTest.Models
     [TestClass]
     public class SearchResultTest
     {
+        IEnumerable<Photo> _photoList;
+
+        public SearchResultTest()
+        {
+            _photoList = Enumerable.Range(0, 5).Select(_ => new Photo());
+        }
+
         [TestMethod("SearchTextの初期値が空文字であるか")]
         public void IsEmptyDafalutStateOfSearchText()
         {
@@ -76,16 +84,10 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var searchResultModel = new SearchResult(photoList);
 
-            var _photoList = Enumerable.Range(0, 5)
-                                .Select(_ =>
-                                    new Photo
-                                    {
-                                        ThumbnailImage = new BitmapImage()
-                                    });
-
             photoList.AddRangeOnScheduler(_photoList);
 
-            Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count);
+            searchResultModel.ShowedPhotoList.ObserveAddChangedItems()
+                .Subscribe(_ => Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count));
         }
 
         [TestMethod("表示用写真リストの全要素がResetCommand実行時に削除されているか")]
@@ -94,18 +96,15 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var searchResultModel = new SearchResult(photoList);
 
-            var _photoList = Enumerable.Range(0, 5)
-                                .Select(_ =>
-                                    new Photo
-                                    {
-                                        ThumbnailImage = new BitmapImage()
-                                    });
-
-            photoList.AddRangeOnScheduler(_photoList);
+            foreach (var photo in _photoList)
+            {
+                photoList.Add(photo);
+            }
 
             searchResultModel.ResetCommand.Execute();
 
-            Assert.AreEqual(0, searchResultModel.ShowedPhotoList.Count);
+            searchResultModel.ShowedPhotoList.ObserveAddChangedItems()
+                .Subscribe(_ => Assert.AreEqual(0, searchResultModel.ShowedPhotoList.Count));
         }
 
         [TestMethod("表示用写真リストの要素数がResearchCommand実行後に変化していないか")]
@@ -114,18 +113,15 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var searchResultModel = new SearchResult(photoList);
 
-            var _photoList = Enumerable.Range(0, 5)
-                                .Select(_ =>
-                                    new Photo
-                                    {
-                                        ThumbnailImage = new BitmapImage()
-                                    });
-
-            photoList.AddRangeOnScheduler(_photoList);
+            foreach (var photo in _photoList)
+            {
+                photoList.Add(photo);
+            }
 
             searchResultModel.ResearchCommand.Execute();
 
-            Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count);
+            searchResultModel.ShowedPhotoList.ObserveMoveChangedItems()
+                .Subscribe(_ => Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count));
         }
 
         [TestMethod("検索キーワードがない状態のとき内部メソッドがすべての写真リストを取得できているか")]
@@ -133,13 +129,6 @@ namespace VRCPhotoAlbumTest.Models
         {
             var photoList = new ReactiveCollection<Photo>();
             var searchResultModel = new SearchResult(photoList);
-
-            var _photoList = Enumerable.Range(0, 5)
-                                .Select(_ =>
-                                    new Photo
-                                    {
-                                        ThumbnailImage = new BitmapImage()
-                                    });
 
             foreach (var photo in _photoList)
             {
