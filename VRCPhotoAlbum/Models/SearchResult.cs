@@ -80,13 +80,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         private IEnumerable<Photo> SearchPhoto(string searchText)
         {
-            _IsSearching = true;
-
             // 最初と最後にスペースが連なっているものはString.Emptyと同じ扱いにする
             searchText = Regex.Replace(searchText, @"^\s*", string.Empty);
             searchText = Regex.Replace(searchText, @"\s*$", string.Empty);
 
             if (!searchText.Any()) return _photoList;
+
+            _IsSearching = true;
 
             string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
