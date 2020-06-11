@@ -75,17 +75,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchText = _searchResult.OnChangedSearchKeyword
                             .Select(_ => ToSearchText(_searchResult))
                             .ToReactiveProperty().AddTo(Disposable);
-            SearchText.Subscribe(t =>
-            {
-                _searchResult.SearchText.Value = t;
-                Debug.Print("viewModel:SearchText");
-            }).AddTo(Disposable);
+            SearchText.Subscribe(t =>_searchResult.SearchText.Value = t).AddTo(Disposable);
 
             ShowedPhotoList = _searchResult.ShowedPhotoList
                                 .ObserveAddChanged()
                                 .ToReadOnlyReactiveCollection(
                                     onReset: Observable.Merge(
-                                                    _searchResult.SearchText,
                                                     _searchResult.ResearchCommand,
                                                     _searchResult.ResetCommand,
                                                     _searchResult.ResetSearchKeywordsCommand)
