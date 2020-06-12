@@ -148,19 +148,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             _vrcPhotographs.Collection.ObserveAddChangedItems().Subscribe(_ => ActiveProgressRing.Value = false).AddTo(Disposable);
             _vrcPhotographs.Collection.ObserveResetChanged().Subscribe(_ => ActiveProgressRing.Value = true).AddTo(Disposable);
 
-            ChangePreviousPageCommand = new ReactiveCommand().AddTo(Disposable);
-            ChangePreviousPageCommand.Subscribe(() =>
-            {
-                _vrcPhotographs.PreviousLoadingCommand.Execute();
-                RebootCommand.Execute();
-            }).AddTo(Disposable);
-            ChangeNextPageCommand = new ReactiveCommand().AddTo(Disposable);
-            ChangeNextPageCommand.Subscribe(() =>
-            {
-                _vrcPhotographs.NextLoadingCommand.Execute();
-                RebootCommand.Execute();
-            }).AddTo(Disposable);
-
             LoadResourcesCommand = new ReactiveCommand().AddTo(Disposable);
             LoadResourcesCommand.Subscribe(() =>
             {

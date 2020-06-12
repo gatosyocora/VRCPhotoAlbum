@@ -74,7 +74,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                 .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                //.Skip(_loadedOffset.Value).Take(MAX_PHOTO_COUNT)
                 .Select(async filePath =>
                     new Photo
                     {
