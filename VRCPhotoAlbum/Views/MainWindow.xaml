@@ -5,8 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum"
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        mc:Ignorable="d"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:controls="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
+                      mc:Ignorable="d"
         Title="VRCPhotoAlbum" Height="600" Width="800"
         SaveWindowPosition="True">
 
@@ -161,10 +161,15 @@
         </ListView>
         <ListBox x:Name="PhotoListBox"
             ItemsSource="{Binding}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             Grid.Column="0" Grid.Row="4"
             SelectionMode="Single"
-            SelectionChanged="PhotoListBox_SelectionChanged">
+            SelectionChanged="PhotoListBox_SelectionChanged"
+            ScrollViewer.CanContentScroll="True"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ScrollViewer.PanningMode="VerticalOnly"
+            VirtualizingPanel.IsVirtualizing="True"
+            VirtualizingPanel.VirtualizationMode="Recycling">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding OpenPhotoPreviewCommand}"
@@ -173,8 +178,7 @@
             </i:Interaction.Triggers>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel
-                        HorizontalAlignment="Center"/>
+                    <controls:VirtualizingWrapPanel/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
