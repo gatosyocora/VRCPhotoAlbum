@@ -19,8 +19,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     {
         public ReactiveCollection<Photo> Collection { get; }
 
-        private static BitmapImage _failedImage => new BitmapImage(new Uri(@"pack://application:,,,/Resources/failed.png"));
-
         private ReactiveProperty<int> _loadedOffset;
         private static readonly int MAX_PHOTO_COUNT = 200;
 
@@ -81,20 +79,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                             MetaData = GetVrcMetaData(filePath)
                         })
                         .ToList());
-        }
-
-        private async Task<BitmapImage> GetThumbnailImage(string filePath)
-        {
-            BitmapImage image;
-            try
-            {
-                image = await ImageHelper.GetThumbnailImageAsync(filePath, Cache.Instance.CacheFolderPath);
-            }
-            catch (Exception)
-            {
-                image = _failedImage;
-            }
-            return image;
         }
 
         private VrcMetaData GetVrcMetaData(string filePath)

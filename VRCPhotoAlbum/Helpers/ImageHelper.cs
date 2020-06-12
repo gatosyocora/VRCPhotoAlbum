@@ -40,37 +40,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             return bitmapImage;
         }
 
-        public static async Task<BitmapImage> LoadBitmapImageAsync(string filePath)
-        {
-            return await Task.Run(() =>
-            {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.EndInit();
-                    bitmapImage.Freeze();
-                    return bitmapImage;
-                }
-            });
-        }
-
-        public static BitmapImage LoadThumbnailImageIfExists(string filePath, string cacheFolderPath) 
-        {
-            var thumbnailImagePath = GetThumbnailImagePath(filePath, cacheFolderPath);
-
-            if (File.Exists(thumbnailImagePath))
-            {
-                return LoadBitmapImage(thumbnailImagePath);
-            }
-            else
-            {
-                return _failedImage;
-            }
-        }
-
         public static string GetThumbnailImagePath(string filePath, string cacheFolderPath)
         {
             return $"{cacheFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
@@ -108,27 +77,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                     originalImage.Dispose();
                     thumbnailImage.Dispose();
                 }
-            });
-        }
-
-        public async static Task<BitmapImage> GetThumbnailImageAsync(string filePath, string cashFolderPath)
-        {
-            return await Task.Run(() =>
-            {
-                var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
-
-                if (!File.Exists(thumbnailImageFilePath))
-                {
-                    using (var stream = File.OpenRead(filePath))
-                    {
-                        var originalImage = Image.FromStream(stream, false, false);
-                        var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
-                        thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Jpeg);
-                        originalImage.Dispose();
-                        thumbnailImage.Dispose();
-                    }
-                }
-                return LoadBitmapImageAsync(thumbnailImageFilePath);
             });
         }
         #endregion
