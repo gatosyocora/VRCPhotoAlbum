@@ -20,9 +20,10 @@
     <WarningLevel>1</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\failed.png" />
     <None Remove="Resources\FlipHorizontalImage.png" />
     <None Remove="Resources\LeftImage.png" />
-    <None Remove="Resources\noloading.png" />
+    <None Remove="Resources\nowloading.jpg" />
     <None Remove="Resources\RightImage.png" />
     <None Remove="Resources\RotateLeft90Image.png" />
     <None Remove="Resources\RotateRight90Image.png" />
@@ -50,7 +51,8 @@
   <ItemGroup>
     <Resource Include="Resources\FlipHorizontalImage.png" />
     <Resource Include="Resources\LeftImage.png" />
-    <Resource Include="Resources\noloading.png" />
+    <Resource Include="Resources\failed.png" />
+    <Resource Include="Resources\nowloading.jpg" />
     <Resource Include="Resources\RightImage.png" />
     <Resource Include="Resources\RotateLeft90Image.png" />
     <Resource Include="Resources\RotateRight90Image.png" />

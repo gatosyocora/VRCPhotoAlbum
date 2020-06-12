@@ -12,7 +12,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
     public class ImageHelper
     {
-        private static BitmapImage _failedImage => LoadBitmapImage(@"pack://application:,,,/Resources/noloading.png");
+        private static BitmapImage _failedImage => LoadBitmapImage(@"pack://application:,,,/Resources/failed.png");
 
         #region BitmapImage
         public static BitmapImage LoadBitmapImage(string filePath)

@@ -19,7 +19,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     {
         public ReactiveCollection<Photo> Collection { get; }
 
-        private static BitmapImage _failedImage => new BitmapImage(new Uri(@"pack://application:,,,/Resources/noloading.png"));
+        private static BitmapImage _failedImage => new BitmapImage(new Uri(@"pack://application:,,,/Resources/failed.png"));
 
         private ReactiveProperty<int> _loadedOffset;
         private static readonly int MAX_PHOTO_COUNT = 200;

@@ -9,6 +9,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 {
     public class Photo : ModelBase
     {
+        private static readonly string NOW_LOADING_IMAGE_PATH = @"pack://application:,,,/Resources/nowloading.jpg";
         private static readonly string FAILED_IMAGE_PATH = @"pack://application:,,,/Resources/noloading.png";
 
         public string FilePath { get; set; }
@@ -21,7 +22,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         public Photo()
         {
-            ThumbnailImagePath = new ReactiveProperty<string>(FAILED_IMAGE_PATH);
+            ThumbnailImagePath = new ReactiveProperty<string>(NOW_LOADING_IMAGE_PATH);
             CreateThumbnailCommand = new ReactiveCommand();
             CreateThumbnailCommand.Subscribe(async () =>
             {
