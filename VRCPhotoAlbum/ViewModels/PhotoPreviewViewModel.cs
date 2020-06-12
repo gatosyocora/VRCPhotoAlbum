@@ -6,8 +6,11 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using User = KoyashiroKohaku.VrcMetaTool.User;
 
@@ -34,6 +37,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand Next { get; }
         public ReactiveCommand<string> SearchWithUser { get; }
         public ReactiveCommand<string> OpenTwitterCommand { get; }
+        public ReactiveCommand OpenExplorerCommand { get; }
         public ReactiveCommand RotateL90 { get; }
         public ReactiveCommand RotateR90 { get; }
         public ReactiveCommand FlipHorizontal { get; }
@@ -42,6 +46,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<string> WorldSelectCommand { get; }
         public ReactiveCommand<DateTime> DateSelectCommand { get; }
         public ReactiveCommand<PhotoPreview> WindowCloseCommand { get; }
+
 
         public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList, SearchResult searchResult)
         {
@@ -78,6 +83,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             Next = new ReactiveCommand().AddTo(Disposable);
             SearchWithUser = new ReactiveCommand<string>().AddTo(Disposable);
             OpenTwitterCommand = new ReactiveCommand<string>().AddTo(Disposable);
+            OpenExplorerCommand = new ReactiveCommand().AddTo(Disposable);
             RotateL90 = new ReactiveCommand().AddTo(Disposable);
             RotateR90 = new ReactiveCommand().AddTo(Disposable);
             FlipHorizontal = new ReactiveCommand().AddTo(Disposable);
@@ -98,6 +104,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
             });
             OpenTwitterCommand.Subscribe(WindowHelper.OpenTwitterWithScreenName);
+            OpenExplorerCommand.Subscribe(() => WindowHelper.OpenFileExplorer(PreviewPhoto.Value.FilePath));
             RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateLeft90AndSave));
             RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateRight90AndSave));
             FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.FilpHorizontalAndSave));

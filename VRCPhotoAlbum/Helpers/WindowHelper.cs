@@ -3,6 +3,7 @@ using Gatosyocora.VRCPhotoAlbum.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
@@ -44,6 +45,24 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 var startInfo = new ProcessStartInfo(uri)
                 {
                     UseShellExecute = true
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception exception)
+            {
+                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
+            }
+        }
+
+        internal static void OpenFileExplorer(string filePath)
+        {
+            var uri = @"explorer.exe";
+            try
+            {
+                var startInfo = new ProcessStartInfo(uri)
+                {
+                    UseShellExecute = true,
+                    Arguments = $@"/select,{filePath}"
                 };
                 Process.Start(startInfo);
             }
