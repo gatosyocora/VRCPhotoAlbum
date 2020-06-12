@@ -49,7 +49,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             Collection.ClearOnScheduler();
             try
             {
-                Collection.AddRangeOnScheduler(await LoadVRCPhotoListAsync(folderPath));
+                foreach (var photo in LoadVRCPhotoListAsync(folderPath))
+                {
+                    Collection.AddOnScheduler(await photo);
+                }
             }
             catch (Exception e)
             {
@@ -62,47 +65,49 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// </summary>
         /// <param name="folderPath"></param>
         /// <returns></returns>
-        private Task<Photo[]> LoadVRCPhotoListAsync(string folderPath)
+        private IEnumerable<Task<Photo>> LoadVRCPhotoListAsync(string folderPath)
         {
             if (!Directory.Exists(folderPath))
             {
                 throw new ArgumentException($"{folderPath} is not exist.");
             }
 
-            return Task.WhenAll(Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                        .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                        //.Skip(_loadedOffset.Value).Take(MAX_PHOTO_COUNT)
-                        .Select(async filePath =>
-                        new Photo
-                        {
-                            FilePath = filePath,
-                            MetaData = GetVrcMetaData(filePath)
-                        })
-                        .ToList());
+            return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+                .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
+                //.Skip(_loadedOffset.Value).Take(MAX_PHOTO_COUNT)
+                .Select(async filePath =>
+                    new Photo
+                    {
+                        FilePath = filePath,
+                        MetaData = await GetVrcMetaDataAsync(filePath)
+                    });
         }
 
-        private VrcMetaData GetVrcMetaData(string filePath)
+        private async Task<VrcMetaData> GetVrcMetaDataAsync(string filePath)
         {
-            if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
+            return await Task.Run(() =>
             {
-                var vrcPhotoMatch = Regex.Match(filePath,
-                        @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
-                if (vrcPhotoMatch.Success)
+                if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
                 {
-                    if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
-                                                "yyyy-MM-dd_HH-mm-ss.fff",
-                                                new CultureInfo("en", false),
-                                                DateTimeStyles.None,
-                                                out DateTime date))
+                    var vrcPhotoMatch = Regex.Match(filePath,
+                            @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
+                    if (vrcPhotoMatch.Success)
                     {
-                        meta = new VrcMetaData
+                        if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
+                                                    "yyyy-MM-dd_HH-mm-ss.fff",
+                                                    new CultureInfo("en", false),
+                                                    DateTimeStyles.None,
+                                                    out DateTime date))
                         {
-                            Date = date
-                        };
+                            meta = new VrcMetaData
+                            {
+                                Date = date
+                            };
+                        }
                     }
                 }
-            }
-            return meta;
+                return meta;
+            });
         }
     }
 }
