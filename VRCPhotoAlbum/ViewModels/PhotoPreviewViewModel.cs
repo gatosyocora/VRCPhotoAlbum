@@ -114,7 +114,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             imageProcessFunction(filePath, meta);
             Cache.Instance.DeleteCacheFile(filePath);
-            PreviewPhoto.Value.ThumbnailImage = ImageHelper.GetThumbnailImage(filePath, Cache.Instance.CacheFolderPath);
+            //TODO: ここでサムネイルの読み直しをおこなう
             Image.Value = ImageHelper.LoadBitmapImage(filePath);
             searchResult.ResearchCommand.Execute();
         }
