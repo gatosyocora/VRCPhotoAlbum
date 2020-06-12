@@ -53,7 +53,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             _photoList = photoList.ObserveAddChanged()
                             .Select(p => p)
                             .ToReadOnlyReactiveCollection(
-                                onReset:ResetCommand.Select(_ => Unit.Default)
+                                onReset: ResetCommand.Select(_ => Unit.Default)
                             )
                             .AddTo(Disposable);
 
@@ -75,8 +75,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                 })
                                 .ToReadOnlyReactiveCollection(
                                     onReset: Observable.Merge(
-                                                SearchText, 
-                                                ResearchCommand, 
+                                                SearchText,
+                                                ResearchCommand,
                                                 ResetCommand)
                                             .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
@@ -200,7 +200,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             {
                 // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
                 searchedPhotoList = searchedPhotoList
-                                        .Where(x => (x?.MetaData?.Users?.Count() <= 0 && x?.MetaData?.World is null && !(x?.MetaData?.Date is null)) || 
+                                        .Where(x => (x?.MetaData?.Users?.Count() <= 0 && x?.MetaData?.World is null && !(x?.MetaData?.Date is null)) ||
                                                     ((x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) &&
                                                     (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false)));
             }
@@ -233,7 +233,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 }
 
                 // 既に何か入力されていたらスペースをいれて入力する
-                SearchText.Value = $@"{searchText}{(searchText.Any()?" ":string.Empty)}{type}:""{name}""";
+                SearchText.Value = $@"{searchText}{(searchText.Any() ? " " : string.Empty)}{type}:""{name}""";
             }
         }
 

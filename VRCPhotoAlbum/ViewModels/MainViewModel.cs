@@ -96,7 +96,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithWorldNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithWorldNameCommand.Subscribe(_searchResult.SearchWithWorldName).AddTo(Disposable);
             SearchWithDateCommand = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithDateCommand.Subscribe(dateString =>  _searchResult.SearchWithDate(DateTime.Parse(dateString))).AddTo(Disposable);
+            SearchWithDateCommand.Subscribe(dateString => _searchResult.SearchWithDate(DateTime.Parse(dateString))).AddTo(Disposable);
             SearchWithDateTypeCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithDateTypeCommand.Subscribe(type =>
             {
