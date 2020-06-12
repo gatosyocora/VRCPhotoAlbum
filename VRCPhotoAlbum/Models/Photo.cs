@@ -1,6 +1,7 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -22,8 +23,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         public Photo()
         {
-            ThumbnailImagePath = new ReactiveProperty<string>(NOW_LOADING_IMAGE_PATH);
-            CreateThumbnailCommand = new ReactiveCommand();
+            ThumbnailImagePath = new ReactiveProperty<string>(NOW_LOADING_IMAGE_PATH).AddTo(Disposable);
+            CreateThumbnailCommand = new ReactiveCommand().AddTo(Disposable);
             CreateThumbnailCommand.Subscribe(async () =>
             {
                 if (!File.Exists(ThumbnailImagePath.Value))
@@ -31,7 +32,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     await ImageHelper.CreateThumbnailImagePathAsync(FilePath, Cache.Instance.CacheFolderPath);
                 }
                 ThumbnailImagePath.Value = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
-            });
+            }).AddTo(Disposable);
         }
 
         public override string ToString()

@@ -142,7 +142,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 _searchResult.ResetCommand.Execute();
                 _users.ResetCommand.Execute();
                 _ = _vrcPhotographs.LoadResourcesAsync(Setting.Instance.Data.FolderPath);
-            });
+            }).AddTo(Disposable);
 
             ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);
             _vrcPhotographs.Collection.ObserveAddChangedItems().Subscribe(_ => ActiveProgressRing.Value = false).AddTo(Disposable);
