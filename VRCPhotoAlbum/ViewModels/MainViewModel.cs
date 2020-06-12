@@ -28,7 +28,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         #endregion
 
         #region Photo
-        private ReactiveCollection<Photo> _photoList { get; }
         public ReadOnlyReactiveCollection<Photo> ShowedPhotoList { get; }
         public ReactiveProperty<bool> HaveNoShowedPhoto { get; }
 
