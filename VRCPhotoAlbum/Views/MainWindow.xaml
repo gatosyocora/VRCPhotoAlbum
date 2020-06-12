@@ -167,7 +167,7 @@
             </ListView.ItemTemplate>
         </ListView>
         <ListBox x:Name="PhotoListBox"
-            ItemsSource="{Binding}"
+            ItemsSource="{Binding ShowedPhotoList}"
             Grid.Column="0" Grid.Row="4"
             SelectionMode="Single"
             SelectionChanged="PhotoListBox_SelectionChanged"

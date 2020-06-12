@@ -37,7 +37,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             {
                 _mainViewModel = new MainViewModel(this);
                 DataContext = _mainViewModel;
-                PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
             }
             catch (Exception e)
             {
