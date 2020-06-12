@@ -37,7 +37,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             shareWindow.ShowDialog();
         }
 
-        public static void OpenTwitterWithScreenName(string twitterScreenName)
+        internal static void OpenTwitterWithScreenName(string twitterScreenName)
         {
             var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
             try

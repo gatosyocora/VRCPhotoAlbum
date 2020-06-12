@@ -43,7 +43,7 @@
                 <Button x:Name="RotateLeft90Button"
                         Grid.Column="0" Grid.Row="0"
                         Margin="2" Padding="10 0 10 0"
-                        Command="{Binding RotateL90}"
+                        Command="{Binding RotateL90Command}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                     <Image Source="pack://application:,,,/Resources/RotateLeft90Image.png" 
@@ -52,7 +52,7 @@
                 <Button x:Name="FlipHorizontalButton"
                         Grid.Column="1" Grid.Row="0"
                         Margin="2" Padding="10 0 10 0"
-                        Command="{Binding FlipHorizontal}"
+                        Command="{Binding FlipHorizontalCommand}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                     <Image Source="pack://application:,,,/Resources/FlipHorizontalImage.png" 
@@ -61,7 +61,7 @@
                 <Button x:Name="RotateRight90Button"
                         Grid.Column="2" Grid.Row="0"
                         Margin="2" Padding="10 0 10 0"
-                        Command="{Binding RotateR90}"
+                        Command="{Binding RotateR90Command}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                     <Image Source="pack://application:,,,/Resources/RotateRight90Image.png" 
@@ -85,7 +85,7 @@
                     <Button x:Name="OpenExplorerButton"
                             Grid.Column="0" Grid.Row="0"
                             Width="180" Height="30"
-                            Margin="5 2 30 2" Padding="10 0 10 5"
+                            Margin="5 2 5 2" Padding="10 0 10 5"
                             Command="{Binding OpenExplorerCommand}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -116,7 +116,7 @@
                     Padding="0"
                     Grid.Row="0"
                     Grid.ColumnSpan="3"
-                    Command="{Binding ShareToTwitter}"
+                    Command="{Binding ShareToTwitterCommand}"
                     Foreground="White"/>-->
             <Label x:Name="PhotoNumberLabel"
                Content="{Binding PhotoNumber.Value}"
@@ -245,7 +245,7 @@
                     Grid.Column="0"
                     Margin="10"
                     Width="80"
-                    Command="{Binding Previous}"
+                    Command="{Binding PreviousCommand}"
                     Foreground="White">
                 <Image Source="pack://application:,,,/Resources/LeftImage.png"
                        Margin="2"/>
@@ -254,7 +254,7 @@
                     Grid.Column="2"
                     Margin="10"
                     Width="80"
-                    Command="{Binding Next}"
+                    Command="{Binding NextCommand}"
                     Foreground="White">
                 <Image Source="pack://application:,,,/Resources/RightImage.png"
                        Margin="2"/>

@@ -23,8 +23,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private List<Photo> _photoList;
         private int _previewPhotoIndex;
 
-        private PhotoPreview _photoPreviewWindow;
-
         public ReactiveProperty<BitmapImage> Image { get; }
         public ReactiveCollection<User> UserList { get; }
         public ReadOnlyReactiveProperty<string> WorldName { get; }
@@ -33,15 +31,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReadOnlyReactiveProperty<string> PhotoNumber { get; }
         public ReactiveProperty<bool> UseTestFunction { get; }
 
-        public ReactiveCommand Previous { get; }
-        public ReactiveCommand Next { get; }
-        public ReactiveCommand<string> SearchWithUser { get; }
+        public ReactiveCommand PreviousCommand { get; }
+        public ReactiveCommand NextCommand { get; }
         public ReactiveCommand<string> OpenTwitterCommand { get; }
         public ReactiveCommand OpenExplorerCommand { get; }
-        public ReactiveCommand RotateL90 { get; }
-        public ReactiveCommand RotateR90 { get; }
-        public ReactiveCommand FlipHorizontal { get; }
-        public ReactiveCommand ShareToTwitter { get; }
+        public ReactiveCommand RotateL90Command { get; }
+        public ReactiveCommand RotateR90Command { get; }
+        public ReactiveCommand FlipHorizontalCommand { get; }
+        public ReactiveCommand ShareToTwitterCommand { get; }
         public ReactiveCommand<User> UserSelectCommand { get; }
         public ReactiveCommand<string> WorldSelectCommand { get; }
         public ReactiveCommand<DateTime> DateSelectCommand { get; }
@@ -50,8 +47,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList, SearchResult searchResult)
         {
-            _photoPreviewWindow = photoPreviewWindow;
-
             PreviewPhoto = new ReactiveProperty<Photo>().AddTo(Disposable);
 
             _photoList = photoList;
@@ -77,42 +72,41 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 UserList.Clear();
                 UserList.AddRangeOnScheduler(p?.MetaData?.Users ?? Enumerable.Empty<User>());
-            });
+            }).AddTo(Disposable);
 
-            Previous = new ReactiveCommand().AddTo(Disposable);
-            Next = new ReactiveCommand().AddTo(Disposable);
-            SearchWithUser = new ReactiveCommand<string>().AddTo(Disposable);
+            PreviousCommand = new ReactiveCommand().AddTo(Disposable);
+            NextCommand = new ReactiveCommand().AddTo(Disposable);
             OpenTwitterCommand = new ReactiveCommand<string>().AddTo(Disposable);
             OpenExplorerCommand = new ReactiveCommand().AddTo(Disposable);
-            RotateL90 = new ReactiveCommand().AddTo(Disposable);
-            RotateR90 = new ReactiveCommand().AddTo(Disposable);
-            FlipHorizontal = new ReactiveCommand().AddTo(Disposable);
-            ShareToTwitter = new ReactiveCommand().AddTo(Disposable);
+            RotateL90Command = new ReactiveCommand().AddTo(Disposable);
+            RotateR90Command = new ReactiveCommand().AddTo(Disposable);
+            FlipHorizontalCommand = new ReactiveCommand().AddTo(Disposable);
+            ShareToTwitterCommand = new ReactiveCommand().AddTo(Disposable);
             UserSelectCommand = new ReactiveCommand<User>().AddTo(Disposable);
             WorldSelectCommand = new ReactiveCommand<string>().AddTo(Disposable);
             DateSelectCommand = new ReactiveCommand<DateTime>().AddTo(Disposable);
             WindowCloseCommand = new ReactiveCommand<PhotoPreview>().AddTo(Disposable);
 
-            Previous.Subscribe(() =>
+            PreviousCommand.Subscribe(() =>
             {
                 _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
-            });
-            Next.Subscribe(() =>
+            }).AddTo(Disposable);
+            NextCommand.Subscribe(() =>
             {
                 _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
-            });
-            OpenTwitterCommand.Subscribe(WindowHelper.OpenTwitterWithScreenName);
-            OpenExplorerCommand.Subscribe(() => WindowHelper.OpenFileExplorer(PreviewPhoto.Value.FilePath));
-            RotateL90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateLeft90AndSave));
-            RotateR90.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateRight90AndSave));
-            FlipHorizontal.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.FilpHorizontalAndSave));
-            ShareToTwitter.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, _photoPreviewWindow));
-            UserSelectCommand.Subscribe(u => searchResult.SearchedUserName.Value = u.UserName);
-            WorldSelectCommand.Subscribe(w => searchResult.SearchedWorldName.Value = w);
-            DateSelectCommand.Subscribe(d => searchResult.SearchedDate.Value = d);
-            WindowCloseCommand.Subscribe(w => w.Close());
+            }).AddTo(Disposable);
+            OpenTwitterCommand.Subscribe(WindowHelper.OpenTwitterWithScreenName).AddTo(Disposable);
+            OpenExplorerCommand.Subscribe(() => WindowHelper.OpenFileExplorer(PreviewPhoto.Value.FilePath)).AddTo(Disposable);
+            RotateL90Command.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateLeft90AndSave)).AddTo(Disposable);
+            RotateR90Command.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateRight90AndSave)).AddTo(Disposable);
+            FlipHorizontalCommand.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.FilpHorizontalAndSave)).AddTo(Disposable);
+            ShareToTwitterCommand.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, photoPreviewWindow)).AddTo(Disposable);
+            UserSelectCommand.Subscribe(u => searchResult.SearchedUserName.Value = u.UserName).AddTo(Disposable);
+            WorldSelectCommand.Subscribe(w => searchResult.SearchedWorldName.Value = w).AddTo(Disposable);
+            DateSelectCommand.Subscribe(d => searchResult.SearchedDate.Value = d).AddTo(Disposable);
+            WindowCloseCommand.Subscribe(w => w.Close()).AddTo(Disposable);
         }
 
         // TODO: 命名をどうにかする
