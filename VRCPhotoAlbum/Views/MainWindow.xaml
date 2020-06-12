@@ -191,7 +191,16 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="100" Height="100">
-                        <Image Source="{Binding ThumbnailImage}"/>
+                        <Image x:Name="PhotoImage"
+                               Source="{Binding ThumbnailImagePath.Value}"
+                               Tag="{Binding FilePath}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded">
+                                    <i:InvokeCommandAction Command="{Binding CreateThumbnailCommand}"
+                                            CommandParameter="{Binding ElementName=PhotoImage}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Image>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

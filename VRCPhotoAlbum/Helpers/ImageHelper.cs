@@ -5,23 +5,38 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
     public class ImageHelper
     {
+        private static BitmapImage _failedImage => LoadBitmapImage(@"pack://application:,,,/Resources/noloading.png");
 
         #region BitmapImage
         public static BitmapImage LoadBitmapImage(string filePath)
         {
-            var bitmapImage = new BitmapImage();
-            var stream = File.OpenRead(filePath);
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-            stream.Close();
-            stream.Dispose();
+            BitmapImage bitmapImage = new BitmapImage();
+            if (filePath.StartsWith(@"pack://application:,,,"))
+            {
+                var streamInfo = Application.GetResourceStream(new Uri(filePath));
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = streamInfo.Stream;
+                bitmapImage.EndInit();
+            }
+            else
+            {
+                using (var stream = File.OpenRead(filePath))
+                {
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = stream;
+                    bitmapImage.EndInit();
+                }
+            }
+
             return bitmapImage;
         }
 
@@ -42,9 +57,28 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             });
         }
 
-        public static BitmapImage GetThumbnailImage(string filePath, string cashFolderPath)
+        public static BitmapImage LoadThumbnailImageIfExists(string filePath, string cacheFolderPath) 
         {
-            var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
+            var thumbnailImagePath = GetThumbnailImagePath(filePath, cacheFolderPath);
+
+            if (File.Exists(thumbnailImagePath))
+            {
+                return LoadBitmapImage(thumbnailImagePath);
+            }
+            else
+            {
+                return _failedImage;
+            }
+        }
+
+        public static string GetThumbnailImagePath(string filePath, string cacheFolderPath)
+        {
+            return $"{cacheFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
+        }
+
+        public static BitmapImage GetThumbnailImage(string filePath, string cacheFolderPath)
+        {
+            var thumbnailImageFilePath = GetThumbnailImagePath(filePath, cacheFolderPath);
 
             if (!File.Exists(thumbnailImageFilePath))
             {
@@ -58,6 +92,23 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 }
             }
             return LoadBitmapImage(thumbnailImageFilePath);
+        }
+
+        public static async Task CreateThumbnailImagePathAsync(string filePath, string cacheFolderPath)
+        {
+            var thumbnailImageFilePath = GetThumbnailImagePath(filePath, cacheFolderPath);
+
+            await Task.Run(() =>
+            {
+                using (var stream = File.OpenRead(filePath))
+                {
+                    var originalImage = Image.FromStream(stream, false, false);
+                    var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
+                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Jpeg);
+                    originalImage.Dispose();
+                    thumbnailImage.Dispose();
+                }
+            });
         }
 
         public async static Task<BitmapImage> GetThumbnailImageAsync(string filePath, string cashFolderPath)

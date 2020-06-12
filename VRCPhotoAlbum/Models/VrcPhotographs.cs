@@ -73,12 +73,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             return Task.WhenAll(Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                         .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                        .Skip(_loadedOffset.Value).Take(MAX_PHOTO_COUNT)
+                        //.Skip(_loadedOffset.Value).Take(MAX_PHOTO_COUNT)
                         .Select(async filePath =>
                         new Photo
                         {
                             FilePath = filePath,
-                            ThumbnailImage = await GetThumbnailImage(filePath),
                             MetaData = GetVrcMetaData(filePath)
                         })
                         .ToList());
