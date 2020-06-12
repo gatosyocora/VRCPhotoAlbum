@@ -31,10 +31,7 @@ namespace VRCPhotoAlbumTest.Models
                             World = "worldName"
                         };
                         meta.Users.Add(
-                            new KoyashiroKohaku.VrcMetaTool.User
-                            {
-                                UserName = $"{(char)('a' + offset)}"
-                            });
+                            new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + offset)}"));
                         return Enumerable.Range(0, i)
                         .Select(_ =>
                             new Photo

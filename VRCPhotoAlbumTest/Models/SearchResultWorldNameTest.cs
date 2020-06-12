@@ -34,7 +34,7 @@ namespace VRCPhotoAlbumTest.Models
                                             World = $"{(char)('a' + offset)}"
                                         };
                                         // ワールド検索だけどUserがnullだと自動的に検索から除外されてしまう
-                                        meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User { UserName = "userName" });
+                                        meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User("userName"));
                                         return new Photo
                                         {
                                             MetaData = meta

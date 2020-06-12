@@ -29,10 +29,7 @@ namespace VRCPhotoAlbumTest.Models
                                                 World = "worldName"
                                             };
                                             meta.Users.Add(
-                                                new KoyashiroKohaku.VrcMetaTool.User
-                                                {
-                                                    UserName = $"{(char)('a' + i)}"
-                                                });
+                                                new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + i)}"));
                                             return new Photo
                                             {
                                                 MetaData = meta
@@ -49,10 +46,7 @@ namespace VRCPhotoAlbumTest.Models
                                             meta.Users.AddRange(
                                                 Enumerable.Range(0, i)
                                                     .Select(ii =>
-                                                        new KoyashiroKohaku.VrcMetaTool.User
-                                                        {
-                                                            UserName = $"{(char)('a' + i)}"
-                                                        }));
+                                                        new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + i)}")));
                                             return new Photo
                                             {
                                                 MetaData = meta
@@ -107,10 +101,7 @@ namespace VRCPhotoAlbumTest.Models
                 {
                     var meta = new VrcMetaData();
                     meta.Users.Add(
-                        new KoyashiroKohaku.VrcMetaTool.User
-                        {
-                            UserName = ('a' + i).ToString()
-                        });
+                        new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()));
                     return new Photo
                     {
                         MetaData = meta
@@ -135,14 +126,8 @@ namespace VRCPhotoAlbumTest.Models
                     meta.Users.AddRange(
                         new KoyashiroKohaku.VrcMetaTool.User[]
                         {
-                            new KoyashiroKohaku.VrcMetaTool.User
-                            {
-                                UserName = ('a' + i).ToString()
-                            },
-                            new KoyashiroKohaku.VrcMetaTool.User
-                            {
-                                UserName = ('z' - i).ToString()
-                            }
+                            new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()),
+                            new KoyashiroKohaku.VrcMetaTool.User(('z' - i).ToString())
                         });
                     return new Photo
                     {
@@ -167,14 +152,8 @@ namespace VRCPhotoAlbumTest.Models
                     meta.Users.AddRange(
                         new KoyashiroKohaku.VrcMetaTool.User[] 
                         {
-                            new KoyashiroKohaku.VrcMetaTool.User
-                            {
-                                UserName = ('a' + i).ToString()
-                            },
-                            new KoyashiroKohaku.VrcMetaTool.User
-                            {
-                                UserName = ('a' + i).ToString()
-                            }
+                            new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()),
+                            new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString())
                         });
                     return new Photo
                     {
@@ -199,10 +178,7 @@ namespace VRCPhotoAlbumTest.Models
                     meta.Users.AddRange(
                         Enumerable.Range(0, i)
                             .Select(ii =>
-                                new KoyashiroKohaku.VrcMetaTool.User
-                                {
-                                    UserName = ('a' + ii).ToString()
-                                }));
+                                new KoyashiroKohaku.VrcMetaTool.User(('a' + ii).ToString())));
                     return new Photo
                     {
                         MetaData = meta
@@ -226,10 +202,7 @@ namespace VRCPhotoAlbumTest.Models
                     meta.Users.AddRange(
                         Enumerable.Range(0, i)
                             .Select(ii =>
-                                new KoyashiroKohaku.VrcMetaTool.User
-                                {
-                                    UserName = ('a' + ii).ToString()
-                                }));
+                                new KoyashiroKohaku.VrcMetaTool.User(('a' + ii).ToString())));
                     return new Photo
                     {
                         MetaData = meta
