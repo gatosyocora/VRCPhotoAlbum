@@ -26,6 +26,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             InitializeComponent();
             Loaded += MainWindow_OnLoaded;
+            ContentRendered += MainWindow_OnContentRendered;
         }
 
         private void MainWindow_OnLoaded(object sender, EventArgs args)
@@ -37,16 +38,21 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
                 _mainViewModel = new MainViewModel(this);
                 DataContext = _mainViewModel;
                 PhotoListBox.ItemsSource = _mainViewModel.ShowedPhotoList;
-
-                if (Setting.Instance.Data is null)
-                {
-                    WindowHelper.OpenSettingDialog(this);
-                }
             }
             catch (Exception e)
             {
                 FileHelper.OutputErrorLogFile(e);
             }
+        }
+
+        private void MainWindow_OnContentRendered(object sender, EventArgs args)
+        {
+            if (Setting.Instance.Data is null)
+            {
+                WindowHelper.OpenSettingDialog(this);
+            }
+
+            _mainViewModel.LoadResourcesCommand.Execute();
         }
 
         public void Reboot()

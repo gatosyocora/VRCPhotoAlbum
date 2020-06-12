@@ -65,6 +65,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<bool> ActiveProgressRing { get; }
         #endregion
 
+        public ReactiveCommand LoadResourcesCommand { get; }
+
         public MainViewModel(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
@@ -159,10 +161,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 RebootCommand.Execute();
             }).AddTo(Disposable);
 
-            if (!(Setting.Instance.Data is null))
+            LoadResourcesCommand = new ReactiveCommand().AddTo(Disposable);
+            LoadResourcesCommand.Subscribe(() =>
             {
                 _ = _vrcPhotographs.LoadResourcesAsync(Setting.Instance.Data.FolderPath);
-            }
+            }).AddTo(Disposable);
         }
     }
 }
