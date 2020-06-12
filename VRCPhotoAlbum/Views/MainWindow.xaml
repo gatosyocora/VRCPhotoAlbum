@@ -135,11 +135,16 @@
         </Grid>
 
         <ListView x:Name="UserListView"
-                ItemsSource="{Binding UserList}"
-                SelectionMode="Single"
-                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                Grid.Column="0" Grid.Row="2"
-                SelectionChanged="UserListView_SelectionChanged">
+                  ItemsSource="{Binding UserList}"
+                  Grid.Column="0" Grid.Row="2"
+                  SelectionMode="Single"
+                  SelectionChanged="UserListView_SelectionChanged"
+                  ScrollViewer.CanContentScroll="True"
+                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                  ScrollViewer.PanningMode="HorizontalFirst"          
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding SearchWithUserNameCommand}"
@@ -148,7 +153,9 @@
             </i:Interaction.Triggers>
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel/>
+                    <VirtualizingStackPanel
+                        Orientation="Horizontal"
+                        CanHorizontallyScroll="True"/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
