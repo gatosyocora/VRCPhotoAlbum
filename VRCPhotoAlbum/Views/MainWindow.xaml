@@ -196,7 +196,11 @@
                                Tag="{Binding FilePath}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Loaded">
-                                    <i:InvokeCommandAction Command="{Binding CreateThumbnailCommand}"
+                                    <i:InvokeCommandAction Command="{Binding CreateThumbnailCommand, Delay=2000}"
+                                            CommandParameter="{Binding ElementName=PhotoImage}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="UnLoaded">
+                                    <i:InvokeCommandAction Command="{Binding UnLoadedCommand}"
                                             CommandParameter="{Binding ElementName=PhotoImage}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
