@@ -5,15 +5,14 @@ using Reactive.Bindings.Extensions;
 using System.Diagnostics;
 using System.IO;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models
 {
     public class Photo : ModelBase
     {
-        private static readonly string NOW_LOADING_IMAGE_PATH = @"pack://application:,,,/Resources/nowloading.jpg";
-        private static readonly string FAILED_IMAGE_PATH = @"pack://application:,,,/Resources/noloading.png";
-
         public string FilePath { get; set; }
         public ReactiveProperty<BitmapImage> ThumbnailImage { get; set; }
         public ReactiveProperty<string> ThumbnailImagePath { get; }
@@ -21,9 +20,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public VrcMetaData MetaData { get; set; }
 
         public ReactiveCommand CreateThumbnailCommand { get; }
-        public ReactiveCommand UnLoadedCommand { get; }
-
-        private bool _isCanceledLoading = false;
 
         public Photo(string filePath)
         {
@@ -34,24 +30,20 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath).AddTo(Disposable);
 
             CreateThumbnailCommand = new ReactiveCommand().AddTo(Disposable);
-            UnLoadedCommand = new ReactiveCommand().AddTo(Disposable);
 
             CreateThumbnailCommand.Subscribe(async () =>
             {
-                if (_isCanceledLoading)
-                {
-                    _isCanceledLoading = false;
-                    return;
-                }
+                ThumbnailImage.Value = ImageHelper.GetNowLoadingImage();
 
-                if (!File.Exists(ThumbnailImagePath.Value))
+                await Task.Run(async () =>
                 {
-                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(NOW_LOADING_IMAGE_PATH);
-                    await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value);
-                }
-                ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
+                    if (!File.Exists(ThumbnailImagePath.Value))
+                    {
+                        await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value);
+                    }
+                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
+                });
             }).AddTo(Disposable);
-            UnLoadedCommand.Subscribe(() => _isCanceledLoading = true).AddTo(Disposable);
         }
 
         public override string ToString()

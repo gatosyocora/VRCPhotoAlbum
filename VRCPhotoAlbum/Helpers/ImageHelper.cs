@@ -16,6 +16,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
     public class ImageHelper
     {
         private static BitmapImage _failedImage => LoadBitmapImage(@"pack://application:,,,/Resources/failed.png");
+        private static BitmapImage _nowLoadingImage => LoadBitmapImage(@"pack://application:,,,/Resources/nowloading.jpg");
 
         #region BitmapImage
         public static BitmapImage LoadBitmapImage(string filePath)
@@ -43,6 +44,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             }
 
             return bitmapImage;
+        }
+
+        public static BitmapImage GetNowLoadingImage()
+        {
+            return _nowLoadingImage;
         }
 
         public static string GetThumbnailImagePath(string filePath, string cacheFolderPath)
