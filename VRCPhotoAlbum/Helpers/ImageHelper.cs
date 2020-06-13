@@ -65,6 +65,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         {
             await Task.Run(() =>
             {
+                if (File.Exists(thumbnailFilePath)) return;
+
                 using (var stream = File.OpenRead(originalFilePath))
                 {
                     var originalImage = Image.FromStream(stream, false, false);
