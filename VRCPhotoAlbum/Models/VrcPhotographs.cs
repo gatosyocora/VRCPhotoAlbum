@@ -19,25 +19,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     {
         public ReactiveCollection<Photo> Collection { get; }
 
-        private ReactiveProperty<int> _loadedOffset;
-        private static readonly int MAX_PHOTO_COUNT = 200;
-
-        public ReactiveCommand PreviousLoadingCommand { get; }
-        public ReactiveCommand NextLoadingCommand { get; }
-
         public VrcPhotographs()
         {
             Collection = new ReactiveCollection<Photo>().AddTo(Disposable);
-
-            _loadedOffset = new ReactiveProperty<int>(0);
-
-            PreviousLoadingCommand = new ReactiveCommand().AddTo(Disposable);
-            NextLoadingCommand = new ReactiveCommand().AddTo(Disposable);
-
-            PreviousLoadingCommand.Subscribe(_ => _loadedOffset.Value -= MAX_PHOTO_COUNT);
-            NextLoadingCommand.Subscribe(_ => _loadedOffset.Value += MAX_PHOTO_COUNT);
-
-            //_loadedOffset.Subscribe(async _ => await LoadResourcesAsync(Setting.Instance.Data.FolderPath)).AddTo(Disposable);
         }
 
         /// <summary>
