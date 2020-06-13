@@ -25,19 +25,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         private bool _isCanceledLoading = false;
 
-        public Photo()
+        public Photo(string filePath)
         {
             ThumbnailImage = new ReactiveProperty<BitmapImage>().AddTo(Disposable);
 
+            FilePath = filePath;
             var thumbnailImagePath = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
-            if (File.Exists(thumbnailImagePath))
-            {
-                ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath).AddTo(Disposable);
-            }
-            else
-            {
-                ThumbnailImagePath = new ReactiveProperty<string>(NOW_LOADING_IMAGE_PATH).AddTo(Disposable);
-            }
+            ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath).AddTo(Disposable);
+
             CreateThumbnailCommand = new ReactiveCommand().AddTo(Disposable);
             UnLoadedCommand = new ReactiveCommand().AddTo(Disposable);
 
@@ -51,10 +46,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
                 if (!File.Exists(ThumbnailImagePath.Value))
                 {
-                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
-                    await ImageHelper.CreateThumbnailImagePathAsync(FilePath, Cache.Instance.CacheFolderPath);
+                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(NOW_LOADING_IMAGE_PATH);
+                    await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value);
                 }
-                ThumbnailImagePath.Value = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
                 ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
             }).AddTo(Disposable);
             UnLoadedCommand.Subscribe(() => _isCanceledLoading = true).AddTo(Disposable);

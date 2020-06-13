@@ -50,17 +50,15 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             return $"{cacheFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
         }
 
-        public static async Task CreateThumbnailImagePathAsync(string filePath, string cacheFolderPath)
+        public static async Task CreateThumbnailImagePathAsync(string originalFilePath, string thumbnailFilePath)
         {
-            var thumbnailImageFilePath = GetThumbnailImagePath(filePath, cacheFolderPath);
-
             await Task.Run(() =>
             {
-                using (var stream = File.OpenRead(filePath))
+                using (var stream = File.OpenRead(originalFilePath))
                 {
                     var originalImage = Image.FromStream(stream, false, false);
                     var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
-                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Jpeg);
+                    thumbnailImage.Save(thumbnailFilePath, ImageFormat.Jpeg);
                     originalImage.Dispose();
                     thumbnailImage.Dispose();
                 }

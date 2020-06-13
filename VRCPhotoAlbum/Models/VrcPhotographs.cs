@@ -51,9 +51,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                         new Task(() =>
                         {
                             Collection.AddOnScheduler(
-                                new Photo
+                                new Photo(fp)
                                 {
-                                    FilePath = fp,
                                     MetaData = GetVrcMetaData(fp)
                                 });
                         }));
