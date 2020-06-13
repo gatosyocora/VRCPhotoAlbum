@@ -99,6 +99,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             _IsSearching = true;
 
+            bool specialSearch = false; 
+            if (Regex.IsMatch(searchText, @".*\s*(vket4|VKET4|Vket4)\s*.*"))
+            {
+                SearchedSinceDate.Value = DateTime.Parse(@"2020/04/29 11:00:00");
+                SearchedUntilDate.Value = DateTime.Parse(@"2020/05/10 23:00:00");
+                specialSearch = true;
+            }
+
             string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
             var userMatch = Regex.Match(searchText, @".*user:""(?<userName>.*?)"".*");
             var worldMatch = Regex.Match(searchText, @".*world:""(?<worldName>.*?)"".*");
@@ -109,7 +117,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             {
                 SearchedUserName.Value = $"{userMatch.Groups["userName"]}";
             }
-            else
+            else if (!specialSearch)
             {
                 searchUserName = Regex.Replace(searchText, @"\s*world:"".*?""\s*", string.Empty);
                 searchUserName = Regex.Replace(searchUserName, @"\s*date:"".*?""\s*", string.Empty);
@@ -123,7 +131,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             {
                 SearchedWorldName.Value = $"{worldMatch.Groups["worldName"]}";
             }
-            else
+            else if (!specialSearch)
             {
                 searchWorldName = Regex.Replace(searchText, @"\s*user:"".*?""\s*", string.Empty);
                 searchWorldName = Regex.Replace(searchWorldName, @"\s*date:"".*?""\s*", string.Empty);
@@ -152,7 +160,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     SearchedSinceDate.Value = searchDate;
                 }
             }
-            else
+            else if (!specialSearch)
             {
                 SearchedSinceDate.Value = _defaultDate;
             }
@@ -164,7 +172,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     SearchedUntilDate.Value = searchDate;
                 }
             }
-            else
+            else if (!specialSearch)
             {
                 SearchedUntilDate.Value = _defaultDate;
             }
