@@ -39,9 +39,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             CreateThumbnailCommand.Subscribe(async () =>
             {
-                ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
                 if (!File.Exists(ThumbnailImagePath.Value))
                 {
+                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
                     await ImageHelper.CreateThumbnailImagePathAsync(FilePath, Cache.Instance.CacheFolderPath);
                 }
                 ThumbnailImagePath.Value = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
