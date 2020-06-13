@@ -147,7 +147,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 _searchResult.ResetCommand.Execute();
                 _users.ResetCommand.Execute();
-                _ = _vrcPhotographs.LoadResourcesAsync(Setting.Instance.Data.FolderPath);
+                _ = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath);
             }).AddTo(Disposable);
 
             ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);
@@ -157,7 +157,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             LoadResourcesCommand = new ReactiveCommand().AddTo(Disposable);
             LoadResourcesCommand.Subscribe(() =>
             {
-                _ = _vrcPhotographs.LoadResourcesAsync(Setting.Instance.Data.FolderPath);
+                _ = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath);
             }).AddTo(Disposable);
         }
     }

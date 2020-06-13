@@ -25,15 +25,31 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         }
 
         /// <summary>
-        /// 非同期でデータを読み込む
+        /// 非同期で画像を読み込む
         /// </summary>
+        /// <param name="folderPath"></param>
         /// <returns></returns>
-        public async Task LoadResourcesAsync(string folderPath)
+        public async Task LoadVRCPhotoListAsync(string folderPath)
         {
+            if (!Directory.Exists(folderPath))
+            {
+                throw new ArgumentException($"{folderPath} is not exist.");
+            }
+
             Collection.ClearOnScheduler();
+
             try
             {
-                foreach (var photo in LoadVRCPhotoListAsync(folderPath))
+                var photoList = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+                                    .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
+                                    .Select(async filePath =>
+                                        new Photo
+                                        {
+                                            FilePath = filePath,
+                                            MetaData = await GetVrcMetaDataAsync(filePath)
+                                        });
+
+                foreach (var photo in photoList)
                 {
                     Collection.AddOnScheduler(await photo);
                 }
@@ -42,28 +58,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             {
                 Debug.Print($"{e.GetType().Name}: {e.Message}");
             }
-        }
-
-        /// <summary>
-        /// 非同期で画像を読み込む
-        /// </summary>
-        /// <param name="folderPath"></param>
-        /// <returns></returns>
-        private IEnumerable<Task<Photo>> LoadVRCPhotoListAsync(string folderPath)
-        {
-            if (!Directory.Exists(folderPath))
-            {
-                throw new ArgumentException($"{folderPath} is not exist.");
-            }
-
-            return Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                .Select(async filePath =>
-                    new Photo
-                    {
-                        FilePath = filePath,
-                        MetaData = await GetVrcMetaDataAsync(filePath)
-                    });
         }
 
         private async Task<VrcMetaData> GetVrcMetaDataAsync(string filePath)
