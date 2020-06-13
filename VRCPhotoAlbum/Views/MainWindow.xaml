@@ -205,6 +205,16 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Label x:Name="PhotoCountLabel"
+               Grid.Column="0" Grid.Row="4"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+               HorizontalContentAlignment="Center"
+               Width="100" Height="30"
+               Margin="0 0 20 0" Padding="5"
+               Content="{Binding PhotoCount.Value}"
+               FontSize="15"
+               Foreground="White" Background="DeepSkyBlue"/>
         <Label x:Name="NotFoundLabel"
                Grid.Column="0" Grid.Row="4"
                HorizontalContentAlignment="Center"

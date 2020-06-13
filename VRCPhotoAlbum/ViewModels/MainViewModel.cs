@@ -30,6 +30,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         #region Photo
         public ReadOnlyReactiveCollection<Photo> ShowedPhotoList { get; }
         public ReactiveProperty<bool> HaveNoShowedPhoto { get; }
+        public ReactiveProperty<string> PhotoCount { get; }
 
         public ReactiveCommand ChangePreviousPageCommand { get; }
         public ReactiveCommand ChangeNextPageCommand { get; }
@@ -89,6 +90,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                             .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
+            PhotoCount = Observable.Merge(
+                            ShowedPhotoList.ObserveAddChanged().Select(_ => Unit.Default),
+                            ShowedPhotoList.ObserveRemoveChanged().Select(_ => Unit.Default),
+                            ShowedPhotoList.ObserveResetChanged().Select(_ => Unit.Default)
+                         ).Select(_ => $"{ShowedPhotoList.Count()} 枚").ToReactiveProperty().AddTo(Disposable);
 
             SearchDate = _searchResult.SearchedDate.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
             SearchWithUserNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
