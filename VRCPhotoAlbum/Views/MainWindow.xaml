@@ -192,7 +192,7 @@
                 <DataTemplate>
                     <Grid Width="100" Height="100">
                         <Image x:Name="PhotoImage"
-                               Source="{Binding ThumbnailImagePath.Value}"
+                               Source="{Binding ThumbnailImage.Value}"
                                Tag="{Binding FilePath}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Loaded">

@@ -18,24 +18,23 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         public static BitmapImage LoadBitmapImage(string filePath)
         {
             BitmapImage bitmapImage = new BitmapImage();
+            Stream stream;
             if (filePath.StartsWith(@"pack://application:,,,"))
             {
                 var streamInfo = Application.GetResourceStream(new Uri(filePath));
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = streamInfo.Stream;
-                bitmapImage.EndInit();
+                stream = streamInfo.Stream;
             }
             else
             {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.EndInit();
-                }
+                stream = File.OpenRead(filePath);
             }
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.CreateOptions = BitmapCreateOptions.None;
+            bitmapImage.StreamSource = stream;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+            stream.Dispose();
 
             return bitmapImage;
         }
