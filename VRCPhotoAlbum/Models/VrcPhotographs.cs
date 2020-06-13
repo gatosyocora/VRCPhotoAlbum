@@ -40,6 +40,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             try
             {
+                // UIスレッドと分離させる
                 await Task.Run(() =>
                 {
                     var filePaths = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
