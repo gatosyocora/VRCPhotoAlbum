@@ -60,9 +60,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
         }
 
-        private async Task<VrcMetaData> GetVrcMetaDataAsync(string filePath)
+        private Task<VrcMetaData> GetVrcMetaDataAsync(string filePath)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
                 {
