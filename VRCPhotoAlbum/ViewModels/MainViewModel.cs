@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -34,6 +35,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public ReactiveCommand ChangePreviousPageCommand { get; }
         public ReactiveCommand ChangeNextPageCommand { get; }
+
+        private Task _loadingTask;
+        private CancellationTokenSource _loadingCancel;
         #endregion
 
         #region Search
@@ -78,6 +82,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             _vrcPhotographs = new VrcPhotographs();
             _searchResult = new SearchResult(_vrcPhotographs.Collection);
             _users = new Users(_vrcPhotographs.Collection);
+
+            _loadingCancel = new CancellationTokenSource().AddTo(Disposable);
 
             SearchText = _searchResult.SearchText.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
 
@@ -145,9 +151,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             RebootCommand = new ReactiveCommand().AddTo(Disposable);
             RebootCommand.Subscribe(() =>
             {
+                if (!(_loadingCancel is null) && !_loadingTask.IsCompleted)
+                {
+                    _loadingCancel.Cancel();
+                }
                 _searchResult.ResetCommand.Execute();
                 _users.ResetCommand.Execute();
-                _ = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath);
+                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath, _loadingCancel.Token);
             }).AddTo(Disposable);
 
             ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);
@@ -157,7 +167,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             LoadResourcesCommand = new ReactiveCommand().AddTo(Disposable);
             LoadResourcesCommand.Subscribe(() =>
             {
-                _ = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath);
+                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath, _loadingCancel.Token);
             }).AddTo(Disposable);
         }
     }

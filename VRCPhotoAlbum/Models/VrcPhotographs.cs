@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -29,7 +30,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// </summary>
         /// <param name="folderPath"></param>
         /// <returns></returns>
-        public async Task LoadVRCPhotoListAsync(string folderPath)
+        public async Task LoadVRCPhotoListAsync(string folderPath, CancellationToken cancelToken)
         {
             if (!Directory.Exists(folderPath))
             {
@@ -53,15 +54,16 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                             Collection.AddOnScheduler(
                                 new Photo(fp)
                                 {
-                                    MetaData = await GetVrcMetaDataAsync(fp)
+                                    MetaData = await GetVrcMetaDataAsync(fp, cancelToken)
                                 });
-                        }));
+                        }, cancelToken));
 
                     foreach (var task in tasks)
                     {
+                        if (cancelToken.IsCancellationRequested) return;
                         task.Start();
                     }
-                });
+                }, cancelToken);
             }
             catch (Exception e)
             {
@@ -94,6 +96,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             return meta;
         }
 
-        private Task<VrcMetaData> GetVrcMetaDataAsync(string filePath) => Task.Run(() => GetVrcMetaData(filePath));
+        private Task<VrcMetaData> GetVrcMetaDataAsync(string filePath, CancellationToken cancelToken) => Task.Run(() => GetVrcMetaData(filePath), cancelToken);
     }
 }
