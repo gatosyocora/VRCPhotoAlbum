@@ -67,13 +67,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             {
                 if (File.Exists(thumbnailFilePath)) return;
 
-                using (var stream = File.OpenRead(originalFilePath))
+                using var stream = File.OpenRead(originalFilePath);
+                using var originalImage = Image.FromStream(stream, false, false);
+                using (var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero))
                 {
-                    var originalImage = Image.FromStream(stream, false, false);
-                    var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
+                    // TODO: たまにロックによって書き込めないエラーが出る
+                    // A generic error occurred in GDI+.
                     thumbnailImage.Save(thumbnailFilePath, ImageFormat.Jpeg);
-                    originalImage.Dispose();
-                    thumbnailImage.Dispose();
                 }
             });
         }
