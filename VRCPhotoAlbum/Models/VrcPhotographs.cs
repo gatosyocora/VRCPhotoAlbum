@@ -40,27 +40,29 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             try
             {
-                var filePaths = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                                    .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                                    .ToList();
-
-                var tasks = filePaths.Select(fp => new Task(() =>
-                        GetVrcMetaDataAsync(fp)
-                        .ContinueWith(r => Collection.Add(new Photo { FilePath = fp, MetaData = r.Result }))));
-
-                foreach (var task in tasks)
+                // UIスレッドと分離させる
+                await Task.Run(() =>
                 {
-                    task.Start();
-                }
+                    var filePaths = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+                                        .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
+                                        .ToList();
 
-                //foreach (var filePath in filePaths)
-                //{
-                //    await GetVrcMetaDataAsync(filePath)
-                //        .ContinueWith(r => Collection.AddOnScheduler(new Photo { FilePath = filePath, MetaData = r.Result }));
+                    var tasks = filePaths.Select(fp => 
+                        new Task(() =>
+                        {
+                            Collection.AddOnScheduler(
+                                new Photo
+                                {
+                                    FilePath = fp,
+                                    MetaData = GetVrcMetaData(fp)
+                                });
+                        }));
 
-                //}
-
-                //var vrcMetaDataTemp = filePaths.Select(async fp => await GetVrcMetaDataAsync(fp)).ToList();
+                    foreach (var task in tasks)
+                    {
+                        task.Start();
+                    }
+                });
             }
             catch (Exception e)
             {
@@ -68,35 +70,31 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
         }
 
-        private Task<VrcMetaData> GetVrcMetaDataAsync(string filePath)
+        private VrcMetaData GetVrcMetaData(string filePath)
         {
-            return Task.Run(() =>
+            //return new VrcMetaData();
+            if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
             {
-                Task.Delay(1).Wait();
-
-                return new VrcMetaData();
-
-                //if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
-                //{
-                //    var vrcPhotoMatch = Regex.Match(filePath,
-                //            @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
-                //    if (vrcPhotoMatch.Success)
-                //    {
-                //        if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
-                //                                    "yyyy-MM-dd_HH-mm-ss.fff",
-                //                                    new CultureInfo("en", false),
-                //                                    DateTimeStyles.None,
-                //                                    out DateTime date))
-                //        {
-                //            meta = new VrcMetaData
-                //            {
-                //                Date = date
-                //            };
-                //        }
-                //    }
-                //}
-                //return meta;
-            });
+                var vrcPhotoMatch = Regex.Match(filePath,
+                        @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
+                if (vrcPhotoMatch.Success)
+                {
+                    if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
+                                                "yyyy-MM-dd_HH-mm-ss.fff",
+                                                new CultureInfo("en", false),
+                                                DateTimeStyles.None,
+                                                out DateTime date))
+                    {
+                        meta = new VrcMetaData
+                        {
+                            Date = date
+                        };
+                    }
+                }
+            }
+            return meta;
         }
+
+        private Task<VrcMetaData> GetVrcMetaDataAsync(string filePath) => Task.Run(() => GetVrcMetaData(filePath));
     }
 }
