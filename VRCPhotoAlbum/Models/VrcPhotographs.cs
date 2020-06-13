@@ -33,26 +33,34 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             if (!Directory.Exists(folderPath))
             {
-                throw new ArgumentException($"{folderPath} is not exist.");
+                throw new DirectoryNotFoundException($"{folderPath} is not exist.");
             }
 
-            Collection.ClearOnScheduler();
+            Collection.Clear();
 
             try
             {
-                var photoList = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+                var filePaths = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                                     .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                                    .Select(async filePath =>
-                                        new Photo
-                                        {
-                                            FilePath = filePath,
-                                            MetaData = await GetVrcMetaDataAsync(filePath)
-                                        });
+                                    .ToList();
 
-                foreach (var photo in photoList)
+                var tasks = filePaths.Select(fp => new Task(() =>
+                        GetVrcMetaDataAsync(fp)
+                        .ContinueWith(r => Collection.Add(new Photo { FilePath = fp, MetaData = r.Result }))));
+
+                foreach (var task in tasks)
                 {
-                    Collection.AddOnScheduler(await photo);
+                    task.Start();
                 }
+
+                //foreach (var filePath in filePaths)
+                //{
+                //    await GetVrcMetaDataAsync(filePath)
+                //        .ContinueWith(r => Collection.AddOnScheduler(new Photo { FilePath = filePath, MetaData = r.Result }));
+
+                //}
+
+                //var vrcMetaDataTemp = filePaths.Select(async fp => await GetVrcMetaDataAsync(fp)).ToList();
             }
             catch (Exception e)
             {
@@ -64,26 +72,30 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             return Task.Run(() =>
             {
-                if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
-                {
-                    var vrcPhotoMatch = Regex.Match(filePath,
-                            @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
-                    if (vrcPhotoMatch.Success)
-                    {
-                        if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
-                                                    "yyyy-MM-dd_HH-mm-ss.fff",
-                                                    new CultureInfo("en", false),
-                                                    DateTimeStyles.None,
-                                                    out DateTime date))
-                        {
-                            meta = new VrcMetaData
-                            {
-                                Date = date
-                            };
-                        }
-                    }
-                }
-                return meta;
+                Task.Delay(1).Wait();
+
+                return new VrcMetaData();
+
+                //if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
+                //{
+                //    var vrcPhotoMatch = Regex.Match(filePath,
+                //            @".*VRChat_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
+                //    if (vrcPhotoMatch.Success)
+                //    {
+                //        if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
+                //                                    "yyyy-MM-dd_HH-mm-ss.fff",
+                //                                    new CultureInfo("en", false),
+                //                                    DateTimeStyles.None,
+                //                                    out DateTime date))
+                //        {
+                //            meta = new VrcMetaData
+                //            {
+                //                Date = date
+                //            };
+                //        }
+                //    }
+                //}
+                //return meta;
             });
         }
     }
