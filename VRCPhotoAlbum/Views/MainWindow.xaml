@@ -207,6 +207,10 @@
                                     <i:InvokeCommandAction Command="{Binding CreateThumbnailCommand}"
                                             CommandParameter="{Binding ElementName=PhotoImage}"/>
                                 </i:EventTrigger>
+                                <i:EventTrigger EventName="ImageFailed">
+                                    <i:InvokeCommandAction Command="{Binding ImageFailedCommand}"
+                                            CommandParameter="{Binding ElementName=PhotoImage}"/>
+                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Image>
                     </Grid>

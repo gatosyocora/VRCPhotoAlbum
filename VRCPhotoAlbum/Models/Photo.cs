@@ -20,6 +20,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public VrcMetaData MetaData { get; set; }
 
         public ReactiveCommand CreateThumbnailCommand { get; }
+        public ReactiveCommand ImageFailedCommand { get; }
 
         public Photo(string filePath)
         {
@@ -30,6 +31,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath).AddTo(Disposable);
 
             CreateThumbnailCommand = new ReactiveCommand().AddTo(Disposable);
+            ImageFailedCommand = new ReactiveCommand().AddTo(Disposable);
 
             CreateThumbnailCommand.Subscribe(async () =>
             {
@@ -44,6 +46,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
                 });
             }).AddTo(Disposable);
+
+            ImageFailedCommand.Subscribe(() =>
+            {
+                Debug.Print($"Failed:{FilePath}");
+                ThumbnailImage.Value = ImageHelper.GetFailedImage();
+            });
         }
 
         public override string ToString()
