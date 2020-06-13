@@ -107,7 +107,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             var untilDateMatch = Regex.Match(searchText, @".*until:""(?<dateString>.*?)"".*");
             if (userMatch.Success)
             {
-                searchUserName = $"{userMatch.Groups["userName"]}";
+                SearchedUserName.Value = $"{userMatch.Groups["userName"]}";
             }
             else
             {
@@ -121,7 +121,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             if (worldMatch.Success)
             {
-                searchWorldName = $"{worldMatch.Groups["worldName"]}";
+                SearchedWorldName.Value = $"{worldMatch.Groups["worldName"]}";
             }
             else
             {
