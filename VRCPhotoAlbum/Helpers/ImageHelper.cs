@@ -1,4 +1,5 @@
-﻿using KoyashiroKohaku.VrcMetaTool;
+﻿using Gatosyocora.VRCPhotoAlbum.Wrappers;
+using KoyashiroKohaku.VrcMetaTool;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -18,23 +19,26 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         public static BitmapImage LoadBitmapImage(string filePath)
         {
             BitmapImage bitmapImage = new BitmapImage();
-            Stream stream;
+            Stream streamBase;
             if (filePath.StartsWith(@"pack://application:,,,"))
             {
                 var streamInfo = Application.GetResourceStream(new Uri(filePath));
-                stream = streamInfo.Stream;
+                streamBase = streamInfo.Stream;
             }
             else
             {
-                stream = File.OpenRead(filePath);
+                streamBase = File.OpenRead(filePath);
             }
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.CreateOptions = BitmapCreateOptions.None;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
-            stream.Dispose();
+
+            using (var stream = new DisposableStream(streamBase))
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.CreateOptions = BitmapCreateOptions.None;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+            }
 
             return bitmapImage;
         }
