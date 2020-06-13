@@ -30,7 +30,7 @@ namespace VRCPhotoAlbumTest.Models
                                             };
                                             meta.Users.Add(
                                                 new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + i)}"));
-                                            return new Photo
+                                            return new Photo("hoge.png")
                                             {
                                                 MetaData = meta
                                             };
@@ -47,7 +47,7 @@ namespace VRCPhotoAlbumTest.Models
                                                 Enumerable.Range(0, i)
                                                     .Select(ii =>
                                                         new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + i)}")));
-                                            return new Photo
+                                            return new Photo("hoge.png")
                                             {
                                                 MetaData = meta
                                             };
@@ -102,7 +102,7 @@ namespace VRCPhotoAlbumTest.Models
                     var meta = new VrcMetaData();
                     meta.Users.Add(
                         new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()));
-                    return new Photo
+                    return new Photo("hoge.png")
                     {
                         MetaData = meta
                     };
@@ -129,7 +129,7 @@ namespace VRCPhotoAlbumTest.Models
                             new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()),
                             new KoyashiroKohaku.VrcMetaTool.User(('z' - i).ToString())
                         });
-                    return new Photo
+                    return new Photo("hoge.png")
                     {
                         MetaData = meta
                     };
@@ -155,7 +155,7 @@ namespace VRCPhotoAlbumTest.Models
                             new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()),
                             new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString())
                         });
-                    return new Photo
+                    return new Photo("hoge.png")
                     {
                         MetaData = meta
                     };
@@ -179,7 +179,7 @@ namespace VRCPhotoAlbumTest.Models
                         Enumerable.Range(0, i)
                             .Select(ii =>
                                 new KoyashiroKohaku.VrcMetaTool.User(('a' + ii).ToString())));
-                    return new Photo
+                    return new Photo("hoge.png")
                     {
                         MetaData = meta
                     };
@@ -203,7 +203,7 @@ namespace VRCPhotoAlbumTest.Models
                         Enumerable.Range(0, i)
                             .Select(ii =>
                                 new KoyashiroKohaku.VrcMetaTool.User(('a' + ii).ToString())));
-                    return new Photo
+                    return new Photo("hoge.png")
                     {
                         MetaData = meta
                     };

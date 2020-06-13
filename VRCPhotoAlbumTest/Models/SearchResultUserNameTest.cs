@@ -34,7 +34,7 @@ namespace VRCPhotoAlbumTest.Models
                             new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + offset)}"));
                         return Enumerable.Range(0, i)
                         .Select(_ =>
-                            new Photo
+                            new Photo("hoge.png")
                             {
                                 MetaData = meta,
                             });

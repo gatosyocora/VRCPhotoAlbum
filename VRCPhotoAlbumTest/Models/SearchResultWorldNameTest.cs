@@ -35,7 +35,7 @@ namespace VRCPhotoAlbumTest.Models
                                         };
                                         // ワールド検索だけどUserがnullだと自動的に検索から除外されてしまう
                                         meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User("userName"));
-                                        return new Photo
+                                        return new Photo("hoge.png")
                                         {
                                             MetaData = meta
                                         };

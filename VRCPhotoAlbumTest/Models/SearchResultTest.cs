@@ -21,7 +21,7 @@ namespace VRCPhotoAlbumTest.Models
 
         public SearchResultTest()
         {
-            _photoList = Enumerable.Range(0, 5).Select(_ => new Photo());
+            _photoList = Enumerable.Range(0, 5).Select(_ => new Photo("hoge.png"));
         }
 
         [TestMethod("SearchTextの初期値が空文字であるか")]
