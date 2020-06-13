@@ -66,7 +66,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                 {
                                     if (x is Photo photo)
                                     {
-                                        return new Photo[] { photo };
+                                        if (IsSearchingPhoto(photo))
+                                        {
+                                            return new Photo[] { photo };
+                                        }
+                                        else
+                                        {
+                                            return Enumerable.Empty<Photo>();
+                                        }
                                     }
                                     else
                                     {
@@ -128,86 +135,88 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             if (dateMatch.Success)
             {
-                searchDateString = $"{dateMatch.Groups["dateString"]}";
+                if (DateTime.TryParse($"{dateMatch.Groups["dateString"]}", out var searchDate))
+                {
+                    SearchedSinceDate.Value = searchDate;
+                }
             }
             else
             {
-                searchDateString = string.Empty;
                 SearchedDate.Value = _defaultDate;
             }
 
             if (sinceDateMatch.Success)
             {
-                searchSinceDateString = $"{sinceDateMatch.Groups["dateString"]}";
+                if (DateTime.TryParse($"{sinceDateMatch.Groups["dateString"]}", out var searchDate))
+                {
+                    SearchedSinceDate.Value = searchDate;
+                }
             }
             else
             {
-                searchSinceDateString = string.Empty;
                 SearchedSinceDate.Value = _defaultDate;
             }
 
             if (untilDateMatch.Success)
             {
-                searchUntilDateString = $"{untilDateMatch.Groups["dateString"]}";
+                if (DateTime.TryParse($"{untilDateMatch.Groups["dateString"]}", out var searchDate))
+                {
+                    SearchedUntilDate.Value = searchDate;
+                }
             }
             else
             {
-                searchUntilDateString = string.Empty;
                 SearchedUntilDate.Value = _defaultDate;
             }
 
-            var searchedPhotoList = _photoList.Select(x => x);
-
-            if (dateMatch.Success && (!sinceDateMatch.Success && !untilDateMatch.Success))
-            {
-                if (DateTime.TryParse(searchDateString, out var searchDate))
-                {
-                    searchedPhotoList = searchedPhotoList
-                        .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchDate) ?? 1) == 0);
-                }
-            }
-            else
-            {
-                if (sinceDateMatch.Success)
-                {
-                    if (DateTime.TryParse(searchSinceDateString, out var searchSinceDate))
-                    {
-                        searchedPhotoList = searchedPhotoList
-                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchSinceDate.Date) ?? -1) >= 0);
-                    }
-                }
-
-                if (untilDateMatch.Success)
-                {
-                    if (DateTime.TryParse(searchUntilDateString, out var searchUntilDate))
-                    {
-                        searchedPhotoList = searchedPhotoList
-                            .Where(x => (x.MetaData?.Date?.Date.CompareTo(searchUntilDate.Date) ?? 1) <= 0);
-                    }
-                }
-            }
-
-            // ユーザーでもワールドでも検索していない場合
-            if (!userMatch.Success && !worldMatch.Success)
-            {
-                // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
-                searchedPhotoList = searchedPhotoList
-                                        .Where(x => (x?.MetaData?.Users?.Count() <= 0 && x?.MetaData?.World is null && !(x?.MetaData?.Date is null)) ||
-                                                    (x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) ||
-                                                    (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false));
-            }
-            else
-            {
-                // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
-                searchedPhotoList = searchedPhotoList
-                                        .Where(x => (x?.MetaData?.Users?.Count() <= 0 && x?.MetaData?.World is null && !(x?.MetaData?.Date is null)) ||
-                                                    ((x?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(searchUserName.ToLower())) ?? false) &&
-                                                    (x?.MetaData?.World?.ToLower().Contains(searchWorldName.ToLower()) ?? false)));
-            }
+            var searchedPhotoList = _photoList.Select(x => x).Where(x => IsSearchingPhoto(x));
 
             _IsSearching = false;
 
             return searchedPhotoList;
+        }
+
+        private bool IsSearchingPhoto(Photo photo)
+        {
+            var useUser = !string.IsNullOrEmpty(SearchedUserName.Value);
+            var useWorld = !string.IsNullOrEmpty(SearchedWorldName.Value);
+            var useDate = SearchedDate.Value.Date.CompareTo(_defaultDate.Date) != 0;
+            var useSinceDate = SearchedSinceDate.Value.Date.CompareTo(_defaultDate.Date) != 0;
+            var useUntilDate = SearchedUntilDate.Value.Date.CompareTo(_defaultDate.Date) != 0;
+
+            if (useDate && (!useSinceDate && !useUntilDate))
+            {
+                if ((photo?.MetaData?.Date?.Date.CompareTo(SearchedDate.Value.Date) ?? 1) != 0) return false;
+            }
+            else
+            {
+                if (useSinceDate)
+                {
+                    if ((photo?.MetaData?.Date?.Date.CompareTo(SearchedSinceDate.Value.Date) ?? -1) < 0) return false;
+                }
+
+                if (useUntilDate)
+                {
+                    if ((photo?.MetaData?.Date?.Date.CompareTo(SearchedUntilDate.Value.Date) ?? 1) > 0) return false;
+                }
+            }
+
+            // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
+            if (photo?.MetaData?.Users?.Count() > 0 || !(photo?.MetaData?.World is null)){
+                // ユーザーでもワールドでも検索していない場合
+                if (!useUser && !useWorld)
+                {
+                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(SearchedUserName.Value.ToLower())) ?? true) &&
+                        (!photo?.MetaData?.World?.ToLower().Contains(SearchedWorldName.Value.ToLower()) ?? true)) return false;
+                }
+                else
+                {
+                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(SearchedUserName.Value.ToLower())) ?? true) ||
+                        (!photo?.MetaData?.World?.ToLower().Contains(SearchedWorldName.Value.ToLower()) ?? true)) return false;
+                }
+            }
+
+            return true;
         }
 
         public void SearchWithTemplate(string name, string type)

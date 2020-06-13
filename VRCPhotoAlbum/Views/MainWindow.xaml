@@ -176,7 +176,7 @@
             ScrollViewer.VerticalScrollBarVisibility="Visible"
             ScrollViewer.PanningMode="VerticalOnly"
             VirtualizingPanel.IsVirtualizing="True"
-            VirtualizingPanel.VirtualizationMode="Recycling">
+            VirtualizingPanel.VirtualizationMode="Standard">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding OpenPhotoPreviewCommand}"
