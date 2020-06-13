@@ -35,22 +35,27 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             CreateThumbnailCommand.Subscribe(async () =>
             {
-                ThumbnailImage.Value = ImageHelper.GetNowLoadingImage();
-
-                await Task.Run(async () =>
-                {
-                    if (!File.Exists(ThumbnailImagePath.Value))
-                    {
-                        await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value);
-                    }
-                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
-                });
+                await LoadThumnailImage();
             }).AddTo(Disposable);
 
             ImageFailedCommand.Subscribe(() =>
             {
                 Debug.Print($"Failed:{FilePath}");
                 ThumbnailImage.Value = ImageHelper.GetFailedImage();
+            });
+        }
+
+        public async Task LoadThumnailImage()
+        {
+            ThumbnailImage.Value = ImageHelper.GetNowLoadingImage();
+
+            await Task.Run(async () =>
+            {
+                if (!File.Exists(ThumbnailImagePath.Value))
+                {
+                    await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value);
+                }
+                ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
             });
         }
 

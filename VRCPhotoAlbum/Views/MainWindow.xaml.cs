@@ -80,5 +80,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             _mainViewModel.Dispose();
         }
+
+        private void PhotoImage_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var photo = image.DataContext as Photo;
+            _ = photo.LoadThumnailImage();
+        }
     }
 }
