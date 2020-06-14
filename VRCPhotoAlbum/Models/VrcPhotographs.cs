@@ -77,7 +77,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
             {
                 var vrcPhotoMatch = Regex.Match(filePath,
-                        @".*(VRChat|screen)_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
+                        @".*(VRChat|screen|vrchat)_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
                 if (vrcPhotoMatch.Success)
                 {
                     if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
