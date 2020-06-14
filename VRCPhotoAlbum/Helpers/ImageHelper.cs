@@ -70,10 +70,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 using var stream = File.OpenRead(originalFilePath);
                 using var originalImage = Image.FromStream(stream, false, false);
                 using (var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero))
+                using (var memoryStream = new MemoryStream())
+                using (var fs = new FileStream(thumbnailFilePath, FileMode.Create, FileAccess.ReadWrite))
                 {
-                    // TODO: たまにロックによって書き込めないエラーが出る
-                    // A generic error occurred in GDI+.
-                    thumbnailImage.Save(thumbnailFilePath, ImageFormat.Jpeg);
+                    thumbnailImage.Save(memoryStream, ImageFormat.Jpeg);
+                    var bytes = memoryStream.ToArray();
+                    fs.Write(bytes, 0, bytes.Length);
                 }
             });
         }
