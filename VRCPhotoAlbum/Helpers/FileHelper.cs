@@ -35,6 +35,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             stringBuilder.Append($"[{DateTime.Now}] ");
             stringBuilder.Append($"{error.GetType().FullName}:");
             stringBuilder.Append($"{error.Message}\n");
+            stringBuilder.Append($", {error.StackTrace}\n");
+            stringBuilder.Append($", {error.InnerException}\n");
 
             File.AppendAllText(
                 $"{Directory.GetCurrentDirectory()}/errorlog.txt",
