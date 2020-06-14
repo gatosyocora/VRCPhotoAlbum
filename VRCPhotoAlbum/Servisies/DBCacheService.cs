@@ -132,7 +132,68 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public VrcMetaData GetVrcMetaDataIfExists(string filePath)
         {
-            throw new NotImplementedException();
+            var photo = _context.Photos.FirstOrDefault(p => p.FilePath == filePath);
+
+            // VrcMetaDataあり
+            if (photo.World != null || photo.Date != null || photo.Photographer != null || photo.PhotoUsers.Any())
+            {
+                var vrcMetaData = new VrcMetaData
+                {
+                    World = photo.World.WorldName,
+                    Date = photo.Date,
+                    Photographer = photo.Photographer.UserName
+                };
+
+                foreach (var (userName, twitterScreenName) in photo.Users.Select(u => (u.UserName, u.TwitterScreenName)))
+                {
+                    var user = new KoyashiroKohaku.VrcMetaTool.User(userName)
+                    {
+                        TwitterScreenName = twitterScreenName
+                    };
+
+                    vrcMetaData.Users.Add(user);
+                }
+
+                return vrcMetaData;
+            }
+            // VrcMetaDataなし
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<VrcMetaData> GetVrcMetaDataIfExistsAsync(string filePath)
+        {
+            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.FilePath == filePath);
+
+            // VrcMetaDataあり
+            if (photo.World != null || photo.Date != null || photo.Photographer != null || photo.PhotoUsers.Any())
+            {
+                var vrcMetaData = new VrcMetaData
+                {
+                    World = photo.World.WorldName,
+                    Date = photo.Date,
+                    Photographer = photo.Photographer.UserName
+                };
+
+                foreach (var (userName, twitterScreenName) in photo.Users.Select(u => (u.UserName, u.TwitterScreenName)))
+                {
+                    var user = new KoyashiroKohaku.VrcMetaTool.User(userName)
+                    {
+                        TwitterScreenName = twitterScreenName
+                    };
+
+                    vrcMetaData.Users.Add(user);
+                }
+
+                return vrcMetaData;
+            }
+            // VrcMetaDataなし
+            else
+            {
+                return null;
+            }
         }
 
         public IQueryable<Photo> Photos =>
