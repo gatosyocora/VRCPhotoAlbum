@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Gatosyocora.VRCPhotoAlbum.Helpers;
+using Gatosyocora.VRCPhotoAlbum.Models;
 using Gatosyocora.VRCPhotoAlbum.Models.Entities;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaTool;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Photo = Gatosyocora.VRCPhotoAlbum.Models.Entities.Photo;
 using User = Gatosyocora.VRCPhotoAlbum.Models.Entities.User;
 
 namespace Gatosyocora.VRCPhotoAlbum.Servisies
@@ -333,5 +337,47 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
         }
 
         public void SaveChanges() => _context.SaveChanges();
+
+        public void Insert(string filePath, VrcMetaData metaData)
+        {
+            // メタ情報がDBに登録されていない写真のメタ情報を登録する
+            // 画像読み込み時に画像からメタ情報を取得した場合に使用するメソッド
+            // メソッド名はAddのほうが良い？
+            // 複数スレッドから呼ばれると競合してエラー吐きそうだからQueueに入れる必要がありそう？
+            throw new NotImplementedException();
+        }
+
+        public void Update(string filePath, BitmapImage thumbnailImage)
+        {
+            // サムネイル画像が登録されていなければ登録する
+            // 引数はbyte[]かBitmapかBitmapImage
+            // サムネイル画像を作成したときにDB登録のために使用するメソッド
+            // Insertと競合するとエラー吐きそうだからQueueに入れる必要がありそう？
+            throw new NotImplementedException();
+        }
+
+        public BitmapImage GetThumbnailImageByFilePath(string filePath)
+        {
+            // サムネイル画像を取得する
+            // 画像が画面に表示されたときに使用するメソッド
+            // なければnullを返す => 作成してUpdate(filePath, thumnailImage)で登録
+            throw new NotImplementedException();
+        }
+
+        public VrcMetaData GetVrcMetaDataByFilePath(string filePath)
+        {
+            // ファイルパスからVrcMetaDataを取得するメソッド
+            // オンメモリの方式では使用しないので優先度低
+            // 画像が選択されたときにプレビュー画面のために情報を取得する
+            throw new NotImplementedException();
+        }
+
+        public User GetUsersWithDuplicates(string[] filePaths)
+        {
+            // 引数で与えられたファイルに写ったユーザー一覧を取得する(重複あり)
+            // 写真一覧画面で使用するユーザー一覧
+            // 五十音順に加え, 写っている枚数順に並べるため枚数情報も必要
+            throw new NotImplementedException();
+        }
     }
 }
