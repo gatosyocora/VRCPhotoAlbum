@@ -1,4 +1,5 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
+using Gatosyocora.VRCPhotoAlbum.Servisies;
 using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -20,8 +21,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     {
         public ReactiveCollection<Photo> Collection { get; }
 
-        public VrcPhotographs()
+        private DBCacheService _db;
+
+        public VrcPhotographs(DBCacheService db)
         {
+            _db = db;
             Collection = new ReactiveCollection<Photo>().AddTo(Disposable);
         }
 
@@ -48,22 +52,39 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                         .Where(x => !x.StartsWith(AppCache.Instance.CacheFolderPath, StringComparison.Ordinal))
                                         .ToList();
 
-                    var tasks = filePaths.Select(fp =>
-                        new Task(async () =>
-                        {
-                            Collection.AddOnScheduler(
-                                new Photo(fp)
-                                {
-                                    MetaData = await GetVrcMetaDataAsync(fp, cancelToken)
-                                });
-                        }, cancelToken));
+                    var metaSets = _db.GetVrcMetaDataIfExists(filePaths);
+
+                    var photos = metaSets
+                                    .Select(m =>
+                                        new Photo(m.filePath)
+                                        {
+                                            MetaData = m.vrcMetaData
+                                        })
+                                    .ToList();
+
+                    Collection.AddRangeOnScheduler(photos);
+           
+                    var tasks = filePaths
+                                    .Except(metaSets.Select(m => m.filePath))
+                                    .Select(fp =>
+                                        new Task(async () =>
+                                        {
+                                            var meta = await GetVrcMetaDataAsync(fp, cancelToken);
+
+                                            Collection.AddOnScheduler(
+                                                new Photo(fp)
+                                                {
+                                                    MetaData = meta
+                                                });
+
+                                        }, cancelToken));
 
                     foreach (var task in tasks)
                     {
                         if (cancelToken.IsCancellationRequested) return;
                         task.Start();
                     }
-                }, cancelToken);
+                }, cancelToken).ConfigureAwait(true);
             }
             catch (Exception e)
             {

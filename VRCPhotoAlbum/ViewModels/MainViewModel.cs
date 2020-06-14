@@ -1,5 +1,6 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.Servisies;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
@@ -27,6 +28,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private SearchResult _searchResult;
         private Users _users;
         private VrcPhotographs _vrcPhotographs;
+        private DBCacheService _db;
         #endregion
 
         #region Photo
@@ -77,7 +79,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             _mainWindow = mainWindow;
 
-            _vrcPhotographs = new VrcPhotographs();
+            _db = new DBCacheService();
+
+            _vrcPhotographs = new VrcPhotographs(_db);
             _searchResult = new SearchResult(_vrcPhotographs.Collection);
             _users = new Users(_vrcPhotographs.Collection);
 
