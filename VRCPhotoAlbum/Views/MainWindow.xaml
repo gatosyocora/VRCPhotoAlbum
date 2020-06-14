@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum"
+        xmlns:model="clr-namespace:Gatosyocora.VRCPhotoAlbum.Models"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:controls="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
                       mc:Ignorable="d"
         Title="VRCPhotoAlbum" Height="600" Width="800"
@@ -111,7 +112,7 @@
                     Width="50" Height="30"
                     HorizontalAlignment="Center"
                     Foreground="White"
-                    CommandParameter="today"
+                    CommandParameter="{x:Static model:DateSearchType.TODAY}"
                     Command="{Binding SearchWithDateTypeCommand}"/>
             <Button x:Name="EnterSearchDateWeekButton"
                     Content="今週"
@@ -120,7 +121,7 @@
                     Width="50" Height="30"
                     HorizontalAlignment="Center"
                     Foreground="White"
-                    CommandParameter="week"
+                    CommandParameter="{x:Static model:DateSearchType.WEEK}"
                     Command="{Binding SearchWithDateTypeCommand}"/>
             <Button x:Name="EnterSearchDateMonthButton"
                     Content="今月"
@@ -129,7 +130,7 @@
                     Width="50" Height="30"
                     HorizontalAlignment="Center"
                     Foreground="White"
-                    CommandParameter="month"
+                    CommandParameter="{x:Static model:DateSearchType.MONTH}"
                     Command="{Binding SearchWithDateTypeCommand}"/>
 
         </Grid>

@@ -47,7 +47,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<string> SearchWithUserNameCommand { get; }
         public ReactiveCommand<string> SearchWithWorldNameCommand { get; }
         public ReactiveCommand<string> SearchWithDateCommand { get; }
-        public ReactiveCommand<string> SearchWithDateTypeCommand { get; }
+        public ReactiveCommand<DateSearchType> SearchWithDateTypeCommand { get; }
 
         public ReactiveCommand ClearSearchText { get; }
         #endregion
@@ -109,20 +109,20 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithWorldNameCommand.Subscribe(_searchResult.SearchWithWorldName).AddTo(Disposable);
             SearchWithDateCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithDateCommand.Subscribe(dateString => _searchResult.SearchWithDate(DateTime.Parse(dateString))).AddTo(Disposable);
-            SearchWithDateTypeCommand = new ReactiveCommand<string>().AddTo(Disposable);
+            SearchWithDateTypeCommand = new ReactiveCommand<DateSearchType>().AddTo(Disposable);
             SearchWithDateTypeCommand.Subscribe(type =>
             {
                 var now = DateTime.Now;
 
-                if (type == "today")
+                if (type == DateSearchType.TODAY)
                 {
                     SearchDate.Value = now;
                 }
-                else if (type == "week")
+                else if (type == DateSearchType.WEEK)
                 {
                     _searchResult.SearchWithDatePeriodString(now.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
                 }
-                else if (type == "month")
+                else if (type == DateSearchType.MONTH)
                 {
                     _searchResult.SearchWithDatePeriodString(now.AddMonths(-1).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
                 }
