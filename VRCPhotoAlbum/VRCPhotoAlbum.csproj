@@ -20,6 +20,7 @@
     <WarningLevel>1</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\cache.db" />
     <None Remove="Resources\failed.png" />
     <None Remove="Resources\FlipHorizontalImage.png" />
     <None Remove="Resources\LeftImage.png" />
@@ -47,12 +48,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="ReactiveProperty" Version="7.1.0" />
     <PackageReference Include="VirtualizingWrapPanel" Version="1.5.0" />
-    <PackageReference Include="VrcMetaTool.NET" Version="0.1.7" />
+    <PackageReference Include="VrcMetaTool.NET" Version="0.1.8" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\cache.db" />
     <Resource Include="Resources\FlipHorizontalImage.png" />
     <Resource Include="Resources\LeftImage.png" />
     <Resource Include="Resources\failed.png" />
