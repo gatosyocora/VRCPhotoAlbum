@@ -2,6 +2,7 @@
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -31,10 +32,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         private static readonly KeyValuePair<string, DatePeriod>[] _specialSearchs = new KeyValuePair<string, DatePeriod>[]
         {
-            new KeyValuePair<string, DatePeriod>(@".*\s*(vket1|VKET1|Vket1)\s*.*", new DatePeriod(DateTime.Parse(@"2018/08/26 00:00:00"), DateTime.Parse(@"2018/08/28 23:59:59"))),
-            new KeyValuePair<string, DatePeriod>(@".*\s*(vket2|VKET2|Vket2)\s*.*", new DatePeriod(DateTime.Parse(@"2019/03/08 00:00:00"), DateTime.Parse(@"2019/03/10 23:59:59"))),
-            new KeyValuePair<string, DatePeriod>(@".*\s*(vket3|VKET3|Vket3)\s*.*", new DatePeriod(DateTime.Parse(@"2019/09/21 00:00:00"), DateTime.Parse(@"2019/09/28 23:00:00"))),
-            new KeyValuePair<string, DatePeriod>(@".*\s*(vket4|VKET4|Vket4)\s*.*", new DatePeriod(DateTime.Parse(@"2020/04/29 11:00:00"), DateTime.Parse(@"2020/05/10 23:00:00")))
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket1|VKET1|Vket1)\s*.*", new DatePeriod(@"2018/08/26 00:00:00", @"2018/08/28 23:59:59")),
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket2|VKET2|Vket2)\s*.*", new DatePeriod(@"2019/03/08 00:00:00", @"2019/03/10 23:59:59")),
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket3|VKET3|Vket3)\s*.*", new DatePeriod(@"2019/09/21 00:00:00", @"2019/09/28 23:00:00")),
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket4|VKET4|Vket4)\s*.*", new DatePeriod(@"2020/04/29 11:00:00", @"2020/05/10 23:00:00"))
         };
 
         public SearchResult(ReactiveCollection<Photo> photoList)
@@ -222,18 +223,18 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
 
             // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
-            if (photo?.MetaData?.Users?.Count() > 0 || !(photo?.MetaData?.World is null))
+            if (photo?.MetaData?.Users?.Count > 0 || !(photo?.MetaData?.World is null))
             {
                 // ユーザーでもワールドでも検索していない場合
                 if (!useUser && !useWorld)
                 {
-                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(SearchedUserName.Value.ToLower())) ?? true) &&
-                        (!photo?.MetaData?.World?.ToLower().Contains(SearchedWorldName.Value.ToLower()) ?? true)) return false;
+                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower(new CultureInfo("en-US")).StartsWith(SearchedUserName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal)) ?? true) &&
+                        (!photo?.MetaData?.World?.ToLower(new CultureInfo("en-US")).Contains(SearchedWorldName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal) ?? true)) return false;
                 }
                 else
                 {
-                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower().StartsWith(SearchedUserName.Value.ToLower())) ?? true) ||
-                        (!photo?.MetaData?.World?.ToLower().Contains(SearchedWorldName.Value.ToLower()) ?? true)) return false;
+                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower(new CultureInfo("en-US")).StartsWith(SearchedUserName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal)) ?? true) ||
+                        (!photo?.MetaData?.World?.ToLower(new CultureInfo("en-US")).Contains(SearchedWorldName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal) ?? true)) return false;
                 }
             }
 
@@ -259,7 +260,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 var freeMatch = Regex.Match(searchText, @$"\s*{name}\s*");
                 if (freeMatch.Success)
                 {
-                    searchText = searchText.Replace(freeMatch.Value, string.Empty);
+                    searchText = searchText.Replace(freeMatch.Value, string.Empty, StringComparison.Ordinal);
                 }
 
                 // 既に何か入力されていたらスペースをいれて入力する
@@ -274,7 +275,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             if (dateTime.Date.CompareTo(new DateTime().Date) == 0) return;
 
-            var dateString = dateTime.Date.ToString("yyyy-MM-dd");
+            var dateString = dateTime.Date.ToString("yyyy-MM-dd", new CultureInfo("en-US"));
 
             var searchText = Regex.Replace(SearchText?.Value ?? string.Empty, @"\s*since:"".*?""\s*", string.Empty);
             searchText = Regex.Replace(searchText, @"\s*until:"".*?""\s*", string.Empty);
@@ -302,8 +303,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             if (string.IsNullOrEmpty(sinceDateString) || string.IsNullOrEmpty(untilDateString) ||
                 sinceDateString == "0001/01/01 00:00:00" || untilDateString == "0001/01/01 00:00:00") return;
 
-            sinceDateString = DateTime.Parse(sinceDateString).Date.ToString("yyyy-MM-dd");
-            untilDateString = DateTime.Parse(untilDateString).Date.ToString("yyyy-MM-dd");
+            sinceDateString = DateTime.Parse(sinceDateString, new CultureInfo("en-US")).Date.ToString("yyyy-MM-dd", new CultureInfo("en-US"));
+            untilDateString = DateTime.Parse(untilDateString, new CultureInfo("en-US")).Date.ToString("yyyy-MM-dd", new CultureInfo("en-US"));
 
             var searchText = Regex.Replace(SearchText.Value, @"\s*date:"".*?""\s*", string.Empty);
 
@@ -349,8 +350,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             // TODO: ここの判定が甘い. 0001/01/01 00:00:00でないほうがあればそれだけで検索をしたい
             if (!shouldSearchSinceDate && !shouldSearchUntilDate) return;
 
-            var sinceDateString = sinceDate.Date.ToString("yyyy-MM-dd");
-            var untilDateString = untilDate.Date.ToString("yyyy-MM-dd");
+            var sinceDateString = sinceDate.Date.ToString("yyyy-MM-dd", new CultureInfo("en-US"));
+            var untilDateString = untilDate.Date.ToString("yyyy-MM-dd", new CultureInfo("en-US"));
 
             var searchText = Regex.Replace(SearchText.Value, @"\s*date:"".*?""\s*", string.Empty);
 

@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
-    public class JsonHelper
+    public static class JsonHelper
     {
         public static bool ExportJsonFile<T>(T jsonClassData, string jsonFilePath)
         {

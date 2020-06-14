@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
-    public class FileHelper
+    public static class FileHelper
     {
         private static readonly string[] _unit = new string[] { "B", "KB", "MB", "GB", "TB" };
 

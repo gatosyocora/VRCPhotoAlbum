@@ -6,6 +6,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -76,9 +77,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             _mainWindow = mainWindow;
 
-            Setting.Instance.Create();
-            Cache.Instance.Create();
-
             _vrcPhotographs = new VrcPhotographs();
             _searchResult = new SearchResult(_vrcPhotographs.Collection);
             _users = new Users(_vrcPhotographs.Collection);
@@ -100,7 +98,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                             ShowedPhotoList.ObserveAddChanged().Select(_ => Unit.Default),
                             ShowedPhotoList.ObserveRemoveChanged().Select(_ => Unit.Default),
                             ShowedPhotoList.ObserveResetChanged().Select(_ => Unit.Default)
-                         ).Select(_ => $"{ShowedPhotoList.Count()} 枚").ToReactiveProperty().AddTo(Disposable);
+                         ).Select(_ => $"{ShowedPhotoList.Count} 枚").ToReactiveProperty().AddTo(Disposable);
 
             SearchDate = _searchResult.SearchedDate.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
             SearchWithUserNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
@@ -108,7 +106,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithWorldNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithWorldNameCommand.Subscribe(_searchResult.SearchWithWorldName).AddTo(Disposable);
             SearchWithDateCommand = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithDateCommand.Subscribe(dateString => _searchResult.SearchWithDate(DateTime.Parse(dateString))).AddTo(Disposable);
+            SearchWithDateCommand.Subscribe(dateString => _searchResult.SearchWithDate(DateTime.Parse(dateString, new CultureInfo("en-US")))).AddTo(Disposable);
             SearchWithDateTypeCommand = new ReactiveCommand<DateSearchType>().AddTo(Disposable);
             SearchWithDateTypeCommand.Subscribe(type =>
             {
@@ -120,11 +118,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 }
                 else if (type == DateSearchType.WEEK)
                 {
-                    _searchResult.SearchWithDatePeriodString(now.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
+                    _searchResult.SearchWithDatePeriodString(now.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")), now.ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")));
                 }
                 else if (type == DateSearchType.MONTH)
                 {
-                    _searchResult.SearchWithDatePeriodString(now.AddMonths(-1).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
+                    _searchResult.SearchWithDatePeriodString(now.AddMonths(-1).ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")), now.ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")));
                 }
             });
             ClearSearchText = new ReactiveCommand().AddTo(Disposable);

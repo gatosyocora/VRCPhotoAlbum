@@ -11,7 +11,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// PhotoPreview.xaml の相互作用ロジック
     /// </summary>
-    public partial class PhotoPreview : MetroWindow, IDisposable
+    public partial class PhotoPreview : WindowBase
     {
         private PhotoPreviewViewModel _photoPreviewViewModel;
 

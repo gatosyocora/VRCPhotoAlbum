@@ -49,16 +49,16 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SelectCacheFolderCommand = new ReactiveCommand().AddTo(Disposable);
 
             PhotoFolderName.Value = _settingData.FolderPath;
-            CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
-            CacheFolderPath.Value = Cache.Instance.CacheFolderPath;
+            CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
+            CacheFolderPath.Value = AppCache.Instance.CacheFolderPath;
 
             PhotoFolderName.Subscribe(f => _settingData.FolderPath = f);
             UseTestFunction.Subscribe(b => _settingData.UseTestFunction = b);
 
             DeleteCacheCommand.Subscribe(() =>
             {
-                Cache.Instance.DeleteCacheFileAll();
-                CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
+                AppCache.Instance.DeleteCacheFileAll();
+                CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
             });
             SelectCacheFolderCommand.Subscribe(() =>
             {
@@ -83,7 +83,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             if (isChangedPhotoFolder)
             {
-                Cache.Instance.DeleteCacheFileAll();
+                AppCache.Instance.DeleteCacheFileAll();
                 MainWindow.Instance.Reboot();
             }
 

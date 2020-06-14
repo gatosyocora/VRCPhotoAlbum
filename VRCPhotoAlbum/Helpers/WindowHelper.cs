@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
-    public class WindowHelper
+    public static class WindowHelper
     {
         internal static void OpenSettingDialog(Window ownerWindow)
         {
@@ -17,6 +17,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 Owner = ownerWindow
             };
             settingWindow.ShowDialog();
+            settingWindow.Dispose();
         }
 
         internal static void OpenPhotoPreviewWindow(Photo photo, List<Photo> photoList, SearchResult searchResult, Window ownerWindow)
@@ -35,11 +36,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 Owner = ownerWindow
             };
             shareWindow.ShowDialog();
+            shareWindow.Dispose();
         }
 
         internal static void OpenTwitterWithScreenName(string twitterScreenName)
         {
-            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
+            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty, StringComparison.Ordinal)}";
             try
             {
                 var startInfo = new ProcessStartInfo(uri)

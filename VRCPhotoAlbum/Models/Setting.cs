@@ -26,9 +26,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
         }
 
-        // インスタンス生成のための空メソッド
-        public void Create() { }
-
         public SettingData Copy()
         {
             return new SettingData()

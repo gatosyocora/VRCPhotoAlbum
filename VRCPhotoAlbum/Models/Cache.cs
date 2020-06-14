@@ -3,17 +3,17 @@ using System.Reflection;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models
 {
-    public class Cache
+    public class AppCache
     {
-        public static Cache Instance { get; }
+        public static AppCache Instance { get; }
 
         public string CacheFolderPath { get; }
 
-        static Cache()
+        static AppCache()
         {
-            Instance = new Cache();
+            Instance = new AppCache();
         }
-        public Cache()
+        public AppCache()
         {
             CacheFolderPath = GetCacheFolderPath();
 
@@ -22,8 +22,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 Directory.CreateDirectory(CacheFolderPath);
             }
         }
-
-        public void Create() { }
 
         private string GetCacheFolderPath()
         {

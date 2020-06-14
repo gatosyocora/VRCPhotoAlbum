@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
-    public class ImageHelper
+    public static class ImageHelper
     {
         private static BitmapImage _failedImage => LoadBitmapImage(@"pack://application:,,,/Resources/failed.png");
         private static BitmapImage _nowLoadingImage => LoadBitmapImage(@"pack://application:,,,/Resources/nowloading.jpg");
@@ -21,9 +21,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         #region BitmapImage
         public static BitmapImage LoadBitmapImage(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
             BitmapImage bitmapImage = new BitmapImage();
             Stream streamBase;
-            if (filePath.StartsWith(@"pack://application:,,,"))
+            if (filePath.StartsWith(@"pack://application:,,,", StringComparison.Ordinal))
             {
                 var streamInfo = Application.GetResourceStream(new Uri(filePath));
                 streamBase = streamInfo.Stream;
@@ -96,7 +101,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         {
             if (image is null)
             {
-                throw new ArgumentNullException("image is null");
+                throw new ArgumentNullException(nameof(image));
             }
             using (image)
             {
@@ -144,18 +149,33 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static Bitmap RotateLeft90(Bitmap image)
         {
+            if (image is null)
+            {
+                throw new ArgumentNullException($"{image} is null");
+            }
+
             image.RotateFlip(RotateFlipType.Rotate270FlipNone);
             return image;
         }
 
         public static Bitmap RotateRight90(Bitmap image)
         {
+            if (image is null)
+            {
+                throw new ArgumentNullException($"{image} is null");
+            }
+
             image.RotateFlip(RotateFlipType.Rotate90FlipNone);
             return image;
         }
 
         public static Bitmap FlipHorizontal(Bitmap image)
         {
+            if (image is null)
+            {
+                throw new ArgumentNullException($"{image} is null");
+            }
+
             image.RotateFlip(RotateFlipType.Rotate180FlipY);
             return image;
         }
@@ -164,7 +184,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static void RotateLeft90AndSave(string filePath, VrcMetaData metaData)
         {
-            var image = RotateLeft90(LoadImage(filePath));
+            using var image = RotateLeft90(LoadImage(filePath));
             var buffer = Bitmap2Bytes(image);
             if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
@@ -172,7 +192,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static void RotateRight90AndSave(string filePath, VrcMetaData metaData)
         {
-            var image = RotateRight90(LoadImage(filePath));
+            using var image = RotateRight90(LoadImage(filePath));
             var buffer = Bitmap2Bytes(image);
             if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
@@ -180,7 +200,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static void FilpHorizontalAndSave(string filePath, VrcMetaData metaData)
         {
-            var image = FlipHorizontal(LoadImage(filePath));
+            using var image = FlipHorizontal(LoadImage(filePath));
             var buffer = Bitmap2Bytes(image);
             if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);

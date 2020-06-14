@@ -2,6 +2,7 @@
 using Gatosyocora.VRCPhotoAlbum.Models;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using System;
 using System.Reactive.Linq;
 using System.Windows.Media.Imaging;
 
@@ -47,7 +48,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         private void SendToTwitter(string FilePath, string message)
         {
-
+            throw new NotImplementedException($"filePath is {FilePath}. message is {message}");
         }
     }
 }

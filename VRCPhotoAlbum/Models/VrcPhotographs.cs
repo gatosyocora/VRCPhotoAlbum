@@ -45,7 +45,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 await Task.Run(() =>
                 {
                     var filePaths = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                                        .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
+                                        .Where(x => !x.StartsWith(AppCache.Instance.CacheFolderPath, StringComparison.Ordinal))
                                         .ToList();
 
                     var tasks = filePaths.Select(fp =>

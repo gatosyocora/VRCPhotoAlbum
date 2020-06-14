@@ -11,7 +11,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow, IDisposable
+    public partial class MainWindow : WindowBase
     {
         public static MainWindow Instance { get; private set; }
 
@@ -36,9 +36,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             try
             {
                 _mainViewModel = new MainViewModel(this);
+                Disposable.Add(_mainViewModel);
                 DataContext = _mainViewModel;
             }
+#pragma warning disable CA1031 // 一般的な例外の種類はキャッチしません
             catch (Exception e)
+#pragma warning restore CA1031 // 一般的な例外の種類はキャッチしません
             {
                 FileHelper.OutputErrorLogFile(e);
             }
@@ -74,11 +77,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         private string GetApplicationVersion()
         {
             return FileVersionInfo.GetVersionInfo(typeof(App).Assembly.Location).FileVersion;
-        }
-
-        public void Dispose()
-        {
-            _mainViewModel.Dispose();
         }
     }
 }

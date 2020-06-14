@@ -30,7 +30,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             ThumbnailImage = new ReactiveProperty<BitmapImage>();
 
             FilePath = filePath;
-            var thumbnailImagePath = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
+            var thumbnailImagePath = ImageHelper.GetThumbnailImagePath(FilePath, AppCache.Instance.CacheFolderPath);
             ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath);
 
             OnLoadedCommand = new ReactiveCommand();

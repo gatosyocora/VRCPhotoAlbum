@@ -16,7 +16,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Wrappers
         {
             if (streamBase is null)
             {
-                throw new ArgumentNullException("streamBase");
+                throw new ArgumentNullException(nameof(streamBase));
             }
             _streamBase = streamBase;
         }

@@ -13,6 +13,7 @@ using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using User = KoyashiroKohaku.VrcMetaTool.User;
+using System.Globalization;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -47,6 +48,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public PhotoPreviewViewModel(PhotoPreview photoPreviewWindow, Photo photo, List<Photo> photoList, SearchResult searchResult)
         {
+            if (photoList is null)
+            {
+                throw new ArgumentNullException($"{photoList} is null");
+            }
+
             PreviewPhoto = new ReactiveProperty<Photo>().AddTo(Disposable);
 
             _photoList = photoList;
@@ -62,7 +68,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             UserList = new ReactiveCollection<User>().AddTo(Disposable);
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
             PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
-            PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss") ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
+            PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")) ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
             PhotoNumber = PreviewPhoto.Select(_ => $"{_previewPhotoIndex + 1}/{_photoList.Count}").ToReadOnlyReactiveProperty().AddTo(Disposable);
             UseTestFunction = new ReactiveProperty<bool>().AddTo(Disposable);
 
@@ -113,7 +119,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private void ImageProcessing(string filePath, VrcMetaData meta, SearchResult searchResult, Action<string, VrcMetaData> imageProcessFunction)
         {
             imageProcessFunction(filePath, meta);
-            Cache.Instance.DeleteCacheFile(filePath);
+            AppCache.Instance.DeleteCacheFile(filePath);
             //TODO: ここでサムネイルの読み直しをおこなう
             Image.Value = ImageHelper.LoadBitmapImage(filePath);
             searchResult.ResearchCommand.Execute();
