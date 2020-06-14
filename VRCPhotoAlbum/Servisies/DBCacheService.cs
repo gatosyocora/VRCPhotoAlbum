@@ -134,19 +134,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
         public List<(string filePath, VrcMetaData vrcMetaData)> GetVrcMetaDataIfExists(IEnumerable<string> filePaths)
         {
             var photos = Photos
-                .Select(p =>
-                new
+                .Select(p => new
                 {
                     p.FilePath,
                     p.World,
                     p.Date,
                     p.Photographer,
-                    p.Users
+                    p.PhotoUsers,
                 })
-                .Where(p =>
-                    Photos.Select(p => p.FilePath)
-                        .Intersect(filePaths)
-                        .Contains(p.FilePath))
                 .ToList();
 
             var results = new List<(string filePath, VrcMetaData vrcMetaData)>();
@@ -161,7 +156,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     Photographer = photo.Photographer?.UserName
                 };
 
-                foreach (var (userName, twitterScreenName) in photo.Users.Select(u => (u.UserName, u.TwitterScreenName)))
+                foreach (var (userName, twitterScreenName) in photo.PhotoUsers.Select(pu => (pu.User.UserName, pu.User.TwitterScreenName)))
                 {
                     var user = new KoyashiroKohaku.VrcMetaTool.User(userName)
                     {
@@ -187,12 +182,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     p.World,
                     p.Date,
                     p.Photographer,
-                    p.Users
+                    p.PhotoUsers
                 })
-                .Where(p =>
-                    Photos.Select(p => p.FilePath)
-                        .Intersect(filePaths)
-                        .Contains(p.FilePath))
                 .ToListAsync()
                 .ConfigureAwait(true);
 
@@ -208,7 +199,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     Photographer = photo.Photographer?.UserName
                 };
 
-                foreach (var (userName, twitterScreenName) in photo.Users.Select(u => (u.UserName, u.TwitterScreenName)))
+                foreach (var (userName, twitterScreenName) in photo.PhotoUsers.Select(pu => (pu.User.UserName, pu.User.TwitterScreenName)))
                 {
                     var user = new KoyashiroKohaku.VrcMetaTool.User(userName)
                     {
@@ -225,7 +216,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
         }
 
         public IQueryable<Photo> Photos =>
-            _context.Photos
+            _context
+            .Photos
+            .AsNoTracking()
             .Include(p => p.World)
             .Include(p => p.PhotoUsers)
                 .ThenInclude(pu => pu.User);
