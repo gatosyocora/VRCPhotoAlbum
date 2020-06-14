@@ -63,9 +63,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                 // metaデータ読み込み
                 if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
                 {
-                    // 読み込み失敗した場合は空データを作る
-                    meta = new VrcMetaData();
-
                     // TODO: ファイル名から日付情報設定
                     // photo.Date = 
                 }
@@ -83,10 +80,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     {
                         if (!ExistsWorldByWorldName(meta.World, out var world))
                         {
-                            world = CreateWorld(meta.World);
+                            photo.World = CreateWorld(meta.World);
                         }
-
-                        photo.World = world;
+                        else
+                        {
+                            photo.World = world;
+                        }
                     }
 
                     // 撮影者情報設定
@@ -99,10 +98,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                         var (exists, photographer) = await ExistsUserByUserNameAsync(meta.Photographer);
                         if (!exists)
                         {
-                            photographer = await CreateUserAsync(meta.Photographer);
+                            photo.Photographer = await CreateUserAsync(meta.Photographer);
                         }
-
-                        photo.Photographer = photographer;
+                        else
+                        {
+                            photo.Photographer = photographer;
+                        }
                     }
 
                     // ユーザ情報設定

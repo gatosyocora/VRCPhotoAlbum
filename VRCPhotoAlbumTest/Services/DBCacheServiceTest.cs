@@ -23,7 +23,7 @@ namespace VRCPhotoAlbumTest.Services
 
             Assert.IsTrue(File.Exists(_dbFilePath));
 
-            /*var filePaths = Directory.GetFiles(@"D:\Documents\image", "*.png", SearchOption.AllDirectories);
+            var filePaths = Directory.GetFiles(@"D:\Documents\image", "*.png", SearchOption.AllDirectories);
 
             await dbCecheService.CreateDBCacheIfNeededAsync(filePaths);
 
@@ -34,7 +34,7 @@ namespace VRCPhotoAlbumTest.Services
                 Console.WriteLine(photo.FilePath);
             }
 
-            Assert.IsTrue(photos.Count == 66);*/
+            Assert.IsTrue(photos.Count == 66);
         }
     }
 }
