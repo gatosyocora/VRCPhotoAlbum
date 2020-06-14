@@ -331,5 +331,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
             return photoUser;
         }
+
+        public void SaveChanges() => _context.SaveChanges();
     }
 }
