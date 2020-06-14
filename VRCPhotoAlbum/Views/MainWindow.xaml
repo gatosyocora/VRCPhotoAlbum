@@ -207,7 +207,11 @@
                             <!--Loaded="PhotoImage_Loaded">-->
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Loaded">
-                                    <i:InvokeCommandAction Command="{Binding CreateThumbnailCommand}"
+                                    <i:InvokeCommandAction Command="{Binding OnLoadedCommand}"
+                                            CommandParameter="{Binding ElementName=PhotoImage}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="UnLoaded">
+                                    <i:InvokeCommandAction Command="{Binding OnUnLoadedCommand}"
                                             CommandParameter="{Binding ElementName=PhotoImage}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="ImageFailed">

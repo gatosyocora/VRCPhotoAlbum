@@ -19,8 +19,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         public VrcMetaData MetaData { get; set; }
 
-        public ReactiveCommand CreateThumbnailCommand { get; }
+        public ReactiveCommand OnLoadedCommand { get; }
+        public ReactiveCommand OnUnLoadedCommand { get; }
         public ReactiveCommand ImageFailedCommand { get; }
+
+        private CancellationTokenSource _loadCancel;
 
         public Photo(string filePath)
         {
@@ -30,32 +33,30 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             var thumbnailImagePath = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
             ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath);
 
-            CreateThumbnailCommand = new ReactiveCommand();
+            OnLoadedCommand = new ReactiveCommand();
+            OnUnLoadedCommand = new ReactiveCommand();
             ImageFailedCommand = new ReactiveCommand();
 
-            CreateThumbnailCommand.Subscribe(async () =>
-            {
-                await LoadThumnailImage();
-            });
-
-            ImageFailedCommand.Subscribe(() =>
-            {
-                ThumbnailImage.Value = ImageHelper.GetFailedImage();
-            });
+            OnLoadedCommand.Subscribe(async () => await LoadThumnailImage());
+            OnUnLoadedCommand.Subscribe(() => _loadCancel.Cancel());
+            ImageFailedCommand.Subscribe(() => ThumbnailImage.Value = ImageHelper.GetFailedImage());
         }
 
         public async Task LoadThumnailImage()
         {
+            _loadCancel = new CancellationTokenSource();
             ThumbnailImage.Value = ImageHelper.GetNowLoadingImage();
 
             await Task.Run(async () =>
             {
                 if (!File.Exists(ThumbnailImagePath.Value))
                 {
+                    if (_loadCancel.Token.IsCancellationRequested) return;
                     await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value);
                 }
+                if (_loadCancel.Token.IsCancellationRequested) return;
                 ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
-            });
+            }, _loadCancel.Token);
         }
 
         public override string ToString()
