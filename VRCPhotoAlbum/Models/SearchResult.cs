@@ -29,6 +29,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         private bool _IsSearching = false;
 
+        private static readonly KeyValuePair<string, DatePeriod>[] _specialSearchs = new KeyValuePair<string, DatePeriod>[]
+        {
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket1|VKET1|Vket1)\s*.*", new DatePeriod(DateTime.Parse(@"2018/08/26 00:00:00"), DateTime.Parse(@"2018/08/28 23:59:59"))),
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket2|VKET2|Vket2)\s*.*", new DatePeriod(DateTime.Parse(@"2019/03/08 00:00:00"), DateTime.Parse(@"2019/03/10 23:59:59"))),
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket3|VKET3|Vket3)\s*.*", new DatePeriod(DateTime.Parse(@"2019/09/21 00:00:00"), DateTime.Parse(@"2019/09/28 23:00:00"))),
+            new KeyValuePair<string, DatePeriod>(@".*\s*(vket4|VKET4|Vket4)\s*.*", new DatePeriod(DateTime.Parse(@"2020/04/29 11:00:00"), DateTime.Parse(@"2020/05/10 23:00:00")))
+        };
+
         public SearchResult(ReactiveCollection<Photo> photoList)
         {
             _defaultDate = new DateTime();
@@ -99,12 +107,16 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             _IsSearching = true;
 
-            bool specialSearch = false; 
-            if (Regex.IsMatch(searchText, @".*\s*(vket4|VKET4|Vket4)\s*.*"))
+            bool useSpecialSearch = false;
+            foreach (var specialSearch in _specialSearchs)
             {
-                SearchedSinceDate.Value = DateTime.Parse(@"2020/04/29 11:00:00");
-                SearchedUntilDate.Value = DateTime.Parse(@"2020/05/10 23:00:00");
-                specialSearch = true;
+                if (Regex.IsMatch(searchText, specialSearch.Key))
+                {
+                    SearchedSinceDate.Value = specialSearch.Value.SinceDate;
+                    SearchedUntilDate.Value = specialSearch.Value.UntilDate;
+                    useSpecialSearch = true;
+                    break;
+                }
             }
 
             string searchUserName, searchWorldName, searchDateString, searchSinceDateString, searchUntilDateString;
@@ -117,7 +129,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             {
                 SearchedUserName.Value = $"{userMatch.Groups["userName"]}";
             }
-            else if (!specialSearch)
+            else if (!useSpecialSearch)
             {
                 searchUserName = Regex.Replace(searchText, @"\s*world:"".*?""\s*", string.Empty);
                 searchUserName = Regex.Replace(searchUserName, @"\s*date:"".*?""\s*", string.Empty);
@@ -131,7 +143,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             {
                 SearchedWorldName.Value = $"{worldMatch.Groups["worldName"]}";
             }
-            else if (!specialSearch)
+            else if (!useSpecialSearch)
             {
                 searchWorldName = Regex.Replace(searchText, @"\s*user:"".*?""\s*", string.Empty);
                 searchWorldName = Regex.Replace(searchWorldName, @"\s*date:"".*?""\s*", string.Empty);
@@ -160,7 +172,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     SearchedSinceDate.Value = searchDate;
                 }
             }
-            else if (!specialSearch)
+            else if (!useSpecialSearch)
             {
                 SearchedSinceDate.Value = _defaultDate;
             }
@@ -172,7 +184,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     SearchedUntilDate.Value = searchDate;
                 }
             }
-            else if (!specialSearch)
+            else if (!useSpecialSearch)
             {
                 SearchedUntilDate.Value = _defaultDate;
             }
