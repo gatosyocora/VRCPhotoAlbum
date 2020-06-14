@@ -203,9 +203,13 @@
                     <Grid Width="100" Height="100">
                         <Image x:Name="PhotoImage"
                                Source="{Binding ThumbnailImage.Value}"
-                               Tag="{Binding FilePath}"
-                               Loaded="PhotoImage_Loaded">
+                               Tag="{Binding FilePath}">
+                            <!--Loaded="PhotoImage_Loaded">-->
                             <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded">
+                                    <i:InvokeCommandAction Command="{Binding CreateThumbnailCommand}"
+                                            CommandParameter="{Binding ElementName=PhotoImage}"/>
+                                </i:EventTrigger>
                                 <i:EventTrigger EventName="ImageFailed">
                                     <i:InvokeCommandAction Command="{Binding ImageFailedCommand}"
                                             CommandParameter="{Binding ElementName=PhotoImage}"/>

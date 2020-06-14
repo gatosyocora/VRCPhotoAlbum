@@ -28,19 +28,18 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             FilePath = filePath;
             var thumbnailImagePath = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
-            ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath).AddTo(Disposable);
+            ThumbnailImagePath = new ReactiveProperty<string>(thumbnailImagePath);
 
-            CreateThumbnailCommand = new ReactiveCommand().AddTo(Disposable);
-            ImageFailedCommand = new ReactiveCommand().AddTo(Disposable);
+            CreateThumbnailCommand = new ReactiveCommand();
+            ImageFailedCommand = new ReactiveCommand();
 
             CreateThumbnailCommand.Subscribe(async () =>
             {
                 await LoadThumnailImage();
-            }).AddTo(Disposable);
+            });
 
             ImageFailedCommand.Subscribe(() =>
             {
-                Debug.Print($"Failed:{FilePath}");
                 ThumbnailImage.Value = ImageHelper.GetFailedImage();
             });
         }
