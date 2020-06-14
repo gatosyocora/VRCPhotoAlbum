@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Gatosyocora.VRCPhotoAlbum.Models.Entities;
+using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaTool;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -130,15 +131,29 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             }
         }
 
-        public VrcMetaData GetVrcMetaDataIfExists(string filePath)
+        public List<(string filePath, VrcMetaData vrcMetaData)> GetVrcMetaDataIfExists(IEnumerable<string> filePaths)
         {
-            var photo = Photos.FirstOrDefault(p => p.FilePath == filePath);
+            var photos = Photos
+                .Select(p =>
+                new
+                {
+                    p.FilePath,
+                    p.World,
+                    p.Date,
+                    p.Photographer,
+                    p.Users
+                })
+                .Where(p =>
+                    Photos.Select(p => p.FilePath)
+                        .Intersect(filePaths)
+                        .Contains(p.FilePath))
+                .ToList();
 
-            if (photo == null) return null;
+            var results = new List<(string filePath, VrcMetaData vrcMetaData)>();
 
-            // VrcMetaDataあり
-            if (photo.World != null || photo.Date != null || photo.Photographer != null || photo.PhotoUsers.Any())
+            foreach (var photo in photos)
             {
+                var filePath = photo.FilePath;
                 var vrcMetaData = new VrcMetaData
                 {
                     World = photo.World?.WorldName,
@@ -156,29 +171,41 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     vrcMetaData.Users.Add(user);
                 }
 
-                return vrcMetaData;
+                results.Add((filePath, vrcMetaData));
             }
-            // VrcMetaDataなし
-            else
-            {
-                return null;
-            }
+
+            return results;
         }
 
-        public async Task<VrcMetaData> GetVrcMetaDataIfExistsAsync(string filePath)
+        public async Task<List<(string filePath, VrcMetaData vrcMetaData)>> GetVrcMetaDataIfExistsAsync(IEnumerable<string> filePaths)
         {
-            var photo = await Photos.FirstOrDefaultAsync(p => p.FilePath == filePath);
+            var photos = await Photos
+                .Select(p =>
+                new
+                {
+                    p.FilePath,
+                    p.World,
+                    p.Date,
+                    p.Photographer,
+                    p.Users
+                })
+                .Where(p =>
+                    Photos.Select(p => p.FilePath)
+                        .Intersect(filePaths)
+                        .Contains(p.FilePath))
+                .ToListAsync()
+                .ConfigureAwait(true);
 
-            if (photo == null) return null;
+            var results = new List<(string filePath, VrcMetaData vrcMetaData)>();
 
-            // VrcMetaDataあり
-            if (photo.World != null || photo.Date != null || photo.Photographer != null || photo.PhotoUsers.Any())
+            foreach (var photo in photos)
             {
+                var filePath = photo.FilePath;
                 var vrcMetaData = new VrcMetaData
                 {
-                    World = photo.World.WorldName,
+                    World = photo.World?.WorldName,
                     Date = photo.Date,
-                    Photographer = photo.Photographer.UserName
+                    Photographer = photo.Photographer?.UserName
                 };
 
                 foreach (var (userName, twitterScreenName) in photo.Users.Select(u => (u.UserName, u.TwitterScreenName)))
@@ -191,13 +218,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     vrcMetaData.Users.Add(user);
                 }
 
-                return vrcMetaData;
+                results.Add((filePath, vrcMetaData));
             }
-            // VrcMetaDataなし
-            else
-            {
-                return null;
-            }
+
+            return results;
         }
 
         public IQueryable<Photo> Photos =>
