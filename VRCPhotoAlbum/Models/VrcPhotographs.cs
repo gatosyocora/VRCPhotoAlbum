@@ -48,7 +48,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                         .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
                                         .ToList();
 
-                    var tasks = filePaths.Select(fp => 
+                    var tasks = filePaths.Select(fp =>
                         new Task(async () =>
                         {
                             Collection.AddOnScheduler(

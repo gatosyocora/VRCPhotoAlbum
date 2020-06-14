@@ -222,7 +222,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
 
             // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
-            if (photo?.MetaData?.Users?.Count() > 0 || !(photo?.MetaData?.World is null)){
+            if (photo?.MetaData?.Users?.Count() > 0 || !(photo?.MetaData?.World is null))
+            {
                 // ユーザーでもワールドでも検索していない場合
                 if (!useUser && !useWorld)
                 {
@@ -355,7 +356,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             var sinceDateMatch = Regex.Match(searchText, @"(?<prefix>.*since:"")(?<dateString>.*?)(?<suffix>"".*)");
 
-            string searchTextWithSinceDate = string.Empty;
+            string searchTextWithSinceDate;
             if (sinceDateMatch.Success)
             {
                 searchTextWithSinceDate = $"{sinceDateMatch.Groups["prefix"]}{sinceDateString}{sinceDateMatch.Groups["suffix"]}";
