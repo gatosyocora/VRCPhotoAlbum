@@ -84,6 +84,19 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 }
             });
         }
+
+        public static Task<byte[]> CreateThumbnailAsync(string filePath)
+        {
+            return Task.Run(() =>
+            {
+                var originalImage = Image.FromFile(filePath);
+                var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
+
+                ImageConverter converter = new ImageConverter();
+                return converter.ConvertTo(thumbnailImage, typeof(byte[])) as byte[];
+            });
+        }
+
         #endregion
 
         #region Bitmap

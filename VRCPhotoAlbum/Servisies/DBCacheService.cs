@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models.Entities;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaTool;
@@ -58,14 +59,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                 };
 
                 // サムネイル作成
-                // TODO: ImageHelperに実装
-                photo.Thumbnail = await CreateThumbnailAsync(filePath);
+                photo.Thumbnail = await ImageHelper.CreateThumbnailAsync(filePath);
 
                 // metaデータ読み込み
                 if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
                 {
-                    // TODO: ファイル名から日付情報設定
-                    // photo.Date = 
+                    // ファイル名から日付を取得
+                    photo.Date = MetaDataHelper.GetDateTimeFromPhotoName(filePath);
                 }
                 else
                 {
@@ -246,19 +246,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             Photos
             .Where(p => p.World.WorldName.Contains(worldName))
             .ToListAsync();
-
-        // TODO: ImageHelperに移動予定
-        private static Task<byte[]> CreateThumbnailAsync(string filePath)
-        {
-            return Task.Run(() =>
-            {
-                var originalImage = Image.FromFile(filePath);
-                var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
-
-                ImageConverter converter = new ImageConverter();
-                return converter.ConvertTo(thumbnailImage, typeof(byte[])) as byte[];
-            });
-        }
 
         public bool ExistsWorldByWorldName(string worldName, out World world)
         {
