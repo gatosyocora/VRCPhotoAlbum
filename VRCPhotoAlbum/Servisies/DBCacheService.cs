@@ -130,6 +130,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             }
         }
 
+        public VrcMetaData GetVrcMetaDataIfExists(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryable<Photo> Photos =>
             _context.Photos
             .Include(p => p.World)
