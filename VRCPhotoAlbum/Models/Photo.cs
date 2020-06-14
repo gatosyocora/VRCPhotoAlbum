@@ -24,7 +24,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
         public Photo(string filePath)
         {
-            ThumbnailImage = new ReactiveProperty<BitmapImage>().AddTo(Disposable);
+            ThumbnailImage = new ReactiveProperty<BitmapImage>();
 
             FilePath = filePath;
             var thumbnailImagePath = ImageHelper.GetThumbnailImagePath(FilePath, Cache.Instance.CacheFolderPath);
