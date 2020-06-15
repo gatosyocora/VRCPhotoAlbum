@@ -5,6 +5,7 @@ using MahApps.Metro.Controls;
 using System;
 using System.Diagnostics;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Gatosyocora.VRCPhotoAlbum.Views
 {
@@ -77,6 +78,15 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         private string GetApplicationVersion()
         {
             return FileVersionInfo.GetVersionInfo(typeof(App).Assembly.Location).FileVersion;
+        }
+
+        public void ScrollToTopInPhotoList()
+        {
+            var border = VisualTreeHelper.GetChild(PhotoListBox, 0) as Border;
+            if (border is null) return;
+            var scroll = border.Child as ScrollViewer;
+            if (scroll is null) return;
+            scroll.ScrollToTop();
         }
     }
 }

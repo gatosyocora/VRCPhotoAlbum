@@ -1,4 +1,5 @@
-﻿using Reactive.Bindings;
+﻿using Gatosyocora.VRCPhotoAlbum.Views;
+using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
@@ -86,6 +87,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     }
                                     else
                                     {
+                                        MainWindow.Instance.ScrollToTopInPhotoList();
                                         return SearchPhoto(SearchText?.Value ?? string.Empty);
                                     }
                                 })
