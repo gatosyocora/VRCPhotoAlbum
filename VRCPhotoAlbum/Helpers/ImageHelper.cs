@@ -82,7 +82,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                     var bytes = memoryStream.ToArray();
                     fs.Write(bytes, 0, bytes.Length);
                 }
-            });
+            }).ConfigureAwait(true);
         }
 
         public static Task<byte[]> CreateThumbnailAsync(string filePath)

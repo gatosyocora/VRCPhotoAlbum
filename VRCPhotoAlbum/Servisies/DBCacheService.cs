@@ -72,7 +72,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
         public async Task CreateDBCacheIfNeededAsync(IEnumerable<string> filePaths)
         {
             // DBに存在しないものだけキャッシュ作成を行う
-            foreach (var filePath in filePaths.Except(await _context.Photos.Select(p => p.FilePath).ToListAsync()))
+            foreach (var filePath in filePaths.Except(await _context.Photos.Select(p => p.FilePath).ToListAsync().ConfigureAwait(true)))
             {
                 var photo = new Photo
                 {
@@ -118,10 +118,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     }
                     else
                     {
-                        var (exists, photographer) = await ExistsUserByUserNameAsync(meta.Photographer);
+                        var (exists, photographer) = await ExistsUserByUserNameAsync(meta.Photographer).ConfigureAwait(true);
                         if (!exists)
                         {
-                            photo.Photographer = await CreateUserAsync(meta.Photographer);
+                            photo.Photographer = await CreateUserAsync(meta.Photographer).ConfigureAwait(true);
                         }
                         else
                         {
@@ -134,12 +134,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     {
                         foreach (var metaUser in meta.Users)
                         {
-                            var (exists, user) = await ExistsUserByUserNameAsync(metaUser.UserName);
+                            var (exists, user) = await ExistsUserByUserNameAsync(metaUser.UserName).ConfigureAwait(true);
 
                             // TODO:TwitterのDisplaynameを入れていない
                             if (!exists)
                             {
-                                user = await CreateUserAsync(metaUser.UserName);
+                                user = await CreateUserAsync(metaUser.UserName).ConfigureAwait(true);
                             }
 
                             var photoUser = CreatePhotoUser(photo, user);
@@ -150,7 +150,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                 }
 
                 await _context.Photos.AddAsync(photo);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(true);
             }
         }
 
@@ -278,7 +278,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public async Task<(bool exists, World world)> ExistsWorldByWorldNameAsync(string worldName)
         {
-            var world = await _context.Worlds.FirstOrDefaultAsync(w => w.WorldName == worldName);
+            var world = await _context.Worlds.FirstOrDefaultAsync(w => w.WorldName == worldName).ConfigureAwait(true);
             return (world != null, world);
         }
 
@@ -314,7 +314,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public async Task<(bool exists, User user)> ExistsUserByUserNameAsync(string userName)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName).ConfigureAwait(true);
             return (user != null, user);
         }
 

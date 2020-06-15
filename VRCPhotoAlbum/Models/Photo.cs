@@ -37,7 +37,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             OnUnLoadedCommand = new ReactiveCommand();
             ImageFailedCommand = new ReactiveCommand();
 
-            OnLoadedCommand.Subscribe(async () => await LoadThumnailImage());
+            OnLoadedCommand.Subscribe(async () => await LoadThumnailImage().ConfigureAwait(true));
             OnUnLoadedCommand.Subscribe(() => _loadCancel.Cancel());
             ImageFailedCommand.Subscribe(() => ThumbnailImage.Value = ImageHelper.GetFailedImage());
         }
@@ -52,11 +52,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 if (!File.Exists(ThumbnailImagePath.Value))
                 {
                     if (_loadCancel.Token.IsCancellationRequested) return;
-                    await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value);
+                    await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value).ConfigureAwait(true);
                 }
                 if (_loadCancel.Token.IsCancellationRequested) return;
                 ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
-            }, _loadCancel.Token);
+            }, _loadCancel.Token).ConfigureAwait(false);
         }
 
         public override string ToString()

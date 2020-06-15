@@ -69,7 +69,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     .Select(fp =>
                                         new Task(async () =>
                                         {
-                                            var meta = await GetVrcMetaDataAsync(fp, cancelToken);
+                                            var meta = await GetVrcMetaDataAsync(fp, cancelToken).ConfigureAwait(true);
 
                                             Collection.AddOnScheduler(
                                                 new Photo(fp)
@@ -77,7 +77,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                                     MetaData = meta
                                                 });
 
-                                            await _db.InsertAsync(fp, meta);
+                                            await _db.InsertAsync(fp, meta).ConfigureAwait(false);
 
                                         }, cancelToken));
 
