@@ -64,7 +64,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                    {
                        _context.Photos.AddAsync(p);
                        _context.SaveChangesAsync();
-                       AdditionalQueue.Remove(p);
+                       if (p != null) AdditionalQueue.Remove(p);
                    }).ConfigureAwait(true);
                });
         }
