@@ -10,6 +10,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
     public static class FileHelper
     {
         private static readonly string[] _unit = new string[] { "B", "KB", "MB", "GB", "TB" };
+        private static object locker = new object();
 
         public static long CalcDataSize(string folderPath) => CalcDirectoryDataSize(new DirectoryInfo(folderPath));
 
@@ -41,9 +42,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
             Debug.Print(stringBuilder.ToString());
 
-            File.AppendAllText(
-                $"{Directory.GetCurrentDirectory()}/errorlog.txt",
-                stringBuilder.ToString());
+            lock (locker)
+            {
+                File.AppendAllText(
+                    $"{Directory.GetCurrentDirectory()}/errorlog.txt",
+                    stringBuilder.ToString());
+            }
         }
     }
 }
