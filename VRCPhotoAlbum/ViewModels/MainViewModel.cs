@@ -83,9 +83,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             _db = new DBCacheService($"{AppCache.Instance.CacheFolderPath}{Path.DirectorySeparatorChar}cache.db");
 
-            _vrcPhotographs = new VrcPhotographs(_db);
-            _searchResult = new SearchResult(_vrcPhotographs.Collection);
-            _users = new Users(_vrcPhotographs.Collection);
+            _vrcPhotographs = new VrcPhotographs(_db).AddTo(Disposable);
+            _searchResult = new SearchResult(_vrcPhotographs.Collection).AddTo(Disposable);
+            _users = new Users(_vrcPhotographs.Collection).AddTo(Disposable);
 
             _loadingCancel = new CancellationTokenSource().AddTo(Disposable);
 
