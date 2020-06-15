@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using User = KoyashiroKohaku.VrcMetaTool.User;
 using System.Globalization;
+using System.Reactive;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -25,7 +26,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         private int _previewPhotoIndex;
 
         public ReactiveProperty<BitmapImage> Image { get; }
-        public ReactiveCollection<User> UserList { get; }
+        public ReadOnlyReactiveCollection<User> UserList { get; }
         public ReadOnlyReactiveProperty<string> WorldName { get; }
         public ReadOnlyReactiveProperty<string> PhotographerName { get; }
         public ReadOnlyReactiveProperty<string> PhotoDateTime { get; }
@@ -65,7 +66,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 return ImageHelper.LoadBitmapImage(filePath);
             })
             .ToReactiveProperty().AddTo(Disposable);
-            UserList = new ReactiveCollection<User>().AddTo(Disposable);
+            UserList = PreviewPhoto.SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<User>()).ToReadOnlyReactiveCollection(onReset:PreviewPhoto.Select(_ => Unit.Default)).AddTo(Disposable);
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
             PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
             PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")) ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
@@ -73,12 +74,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             UseTestFunction = new ReactiveProperty<bool>().AddTo(Disposable);
 
             UseTestFunction.Value = Setting.Instance.Data.UseTestFunction;
-
-            PreviewPhoto.Subscribe(p =>
-            {
-                UserList.Clear();
-                UserList.AddRangeOnScheduler(p?.MetaData?.Users ?? Enumerable.Empty<User>());
-            }).AddTo(Disposable);
 
             PreviousCommand = new ReactiveCommand().AddTo(Disposable);
             NextCommand = new ReactiveCommand().AddTo(Disposable);
