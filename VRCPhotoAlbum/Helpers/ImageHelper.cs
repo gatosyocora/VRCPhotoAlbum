@@ -16,8 +16,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
     public static class ImageHelper
     {
-        private static BitmapImage _failedImage => LoadBitmapImage(@"pack://application:,,,/Resources/failed.png");
-        private static BitmapImage _nowLoadingImage => LoadBitmapImage(@"pack://application:,,,/Resources/nowloading.jpg");
+        private static BitmapImage _failedImage => LoadThumbnailBitmapImage(@"pack://application:,,,/Resources/failed.png", 120);
+        private static BitmapImage _nowLoadingImage => LoadThumbnailBitmapImage(@"pack://application:,,,/Resources/nowloading.jpg", 120);
 
         #region BitmapImage
         public static BitmapImage LoadBitmapImage(string filePath)
