@@ -63,7 +63,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                 };
 
                 // サムネイル作成
-                photo.Thumbnail = await ImageHelper.CreateThumbnailAsync(filePath);
+                // サムネイルは初表示時に作成する
+                //photo.Thumbnail = await ImageHelper.CreateThumbnailAsync(filePath);
 
                 // metaデータ読み込み
                 if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
@@ -118,6 +119,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                         {
                             var (exists, user) = await ExistsUserByUserNameAsync(metaUser.UserName);
 
+                            // TODO:TwitterのDisplaynameを入れていない
                             if (!exists)
                             {
                                 user = await CreateUserAsync(metaUser.UserName);
