@@ -51,20 +51,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             return bitmapImage;
         }
 
-        public static BitmapImage GetNowLoadingImage()
-        {
-            return _nowLoadingImage;
-        }
+        public static BitmapImage GetNowLoadingImage() => _nowLoadingImage;
 
-        public static BitmapImage GetFailedImage()
-        {
-            return _failedImage;
-        }
+        public static BitmapImage GetFailedImage() => _failedImage;
 
         public static string GetThumbnailImagePath(string filePath, string cacheFolderPath)
-        {
-            return $"{cacheFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
-        }
+                => $"{cacheFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
 
         public static async Task CreateThumbnailImagePathAsync(string originalFilePath, string thumbnailFilePath)
         {
