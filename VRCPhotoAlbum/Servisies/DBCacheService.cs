@@ -56,8 +56,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             _context = new Context();
 
             AdditionalQueue = new ReactiveCollection<Photo>();
-
-            // TODO:いい感じに削除していかないと貯まりっぱなしになる
             AdditionalQueue.ObserveAddChanged()
                .Subscribe(async p =>
                {
@@ -66,6 +64,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                    {
                        _context.Photos.AddAsync(p);
                        _context.SaveChangesAsync();
+                       AdditionalQueue.Remove(p);
                    }).ConfigureAwait(true);
                });
         }
