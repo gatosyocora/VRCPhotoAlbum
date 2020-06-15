@@ -107,6 +107,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             return meta;
         }
 
-        private Task<VrcMetaData> GetVrcMetaDataAsync(string filePath, CancellationToken cancelToken) => Task.Run(() => GetVrcMetaData(filePath), cancelToken);
+        private static Task<VrcMetaData> GetVrcMetaDataAsync(string filePath, CancellationToken cancelToken) => Task.Run(() => GetVrcMetaData(filePath), cancelToken);
     }
 }
