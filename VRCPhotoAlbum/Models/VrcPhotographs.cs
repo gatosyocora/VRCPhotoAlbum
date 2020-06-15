@@ -94,7 +94,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             }
         }
 
-        private VrcMetaData GetVrcMetaData(string filePath)
+        private static VrcMetaData GetVrcMetaData(string filePath)
         {
             //return new VrcMetaData();
             if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
