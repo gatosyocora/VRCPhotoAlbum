@@ -75,14 +75,16 @@
                     Width="60"
                     Content="A-Z"
                     Foreground="White"
-                    Command ="{Binding SortUserWithAlphabetCommand}"/>
+                    Command ="{Binding SortUserWithAlphabetCommand}"
+                    IsEnabled="{Binding CanUseToSorting.Value}"/>
             <Button x:Name="UserCountButton"
                     Grid.Column="1"
                     Margin="5" Padding="0"
                     Width="60"
                     Content="枚数順"
                     Foreground="White"
-                    Command ="{Binding SortUserWithCountCommand}"/>
+                    Command ="{Binding SortUserWithCountCommand}"
+                    IsEnabled="{Binding CanUseToSorting.Value}"/>
         </Grid>
         <Grid Grid.Column="0" Grid.Row="1"
               HorizontalAlignment="Right"

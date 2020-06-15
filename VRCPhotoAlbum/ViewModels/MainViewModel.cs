@@ -61,6 +61,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<UserSortType> CurrentUserSortType { get; }
         public ReactiveCommand SortUserWithAlphabetCommand { get; }
         public ReactiveCommand SortUserWithCountCommand { get; }
+
+        public ReactiveProperty<bool> CanUseToSorting { get; }
         #endregion
 
         #region Window
@@ -144,6 +146,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SortUserWithCountCommand = new ReactiveCommand().AddTo(Disposable);
             SortUserWithAlphabetCommand.Subscribe(() => CurrentUserSortType.Value = UserSortType.Alphabet).AddTo(Disposable);
             SortUserWithCountCommand.Subscribe(() => CurrentUserSortType.Value = UserSortType.Count).AddTo(Disposable);
+            CanUseToSorting = _users.SortedUserList.CollectionChangedAsObservable()
+                                    .Select(_ => _users.SortedUserList.Any()).ToReactiveProperty(false).AddTo(Disposable);
 
             OpenPhotoPreviewCommand = new ReactiveCommand<Photo>().AddTo(Disposable);
             OpenPhotoPreviewCommand.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _searchResult, _mainWindow); }).AddTo(Disposable);
