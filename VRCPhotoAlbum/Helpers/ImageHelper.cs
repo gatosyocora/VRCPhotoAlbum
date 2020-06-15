@@ -54,6 +54,39 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static Task<BitmapImage> LoadBitmapImageAsync(string filePath) => Task.Run(() => LoadBitmapImage(filePath));
 
+        public static BitmapImage LoadThumbnailBitmapImage(string filePath, int decodePixelWidth)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
+            BitmapImage bitmapImage = new BitmapImage();
+            Stream streamBase;
+            if (filePath.StartsWith(@"pack://application:,,,", StringComparison.Ordinal))
+            {
+                var streamInfo = Application.GetResourceStream(new Uri(filePath));
+                streamBase = streamInfo.Stream;
+            }
+            else
+            {
+                streamBase = File.OpenRead(filePath);
+            }
+
+            using (var stream = new DisposableStream(streamBase))
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.CreateOptions = BitmapCreateOptions.None;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.DecodePixelWidth = decodePixelWidth;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+            }
+
+            return bitmapImage;
+        }
+
         public static BitmapImage GetNowLoadingImage() => _nowLoadingImage;
 
         public static BitmapImage GetFailedImage() => _failedImage;

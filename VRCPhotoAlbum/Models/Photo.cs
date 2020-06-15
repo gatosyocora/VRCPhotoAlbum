@@ -61,23 +61,17 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             _loadCancel = new CancellationTokenSource();
             ThumbnailImage.Value = ImageHelper.GetNowLoadingImage();
 
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
-                bool existThumbnailImage = File.Exists(ThumbnailImagePath.Value);
-                if (!existThumbnailImage)
+                try
                 {
-                    if (_loadCancel.Token.IsCancellationRequested) return;
-                    existThumbnailImage = await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value).ConfigureAwait(true);
+                    ThumbnailImage.Value = ImageHelper.LoadThumbnailBitmapImage(FilePath, 240);
                 }
-                if (_loadCancel.Token.IsCancellationRequested) return;
-                if (existThumbnailImage)
-                {
-                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
-                }
-                else
+                catch(IOException e)
                 {
                     ThumbnailImage.Value = ImageHelper.GetFailedImage();
                 }
+
             }, _loadCancel.Token).ConfigureAwait(false);
         }
 
