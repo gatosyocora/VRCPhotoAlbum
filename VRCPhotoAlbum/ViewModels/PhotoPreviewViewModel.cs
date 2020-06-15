@@ -54,18 +54,27 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 throw new ArgumentNullException($"{photoList} is null");
             }
 
-            PreviewPhoto = new ReactiveProperty<Photo>().AddTo(Disposable);
+            PreviewPhoto = new ReactiveProperty<Photo>(photo).AddTo(Disposable);
 
             _photoList = photoList;
-            PreviewPhoto.Value = photo;
             _previewPhotoIndex = _photoList.IndexOf(photo);
 
-            Image = PreviewPhoto.Select(p =>
+            Image = new ReactiveProperty<BitmapImage>(ImageHelper.GetNowLoadingImage()).AddTo(Disposable);
+            PreviewPhoto.Subscribe(async p =>
             {
                 var filePath = p?.FilePath ?? string.Empty;
-                return ImageHelper.LoadBitmapImage(filePath);
-            })
-            .ToReactiveProperty().AddTo(Disposable);
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    try
+                    {
+                        Image.Value = await ImageHelper.LoadBitmapImageAsync(p.FilePath);
+                    }
+                    catch (IOException e)
+                    {
+                        Image.Value = ImageHelper.GetFailedImage();
+                    }
+                }
+            });
             UserList = PreviewPhoto.SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<User>()).ToReadOnlyReactiveCollection(onReset:PreviewPhoto.Select(_ => Unit.Default)).AddTo(Disposable);
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
             PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
@@ -90,11 +99,13 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             PreviousCommand.Subscribe(() =>
             {
+                Image.Value = ImageHelper.GetNowLoadingImage();
                 _previewPhotoIndex = (_previewPhotoIndex - 1 + _photoList.Count) % _photoList.Count;
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
             }).AddTo(Disposable);
             NextCommand.Subscribe(() =>
             {
+                Image.Value = ImageHelper.GetNowLoadingImage();
                 _previewPhotoIndex = (_previewPhotoIndex + 1) % _photoList.Count;
                 PreviewPhoto.Value = _photoList[_previewPhotoIndex];
             }).AddTo(Disposable);
