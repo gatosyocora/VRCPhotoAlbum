@@ -63,8 +63,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             await Task.Run(async () =>
             {
-                bool existThumbnailImage = false;
-                if (!File.Exists(ThumbnailImagePath.Value))
+                bool existThumbnailImage = File.Exists(ThumbnailImagePath.Value);
+                if (!existThumbnailImage)
                 {
                     if (_loadCancel.Token.IsCancellationRequested) return;
                     existThumbnailImage = await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value).ConfigureAwait(true);
