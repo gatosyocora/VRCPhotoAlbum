@@ -97,22 +97,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             //return new VrcMetaData();
             if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
             {
-                var vrcPhotoMatch = Regex.Match(filePath,
-                        @".*(VRChat|screen|vrchat)_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
-                if (vrcPhotoMatch.Success)
+                meta = new VrcMetaData
                 {
-                    if (DateTime.TryParseExact($"{vrcPhotoMatch.Groups["datetime"]}",
-                                                "yyyy-MM-dd_HH-mm-ss.fff",
-                                                new CultureInfo("en", false),
-                                                DateTimeStyles.None,
-                                                out DateTime date))
-                    {
-                        meta = new VrcMetaData
-                        {
-                            Date = date
-                        };
-                    }
-                }
+                    Date = MetaDataHelper.GetDateTimeFromPhotoName(filePath)
+                };
             }
             return meta;
         }
