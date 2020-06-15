@@ -65,7 +65,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             {
                 try
                 {
-                    ThumbnailImage.Value = ImageHelper.LoadThumbnailBitmapImage(FilePath, 240);
+                    ThumbnailImage.Value = ImageHelper.LoadThumbnailBitmapImage(FilePath, 120);
                 }
                 catch(IOException e)
                 {
