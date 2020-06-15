@@ -85,9 +85,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                             return Enumerable.Empty<Photo>();
                                         }
                                     }
-                                    else
+                                    else if (x is string)
                                     {
                                         MainWindow.Instance.ScrollToTopInPhotoList();
+                                        return SearchPhoto(SearchText?.Value ?? string.Empty);
+                                    }
+                                    else
+                                    {
                                         return SearchPhoto(SearchText?.Value ?? string.Empty);
                                     }
                                 })
