@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +38,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             stringBuilder.Append($"{error.Message}\n");
             stringBuilder.Append($", {error.StackTrace}\n");
             stringBuilder.Append($", {error.InnerException}\n");
+
+            Debug.Print(stringBuilder.ToString());
 
             File.AppendAllText(
                 $"{Directory.GetCurrentDirectory()}/errorlog.txt",

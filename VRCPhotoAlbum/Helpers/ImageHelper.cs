@@ -1,6 +1,7 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Wrappers;
 using KoyashiroKohaku.VrcMetaTool;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -58,21 +59,33 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         public static string GetThumbnailImagePath(string filePath, string cacheFolderPath)
                 => $"{cacheFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
 
-        public static async Task CreateThumbnailImagePathAsync(string originalFilePath, string thumbnailFilePath)
+        public static async Task<bool> CreateThumbnailImagePathAsync(string originalFilePath, string thumbnailFilePath)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                if (File.Exists(thumbnailFilePath)) return;
+                if (File.Exists(thumbnailFilePath)) return true;
 
-                using var stream = File.OpenRead(originalFilePath);
-                using var originalImage = Image.FromStream(stream, false, false);
-                using (var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero))
-                using (var memoryStream = new MemoryStream())
-                using (var fs = new FileStream(thumbnailFilePath, FileMode.Create, FileAccess.ReadWrite))
+                // TODO: FileStreamで例外が発生する
+                // 例外がスローされました: 'System.IO.IOException' (System.Private.CoreLib.dll の中)
+                // The process cannot access the file '***.jpg' because it is being used by another process.
+                try
                 {
-                    thumbnailImage.Save(memoryStream, ImageFormat.Jpeg);
-                    var bytes = memoryStream.ToArray();
-                    fs.Write(bytes, 0, bytes.Length);
+                    using var stream = File.OpenRead(originalFilePath);
+                    using var originalImage = Image.FromStream(stream, false, false);
+                    using (var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero))
+                    using (var memoryStream = new MemoryStream())
+                    using (var fs = new FileStream(thumbnailFilePath, FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        thumbnailImage.Save(memoryStream, ImageFormat.Jpeg);
+                        var bytes = memoryStream.ToArray();
+                        fs.Write(bytes, 0, bytes.Length);
+                    }
+                    return true;
+                }
+                catch (IOException e)
+                {
+                    FileHelper.OutputErrorLogFile(e);
+                    return false;
                 }
             }).ConfigureAwait(true);
         }

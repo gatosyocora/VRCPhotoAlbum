@@ -37,7 +37,21 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             OnUnLoadedCommand = new ReactiveCommand();
             ImageFailedCommand = new ReactiveCommand();
 
-            OnLoadedCommand.Subscribe(async () => await LoadThumnailImage().ConfigureAwait(true));
+            OnLoadedCommand.Subscribe(async () =>
+            {
+                // TODO: エラーで落ちる
+                try
+                {
+                    await LoadThumnailImage().ConfigureAwait(true);
+                }
+                // 例外がスローされました: 'System.IO.IOException'
+                // ストリームから読み取ることができません。
+                catch (IOException e)
+                {
+                    FileHelper.OutputErrorLogFile(e);
+                    ThumbnailImage.Value = ImageHelper.GetFailedImage();
+                }
+            });
             OnUnLoadedCommand.Subscribe(() => _loadCancel.Cancel());
             ImageFailedCommand.Subscribe(() => ThumbnailImage.Value = ImageHelper.GetFailedImage());
         }
@@ -49,13 +63,21 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             await Task.Run(async () =>
             {
+                bool existThumbnailImage = false;
                 if (!File.Exists(ThumbnailImagePath.Value))
                 {
                     if (_loadCancel.Token.IsCancellationRequested) return;
-                    await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value).ConfigureAwait(true);
+                    existThumbnailImage = await ImageHelper.CreateThumbnailImagePathAsync(FilePath, ThumbnailImagePath.Value).ConfigureAwait(true);
                 }
                 if (_loadCancel.Token.IsCancellationRequested) return;
-                ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
+                if (existThumbnailImage)
+                {
+                    ThumbnailImage.Value = ImageHelper.LoadBitmapImage(ThumbnailImagePath.Value);
+                }
+                else
+                {
+                    ThumbnailImage.Value = ImageHelper.GetFailedImage();
+                }
             }, _loadCancel.Token).ConfigureAwait(false);
         }
 
