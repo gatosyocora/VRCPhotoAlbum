@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using User = KoyashiroKohaku.VrcMetaTool.User;
 using System.Globalization;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -62,18 +63,22 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             Image = new ReactiveProperty<BitmapImage>(ImageHelper.GetNowLoadingImage()).AddTo(Disposable);
             PreviewPhoto.Subscribe(async p =>
             {
-                var filePath = p?.FilePath ?? string.Empty;
-                if (!string.IsNullOrEmpty(filePath))
+                var task = new Task(() =>
                 {
-                    try
+                    var filePath = p?.FilePath ?? string.Empty;
+                    if (!string.IsNullOrEmpty(filePath))
                     {
-                        Image.Value = await ImageHelper.LoadBitmapImageAsync(p.FilePath);
+                        try
+                        {
+                            Image.Value = ImageHelper.LoadBitmapImage(p.FilePath);
+                        }
+                        catch (IOException e)
+                        {
+                            Image.Value = ImageHelper.GetFailedImage();
+                        }
                     }
-                    catch (IOException e)
-                    {
-                        Image.Value = ImageHelper.GetFailedImage();
-                    }
-                }
+                });
+                task.Start(TaskScheduler.FromCurrentSynchronizationContext());
             });
             UserList = PreviewPhoto.SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<User>()).ToReadOnlyReactiveCollection(onReset:PreviewPhoto.Select(_ => Unit.Default)).AddTo(Disposable);
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
