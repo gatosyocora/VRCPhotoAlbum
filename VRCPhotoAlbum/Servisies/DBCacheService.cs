@@ -15,6 +15,8 @@ using Gatosyocora.VRCPhotoAlbum.Views;
 using KoyashiroKohaku.VrcMetaTool;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using Photo = Gatosyocora.VRCPhotoAlbum.Models.Entities.Photo;
 using User = Gatosyocora.VRCPhotoAlbum.Models.Entities.User;
 
@@ -25,6 +27,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
         private readonly Context _context;
         private static readonly string _dbFilePath = "Cache/cache.db";
         private static readonly string _dbResourcePath = "Gatosyocora.VRCPhotoAlbum.Resources.cache.db";
+
+        public ReactiveCollection<Photo> AdditionalQueue { get; }
 
         public DBCacheService()
         {
@@ -50,6 +54,19 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             }
 
             _context = new Context();
+
+            AdditionalQueue = new ReactiveCollection<Photo>();
+            AdditionalQueue.ObserveAddChanged()
+               .Subscribe(async p =>
+               {
+                   // UIスレッドと分離
+                   await Task.Run(() =>
+                   {
+                       _context.Photos.AddAsync(p);
+                       _context.SaveChangesAsync();
+                       AdditionalQueue.Remove(p);
+                   }).ConfigureAwait(true);
+               });
         }
 
         public async Task CreateDBCacheIfNeededAsync(IEnumerable<string> filePaths)
@@ -340,13 +357,52 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public void SaveChanges() => _context.SaveChanges();
 
-        public void Insert(string filePath, VrcMetaData metaData)
+        public Task InsertAsync(string filePath, VrcMetaData metaData)
         {
-            // メタ情報がDBに登録されていない写真のメタ情報を登録する
-            // 画像読み込み時に画像からメタ情報を取得した場合に使用するメソッド
-            // メソッド名はAddのほうが良い？
-            // 複数スレッドから呼ばれると競合してエラー吐きそうだからQueueに入れる必要がありそう？
-            throw new NotImplementedException();
+            return Task.Run(() =>
+            {
+                var photo = new Photo
+                {
+                    FilePath = filePath
+                };
+
+                photo.Date = metaData.Date;
+
+                if (photo.Photographer != null) 
+                {
+                    if (!ExistsUserByUserName(metaData.Photographer, out User photographer))
+                    {
+                        photographer = CreateUser(metaData.Photographer);
+                    }
+                    photo.Photographer = photographer;
+                }
+
+                if (photo.World != null)
+                {
+                    if (!ExistsWorldByWorldName(metaData.World, out World world))
+                    {
+                        world = CreateWorld(metaData.World);
+                    }
+                    photo.World = world;
+                }
+
+                if (metaData.Users != null && metaData.Users.Any())
+                {
+                    foreach (var metaUser in metaData.Users)
+                    {
+                        if (!ExistsUserByUserName(metaUser.UserName, out User user))
+                        {
+                            user = CreateUser(metaUser.UserName);
+                        }
+
+                        var photoUser = CreatePhotoUser(photo, user);
+                        photo.PhotoUsers.Add(photoUser);
+                    }
+                }
+
+                // 複数スレッドから同時にDBに登録しようとするとエラーを吐くのでQueueに入れる
+                AdditionalQueue.AddOnScheduler(photo);
+            });
         }
 
         public void Update(string filePath, BitmapImage thumbnailImage)

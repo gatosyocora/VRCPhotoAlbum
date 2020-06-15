@@ -56,10 +56,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
                     var photos = metaSets
                                     .Select(m =>
-                                        new Photo(m.filePath)
-                                        {
-                                            MetaData = m.vrcMetaData
-                                        })
+                                    new Photo(m.filePath)
+                                    {
+                                        MetaData = m.vrcMetaData
+                                    })
                                     .ToList();
 
                     Collection.AddRangeOnScheduler(photos);
@@ -76,6 +76,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                                 {
                                                     MetaData = meta
                                                 });
+
+                                            await _db.InsertAsync(fp, meta);
 
                                         }, cancelToken));
 
