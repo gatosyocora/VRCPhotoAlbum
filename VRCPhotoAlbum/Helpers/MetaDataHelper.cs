@@ -1,8 +1,11 @@
-﻿using System;
+﻿using KoyashiroKohaku.VrcMetaTool;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
@@ -27,5 +30,20 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 return null;
             }
         }
+
+        public static VrcMetaData GetVrcMetaData(string filePath)
+        {
+            //return new VrcMetaData();
+            if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
+            {
+                meta = new VrcMetaData
+                {
+                    Date = GetDateTimeFromPhotoName(filePath)
+                };
+            }
+            return meta;
+        }
+
+        public static Task<VrcMetaData> GetVrcMetaDataAsync(string filePath, CancellationToken cancelToken) => Task.Run(() => GetVrcMetaData(filePath), cancelToken);
     }
 }

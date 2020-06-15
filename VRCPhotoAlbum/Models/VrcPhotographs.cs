@@ -69,7 +69,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     .Select(fp =>
                                         new Task(async () =>
                                         {
-                                            var meta = await GetVrcMetaDataAsync(fp, cancelToken).ConfigureAwait(true);
+                                            var meta = await MetaDataHelper.GetVrcMetaDataAsync(fp, cancelToken).ConfigureAwait(true);
 
                                             Collection.AddOnScheduler(
                                                 new Photo(fp)
@@ -93,20 +93,5 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 Debug.Print($"{e.GetType().Name}: {e.Message}");
             }
         }
-
-        private static VrcMetaData GetVrcMetaData(string filePath)
-        {
-            //return new VrcMetaData();
-            if (!VrcMetaDataReader.TryRead(filePath, out VrcMetaData meta))
-            {
-                meta = new VrcMetaData
-                {
-                    Date = MetaDataHelper.GetDateTimeFromPhotoName(filePath)
-                };
-            }
-            return meta;
-        }
-
-        private static Task<VrcMetaData> GetVrcMetaDataAsync(string filePath, CancellationToken cancelToken) => Task.Run(() => GetVrcMetaData(filePath), cancelToken);
     }
 }
