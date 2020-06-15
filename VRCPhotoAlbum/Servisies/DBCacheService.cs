@@ -25,13 +25,15 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
     public class DBCacheService
     {
         private readonly Context _context;
-        private static readonly string _dbFilePath = "Cache/cache.db";
+        private string _dbFilePath;
         private static readonly string _dbResourcePath = "Gatosyocora.VRCPhotoAlbum.Resources.cache.db";
 
         public ReactiveCollection<Photo> AdditionalQueue { get; }
 
-        public DBCacheService()
+        public DBCacheService(string databaseFilePath)
         {
+            _dbFilePath = databaseFilePath;
+
             if (!File.Exists(_dbFilePath))
             {
                 using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(_dbResourcePath);

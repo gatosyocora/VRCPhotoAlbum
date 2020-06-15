@@ -79,7 +79,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             _mainWindow = mainWindow;
 
-            _db = new DBCacheService();
+            _db = new DBCacheService($"{AppCache.Instance.CacheFolderPath}{Path.DirectorySeparatorChar}cache.db");
 
             _vrcPhotographs = new VrcPhotographs(_db);
             _searchResult = new SearchResult(_vrcPhotographs.Collection);
