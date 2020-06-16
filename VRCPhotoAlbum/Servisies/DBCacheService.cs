@@ -29,9 +29,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
         private string _dbFilePath;
         private static readonly string _dbResourcePath = "Gatosyocora.VRCPhotoAlbum.Resources.cache.db";
 
-        public ReactiveCollection<Photo> AdditionalQueue { get; }
-
         private static readonly AsyncLock asyncLock = new AsyncLock();
+        private int count = 0;
 
         public DBCacheService(string databaseFilePath)
         {
@@ -58,22 +57,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
                 File.WriteAllBytes(_dbFilePath, db);
             }
-
-            AdditionalQueue = new ReactiveCollection<Photo>();
-            AdditionalQueue.ObserveAddChanged()
-               .Subscribe(async p =>
-               {
-                   // UIスレッドと分離
-                   await Task.Run(async () =>
-                   {
-                       using (await asyncLock.LockAsync())
-                       {
-                           _context.Photos.AddAsync(p);
-                           _context.SaveChangesAsync();
-                           if (p != null) AdditionalQueue.Remove(p);
-                       }
-                   }).ConfigureAwait(true);
-               });
         }
 
         public async Task CreateDBCacheIfNeededAsync(IEnumerable<string> filePaths)
@@ -395,20 +378,18 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                 {
                     if (metaData.Photographer != null)
                     {
-                        (bool exists, User user) = await ExistsUserByUserNameAsync(metaData.Photographer).ConfigureAwait(false);
-                        if (!exists)
+                        if (!ExistsUserByUserName(metaData.Photographer, out User user))
                         {
-                            user = await CreateUserAsync(metaData.Photographer);
+                            user = CreateUser(metaData.Photographer);
                         }
                         photo.Photographer = user;
                     }
 
                     if (metaData.World != null)
                     {
-                        (bool exists, World world) = await ExistsWorldByWorldNameAsync(metaData.World).ConfigureAwait(false);
-                        if (!exists)
+                        if (!ExistsWorldByWorldName(metaData.World, out World world))
                         {
-                            world = await CreateWorldAsync(metaData.World);
+                            world = CreateWorld(metaData.World);
                         }
                         photo.World = world;
                     }
@@ -417,20 +398,25 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     {
                         foreach (var metaUser in metaData.Users)
                         {
-                            (bool exists, User user) = await ExistsUserByUserNameAsync(metaData.Photographer).ConfigureAwait(false);
-                            if (!exists)
+                            if (!ExistsUserByUserName(metaData.Photographer, out User user))
                             {
-                                user = await CreateUserAsync(metaUser.UserName);
+                                user = CreateUser(metaUser.UserName);
                             }
 
-                            var photoUser = await CreatePhotoUserAsync(photo, user);
+                            var photoUser = CreatePhotoUser(photo, user);
                             photo.PhotoUsers.Add(photoUser);
                         }
                     }
-                }
 
-                // 複数スレッドから同時にDBに登録しようとするとエラーを吐くのでQueueに入れる
-                AdditionalQueue.AddOnScheduler(photo);
+                    _context.Photos.Add(photo);
+                    count++;
+
+                    if (count >= 100)
+                    {
+                        _context.SaveChanges();
+                        count = 0;
+                    }
+                }
             });
         }
 

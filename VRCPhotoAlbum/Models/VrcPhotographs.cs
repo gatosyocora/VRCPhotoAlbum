@@ -46,7 +46,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             try
             {
                 // UIスレッドと分離させる
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
                     var filePaths = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
                                         .Where(x => !x.StartsWith(AppCache.Instance.CacheFolderPath, StringComparison.Ordinal))
@@ -88,7 +88,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                         if (cancelToken.IsCancellationRequested) return;
                         task.Start();
                     }
+
                 }, cancelToken).ConfigureAwait(true);
+
+                _db.SaveChanges();
             }
             catch (Exception e)
             {
