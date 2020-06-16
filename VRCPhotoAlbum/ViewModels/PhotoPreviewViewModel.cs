@@ -7,15 +7,15 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using User = KoyashiroKohaku.VrcMetaTool.User;
-using System.Globalization;
-using System.Reactive;
-using System.Threading.Tasks;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
@@ -86,7 +86,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             UserList = PreviewPhoto.SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<User>())
                             .ToReadOnlyReactiveCollection(
-                                onReset:Observable
+                                onReset: Observable
                                             .Merge(
                                                 PreviousCommand,
                                                 NextCommand)

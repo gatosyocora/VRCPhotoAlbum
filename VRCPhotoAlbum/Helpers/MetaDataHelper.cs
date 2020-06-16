@@ -16,7 +16,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             var vrcPhotoMatch = Regex.Match(photoName,
                                     @".*(VRChat|screen|vrchat)_[0-9]+x[0-9]+_(?<datetime>[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.[0-9]{3}).png$");
 
-            if(DateTime.TryParseExact(
+            if (DateTime.TryParseExact(
                 $"{vrcPhotoMatch.Groups["datetime"]}",
                 "yyyy-MM-dd_HH-mm-ss.fff",
                 new CultureInfo("en", false),
@@ -25,7 +25,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             {
                 return date;
             }
-            else 
+            else
             {
                 return null;
             }
