@@ -357,24 +357,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             return photoUser;
         }
 
-        public async Task<PhotoUser> CreatePhotoUserAsync(Photo photo, User user)
-        {
-            var photoUser = new PhotoUser
-            {
-                Photo = photo,
-                User = user
-            };
-
-            _ = await _context.PhotoUsers.AddAsync(photoUser);
-
-            return photoUser;
-        }
-
         public void SaveChanges() => _context.SaveChanges();
 
         public Task InsertAsync(string filePath, VrcMetaData metaData)
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
                 var photo = new Photo
                 {
@@ -385,43 +372,35 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
                 if (photo.Photographer != null) 
                 {
-                    (bool exists, User user) = await ExistsUserByUserNameAsync(metaData.Photographer);
-                    if (!exists)
+                    if (!ExistsUserByUserName(metaData.Photographer, out User photographer))
                     {
-                        photo.Photographer = await CreateUserAsync(metaData.Photographer);
+                        photographer = CreateUser(metaData.Photographer);
                     }
-                    else
-                    {
-                        photo.Photographer = user;
-                    }
+                    photo.Photographer = photographer;
                 }
 
                 if (photo.World != null)
                 {
-                    (bool exists, World world) = await ExistsWorldByWorldNameAsync(metaData.World);
-                    if (!exists)
+                    if (!ExistsWorldByWorldName(metaData.World, out World world))
                     {
-                        photo.World = await CreateWorldAsync(metaData.World);
+                        world = CreateWorld(metaData.World);
                     }
-                    else
-                    {
-                        photo.World = world;
-                    }
+                    photo.World = world;
                 }
 
-                //if (metaData.Users != null && metaData.Users.Any())
-                //{
-                //    foreach (var metaUser in metaData.Users)
-                //    {
-                //        (bool exists, User user) = await ExistsUserByUserNameAsync(metaData.Photographer);
-                //        if (!exists)
-                //        {
-                //            user = await CreateUserAsync(metaUser.UserName);
-                //        }
+                if (metaData.Users != null && metaData.Users.Any())
+                {
+                    foreach (var metaUser in metaData.Users)
+                    {
+                        if (!ExistsUserByUserName(metaUser.UserName, out User user))
+                        {
+                            user = CreateUser(metaUser.UserName);
+                        }
 
-                //        photo.PhotoUsers.Add(await CreatePhotoUserAsync(photo, user));
-                //    }
-                //}
+                        var photoUser = CreatePhotoUser(photo, user);
+                        photo.PhotoUsers.Add(photoUser);
+                    }
+                }
 
                 // 複数スレッドから同時にDBに登録しようとするとエラーを吐くのでQueueに入れる
                 AdditionalQueue.AddOnScheduler(photo);
