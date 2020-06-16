@@ -63,7 +63,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     .ToList();
 
                     Collection.AddRangeOnScheduler(photos);
-           
+
                     var tasks = filePaths
                                     .Except(metaSets.Select(m => m.filePath))
                                     .Select(fp =>
@@ -80,6 +80,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                             await _db.InsertAsync(fp, meta).ConfigureAwait(false);
 
                                         }, cancelToken));
+
+                    Debug.Print($"{tasks.Count()}/{filePaths.Count}");
 
                     foreach (var task in tasks)
                     {

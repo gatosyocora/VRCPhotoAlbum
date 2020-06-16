@@ -1,7 +1,12 @@
-﻿using Gatosyocora.VRCPhotoAlbum.Views;
+﻿using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.Models.Entities;
+using Gatosyocora.VRCPhotoAlbum.Servisies;
+using Gatosyocora.VRCPhotoAlbum.Views;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum
@@ -35,6 +40,7 @@ namespace Gatosyocora.VRCPhotoAlbum
 
         private void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<Context>();
             services.AddSingleton<MainWindow>();
         }
     }

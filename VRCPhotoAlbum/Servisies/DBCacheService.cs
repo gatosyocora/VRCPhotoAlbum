@@ -1,4 +1,14 @@
-﻿using System;
+﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
+using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.Models.Entities;
+using Gatosyocora.VRCPhotoAlbum.Views;
+using KoyashiroKohaku.VrcMetaTool;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Query;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,15 +18,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Gatosyocora.VRCPhotoAlbum.Helpers;
-using Gatosyocora.VRCPhotoAlbum.Models;
-using Gatosyocora.VRCPhotoAlbum.Models.Entities;
-using Gatosyocora.VRCPhotoAlbum.Views;
-using KoyashiroKohaku.VrcMetaTool;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 using Photo = Gatosyocora.VRCPhotoAlbum.Models.Entities.Photo;
 using User = Gatosyocora.VRCPhotoAlbum.Models.Entities.User;
 
@@ -30,9 +31,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public ReactiveCollection<Photo> AdditionalQueue { get; }
 
+        private static readonly AsyncLock asyncLock = new AsyncLock();
+
         public DBCacheService(string databaseFilePath)
         {
             _dbFilePath = databaseFilePath;
+            _context = new Context();
 
             if (!File.Exists(_dbFilePath))
             {
@@ -55,18 +59,19 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                 File.WriteAllBytes(_dbFilePath, db);
             }
 
-            _context = new Context();
-
             AdditionalQueue = new ReactiveCollection<Photo>();
             AdditionalQueue.ObserveAddChanged()
                .Subscribe(async p =>
                {
                    // UIスレッドと分離
-                   await Task.Run(() =>
+                   await Task.Run(async () =>
                    {
-                       _context.Photos.AddAsync(p);
-                       _context.SaveChangesAsync();
-                       if (p != null) AdditionalQueue.Remove(p);
+                       using (await asyncLock.LockAsync())
+                       {
+                           _context.Photos.AddAsync(p);
+                           _context.SaveChangesAsync();
+                           if (p != null) AdditionalQueue.Remove(p);
+                       }
                    }).ConfigureAwait(true);
                });
         }
@@ -158,43 +163,46 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public List<(string filePath, VrcMetaData vrcMetaData)> GetVrcMetaDataIfExists(IEnumerable<string> filePaths)
         {
-            var photos = Photos
-                .Select(p => new
-                {
-                    p.FilePath,
-                    p.World,
-                    p.Date,
-                    p.Photographer,
-                    p.PhotoUsers,
-                })
-                .ToList();
-
-            var results = new List<(string filePath, VrcMetaData vrcMetaData)>();
-
-            foreach (var photo in photos)
+            using (asyncLock.Lock())
             {
-                var filePath = photo.FilePath;
-                var vrcMetaData = new VrcMetaData
-                {
-                    World = photo.World?.WorldName,
-                    Date = photo.Date,
-                    Photographer = photo.Photographer?.UserName
-                };
+                var photos = Photos
+                                .Select(p => new
+                                {
+                                    p.FilePath,
+                                    p.World,
+                                    p.Date,
+                                    p.Photographer,
+                                    p.PhotoUsers,
+                                })
+                                .ToList();
 
-                foreach (var (userName, twitterScreenName) in photo.PhotoUsers.Select(pu => (pu.User.UserName, pu.User.TwitterScreenName)))
+                var results = new List<(string filePath, VrcMetaData vrcMetaData)>();
+
+                foreach (var photo in photos)
                 {
-                    var user = new KoyashiroKohaku.VrcMetaTool.User(userName)
+                    var filePath = photo.FilePath;
+                    var vrcMetaData = new VrcMetaData
                     {
-                        TwitterScreenName = twitterScreenName
+                        World = photo.World?.WorldName,
+                        Date = photo.Date,
+                        Photographer = photo.Photographer?.UserName
                     };
 
-                    vrcMetaData.Users.Add(user);
+                    foreach (var (userName, twitterScreenName) in photo.PhotoUsers.Select(pu => (pu.User.UserName, pu.User.TwitterScreenName)))
+                    {
+                        var user = new KoyashiroKohaku.VrcMetaTool.User(userName)
+                        {
+                            TwitterScreenName = twitterScreenName
+                        };
+
+                        vrcMetaData.Users.Add(user);
+                    }
+
+                    results.Add((filePath, vrcMetaData));
                 }
 
-                results.Add((filePath, vrcMetaData));
+                return results;
             }
-
-            return results;
         }
 
         public async Task<List<(string filePath, VrcMetaData vrcMetaData)>> GetVrcMetaDataIfExistsAsync(IEnumerable<string> filePaths)
@@ -357,11 +365,24 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             return photoUser;
         }
 
+        public async Task<PhotoUser> CreatePhotoUserAsync(Photo photo, User user)
+        {
+            var photoUser = new PhotoUser
+            {
+                Photo = photo,
+                User = user
+            };
+
+            await _context.PhotoUsers.AddAsync(photoUser);
+
+            return photoUser;
+        }
+
         public void SaveChanges() => _context.SaveChanges();
 
         public Task InsertAsync(string filePath, VrcMetaData metaData)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 var photo = new Photo
                 {
@@ -370,35 +391,41 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
                 photo.Date = metaData.Date;
 
-                if (metaData.Photographer != null) 
+                using (await asyncLock.LockAsync())
                 {
-                    if (!ExistsUserByUserName(metaData.Photographer, out User photographer))
+                    if (metaData.Photographer != null)
                     {
-                        photographer = CreateUser(metaData.Photographer);
-                    }
-                    photo.Photographer = photographer;
-                }
-
-                if (metaData.World != null)
-                {
-                    if (!ExistsWorldByWorldName(metaData.World, out World world))
-                    {
-                        world = CreateWorld(metaData.World);
-                    }
-                    photo.World = world;
-                }
-
-                if (metaData.Users != null && metaData.Users.Any())
-                {
-                    foreach (var metaUser in metaData.Users)
-                    {
-                        if (!ExistsUserByUserName(metaUser.UserName, out User user))
+                        (bool exists, User user) = await ExistsUserByUserNameAsync(metaData.Photographer).ConfigureAwait(false);
+                        if (!exists)
                         {
-                            user = CreateUser(metaUser.UserName);
+                            user = await CreateUserAsync(metaData.Photographer);
                         }
+                        photo.Photographer = user;
+                    }
 
-                        var photoUser = CreatePhotoUser(photo, user);
-                        photo.PhotoUsers.Add(photoUser);
+                    if (metaData.World != null)
+                    {
+                        (bool exists, World world) = await ExistsWorldByWorldNameAsync(metaData.World).ConfigureAwait(false);
+                        if (!exists)
+                        {
+                            world = await CreateWorldAsync(metaData.World);
+                        }
+                        photo.World = world;
+                    }
+
+                    if (metaData.Users != null && metaData.Users.Any())
+                    {
+                        foreach (var metaUser in metaData.Users)
+                        {
+                            (bool exists, User user) = await ExistsUserByUserNameAsync(metaData.Photographer).ConfigureAwait(false);
+                            if (!exists)
+                            {
+                                user = await CreateUserAsync(metaUser.UserName);
+                            }
+
+                            var photoUser = await CreatePhotoUserAsync(photo, user);
+                            photo.PhotoUsers.Add(photoUser);
+                        }
                     }
                 }
 
