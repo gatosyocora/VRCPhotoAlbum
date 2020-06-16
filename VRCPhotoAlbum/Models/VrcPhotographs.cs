@@ -70,15 +70,32 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                         new Task(async () =>
                                         {
                                             var meta = await MetaDataHelper.GetVrcMetaDataAsync(fp, cancelToken).ConfigureAwait(true);
-
+                                            if (cancelToken.IsCancellationRequested) return;
                                             Collection.AddOnScheduler(
                                                 new Photo(fp)
                                                 {
                                                     MetaData = meta
                                                 });
 
-                                            await _db.InsertAsync(fp, meta).ConfigureAwait(false);
-
+                                            try
+                                            {
+                                                await _db.InsertAsync(fp, meta).ConfigureAwait(false);
+                                            }
+                                            catch (InvalidOperationException e)
+                                            {
+                                                // A second operation started on this context before a previous operation completed. This is usually caused by different threads using the same instance of DbContext. For more information on how to avoid threading issues with DbContext, see https://go.microsoft.com/fwlink/?linkid=2097913.
+                                                // The instance of entity type 'Photo' cannot be tracked because another instance with the same key value for {'FilePath'} is already being tracked. When attaching existing entities, ensure that only one entity instance with a given key value is attached. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values.
+                                                FileHelper.OutputErrorLogFile(e);
+                                            }
+                                            catch (ArgumentException e)
+                                            {
+                                                FileHelper.OutputErrorLogFile(e);
+                                            }
+                                            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+                                            {
+                                                // An error occurred while updating the entries. See the inner exception for details.
+                                                FileHelper.OutputErrorLogFile(e);
+                                            }
                                         }, cancelToken));
 
                     Debug.Print($"{tasks.Count()}/{filePaths.Count}");
