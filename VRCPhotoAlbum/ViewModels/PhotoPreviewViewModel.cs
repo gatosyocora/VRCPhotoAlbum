@@ -80,7 +80,18 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 });
                 task.Start(TaskScheduler.FromCurrentSynchronizationContext());
             });
-            UserList = PreviewPhoto.SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<User>()).ToReadOnlyReactiveCollection(onReset:PreviewPhoto.Select(_ => Unit.Default)).AddTo(Disposable);
+
+            PreviousCommand = new ReactiveCommand().AddTo(Disposable);
+            NextCommand = new ReactiveCommand().AddTo(Disposable);
+
+            UserList = PreviewPhoto.SelectMany(p => p?.MetaData?.Users ?? Enumerable.Empty<User>())
+                            .ToReadOnlyReactiveCollection(
+                                onReset:Observable
+                                            .Merge(
+                                                PreviousCommand,
+                                                NextCommand)
+                                            .Select(_ => Unit.Default))
+                            .AddTo(Disposable);
             WorldName = PreviewPhoto.Select(p => "World: " + p?.MetaData?.World ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
             PhotographerName = PreviewPhoto.Select(p => "Photographer: " + p?.MetaData?.Photographer ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
             PhotoDateTime = PreviewPhoto.Select(p => p?.MetaData?.Date?.ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")) ?? string.Empty).ToReadOnlyReactiveProperty().AddTo(Disposable);
@@ -89,8 +100,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             UseTestFunction.Value = Setting.Instance.Data.UseTestFunction;
 
-            PreviousCommand = new ReactiveCommand().AddTo(Disposable);
-            NextCommand = new ReactiveCommand().AddTo(Disposable);
             OpenTwitterCommand = new ReactiveCommand<string>().AddTo(Disposable);
             OpenExplorerCommand = new ReactiveCommand().AddTo(Disposable);
             RotateL90Command = new ReactiveCommand().AddTo(Disposable);
