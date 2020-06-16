@@ -42,7 +42,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 // TODO: エラーで落ちる
                 try
                 {
-                    await LoadThumnailImage().ConfigureAwait(true);
+                    LoadThumnailImage();
                 }
                 // 例外がスローされました: 'System.IO.IOException'
                 // ストリームから読み取ることができません。
@@ -56,23 +56,25 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             ImageFailedCommand.Subscribe(() => ThumbnailImage.Value = ImageHelper.GetFailedImage());
         }
 
-        public async Task LoadThumnailImage()
+        public async void LoadThumnailImage()
         {
             _loadCancel = new CancellationTokenSource();
             ThumbnailImage.Value = ImageHelper.GetNowLoadingImage();
 
-            await Task.Run(() =>
+            var image = await Task.Run(async () =>
             {
                 try
                 {
-                    ThumbnailImage.Value = ImageHelper.LoadThumbnailBitmapImage(FilePath, 120);
+                    return await ImageHelper.LoadThumbnailBitmapImageAsync(FilePath, 120).ConfigureAwait(false);
                 }
                 catch (IOException e)
                 {
-                    ThumbnailImage.Value = ImageHelper.GetFailedImage();
+                    return ImageHelper.GetFailedImage();
                 }
 
             }, _loadCancel.Token).ConfigureAwait(false);
+
+            ThumbnailImage.Value = image;
         }
 
         public override string ToString()

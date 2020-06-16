@@ -87,6 +87,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             return bitmapImage;
         }
 
+        public static async Task<BitmapImage> LoadThumbnailBitmapImageAsync(string filePath, int decodePixelWidth) => await Task.Run(() => LoadThumbnailBitmapImage(filePath, decodePixelWidth));
+
         public static BitmapImage GetNowLoadingImage() => _nowLoadingImage;
 
         public static BitmapImage GetFailedImage() => _failedImage;
