@@ -370,7 +370,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
                 photo.Date = metaData.Date;
 
-                if (photo.Photographer != null) 
+                if (metaData.Photographer != null) 
                 {
                     if (!ExistsUserByUserName(metaData.Photographer, out User photographer))
                     {
@@ -379,7 +379,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     photo.Photographer = photographer;
                 }
 
-                if (photo.World != null)
+                if (metaData.World != null)
                 {
                     if (!ExistsWorldByWorldName(metaData.World, out World world))
                     {
