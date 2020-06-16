@@ -18,14 +18,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
 
         private MainViewModel _mainViewModel;
 
-        static MainWindow()
-        {
-            Instance = new MainWindow();
-        }
-
         public MainWindow()
         {
             InitializeComponent();
+            Instance = this;
             Loaded += MainWindow_OnLoaded;
             ContentRendered += MainWindow_OnContentRendered;
         }
