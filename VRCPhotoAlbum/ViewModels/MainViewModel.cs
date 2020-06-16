@@ -155,15 +155,20 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             OpenSettingCommand.Subscribe(() => WindowHelper.OpenSettingDialog(_mainWindow)).AddTo(Disposable);
 
             RebootCommand = new ReactiveCommand().AddTo(Disposable);
-            RebootCommand.Subscribe(() =>
+            RebootCommand.Subscribe(async () =>
             {
-                if (!(_loadingCancel is null) && !_loadingTask.IsCompleted)
+                if (!(_loadingCancel is null))
                 {
-                    _loadingCancel.Cancel();
+                    try
+                    {
+                        _loadingCancel.Cancel();
+                    }
+                    catch (TaskCanceledException e) { }
                 }
                 _searchResult.ResetCommand.Execute();
                 _users.ResetCommand.Execute();
-                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath, _loadingCancel.Token);
+                _loadingCancel = new CancellationTokenSource();
+                LoadResourcesCommand.Execute();
             }).AddTo(Disposable);
 
             ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);

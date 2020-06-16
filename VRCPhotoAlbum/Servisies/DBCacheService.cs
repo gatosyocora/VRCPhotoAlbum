@@ -157,6 +157,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                                     p.Photographer,
                                     p.PhotoUsers,
                                 })
+                                .Where(p => filePaths.Contains(p.FilePath))
                                 .ToList();
 
                 var results = new List<(string filePath, VrcMetaData vrcMetaData)>();

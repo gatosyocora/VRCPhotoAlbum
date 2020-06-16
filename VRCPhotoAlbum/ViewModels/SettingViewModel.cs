@@ -83,7 +83,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             if (isChangedPhotoFolder)
             {
-                AppCache.Instance.DeleteCacheFileAll();
                 MainWindow.Instance.Reboot();
             }
 
