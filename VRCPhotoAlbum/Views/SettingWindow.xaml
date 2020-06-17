@@ -11,6 +11,11 @@
         Height="450" Width="600"
         DataContext="{Binding SettingViewModel}"
         WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -111,6 +116,13 @@
                    Grid.ColumnSpan="3"
                    Grid.Row="1"/>
         </Grid>
+        <Label x:Name="MessageLabel"
+               Visibility="{Binding NeedRestart.Value, Converter={StaticResource BoolVisibilityConverter}}"
+               VerticalAlignment="Bottom"
+               HorizontalAlignment="Right"
+               Grid.Row="4"
+               Margin="20"
+               Content="正しく動作させるにはアプリケーションの再起動が必要です"/>
         <Grid Grid.Row="99">
             <Button x:Name="ApplyButton"
                 Content="適用"

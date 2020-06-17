@@ -14,8 +14,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Photo = Gatosyocora.VRCPhotoAlbum.Models.Entities.Photo;
@@ -364,7 +367,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public void SaveChanges() => _context.SaveChanges();
 
-        public Task InsertAsync(string filePath, VrcMetaData metaData)
+        public Task InsertAsync(string filePath, VrcMetaData metaData, CancellationToken cancelToken)
         {
             return Task.Run(async () =>
             {
@@ -377,6 +380,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
                 using (await asyncLock.LockAsync())
                 {
+                    if (cancelToken.IsCancellationRequested) return;
+
                     if (metaData.Photographer != null)
                     {
                         if (!ExistsUserByUserName(metaData.Photographer, out User user))
@@ -418,7 +423,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                         count = 0;
                     }
                 }
-            });
+            }, cancelToken);
         }
 
         public void Update(string filePath, BitmapImage thumbnailImage)
@@ -452,6 +457,18 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
             // 写真一覧画面で使用するユーザー一覧
             // 五十音順に加え, 写っている枚数順に並べるため枚数情報も必要
             throw new NotImplementedException();
+        }
+
+        public async Task DeleteAll()
+        {
+            // TODO:うまく全削除できない
+            _context.Photos.RemoveRange(_context.Photos);
+            _context.UserNameHistories.RemoveRange(_context.UserNameHistories);
+            _context.Users.RemoveRange(_context.Users);
+            _context.WorldNameHistories.RemoveRange(_context.WorldNameHistories);
+            _context.Worlds.RemoveRange(_context.Worlds);
+            _context.PhotoUsers.RemoveRange(_context.PhotoUsers);
+            await _context.SaveChangesAsync().ConfigureAwait(true);
         }
     }
 }

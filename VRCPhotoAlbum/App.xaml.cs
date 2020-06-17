@@ -40,7 +40,6 @@ namespace Gatosyocora.VRCPhotoAlbum
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<Context>();
             services.AddSingleton<MainWindow>();
         }
     }

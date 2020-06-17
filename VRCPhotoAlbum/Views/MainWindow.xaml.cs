@@ -62,6 +62,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             _mainViewModel.RebootCommand.Execute();
         }
 
+        public void DeleteCache()
+        {
+            _mainViewModel.DeleteCacheCommand.Execute();
+        }
+
         private void PhotoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // 選択状態を保たないために選択されると未選択状態に切り替える

@@ -76,6 +76,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         #endregion
 
         public ReactiveCommand LoadResourcesCommand { get; }
+        public ReactiveCommand CancelLoadingCommand { get; }
+        public ReactiveCommand DeleteCacheCommand { get; }
 
         public MainViewModel(MainWindow mainWindow)
         {
@@ -86,8 +88,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             _vrcPhotographs = new VrcPhotographs(_db).AddTo(Disposable);
             _searchResult = new SearchResult(_vrcPhotographs.Collection).AddTo(Disposable);
             _users = new Users(_vrcPhotographs.Collection).AddTo(Disposable);
-
-            _loadingCancel = new CancellationTokenSource().AddTo(Disposable);
 
             SearchText = _searchResult.SearchText.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
 
@@ -154,8 +154,15 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             OpenSettingCommand = new ReactiveCommand().AddTo(Disposable);
             OpenSettingCommand.Subscribe(() => WindowHelper.OpenSettingDialog(_mainWindow)).AddTo(Disposable);
 
-            RebootCommand = new ReactiveCommand().AddTo(Disposable);
-            RebootCommand.Subscribe(async () =>
+            LoadResourcesCommand = new ReactiveCommand().AddTo(Disposable);
+            LoadResourcesCommand.Subscribe(() =>
+            {
+                _loadingCancel = new CancellationTokenSource().AddTo(Disposable);
+                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath, _loadingCancel.Token);
+            }).AddTo(Disposable);
+
+            CancelLoadingCommand = new ReactiveCommand().AddTo(Disposable);
+            CancelLoadingCommand.Subscribe(() =>
             {
                 if (!(_loadingCancel is null))
                 {
@@ -165,21 +172,28 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                     }
                     catch (TaskCanceledException e) { }
                 }
+            });
+
+            RebootCommand = new ReactiveCommand().AddTo(Disposable);
+            RebootCommand.Subscribe(async () =>
+            {
+                CancelLoadingCommand.Execute();
                 _searchResult.ResetCommand.Execute();
                 _users.ResetCommand.Execute();
-                _loadingCancel = new CancellationTokenSource();
                 LoadResourcesCommand.Execute();
             }).AddTo(Disposable);
+
+            DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
+            DeleteCacheCommand.Subscribe(async () =>
+            {
+                CancelLoadingCommand.Execute();
+                AppCache.Instance.DeleteCacheFileAll();
+                await _db.DeleteAll().ConfigureAwait(true);
+            });
 
             ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);
             _vrcPhotographs.Collection.ObserveAddChangedItems().Subscribe(_ => ActiveProgressRing.Value = false).AddTo(Disposable);
             _vrcPhotographs.Collection.ObserveResetChanged().Subscribe(_ => ActiveProgressRing.Value = true).AddTo(Disposable);
-
-            LoadResourcesCommand = new ReactiveCommand().AddTo(Disposable);
-            LoadResourcesCommand.Subscribe(() =>
-            {
-                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath, _loadingCancel.Token);
-            }).AddTo(Disposable);
         }
     }
 }

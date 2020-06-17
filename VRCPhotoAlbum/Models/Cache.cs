@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 
 namespace Gatosyocora.VRCPhotoAlbum.Models
@@ -38,6 +39,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             foreach (var file in new DirectoryInfo(CacheFolderPath).GetFiles())
             {
+                // TODO: dbファイルは他が使っているので削除できない
+                if (file.Extension.StartsWith(".db", System.StringComparison.Ordinal)) continue;
+
                 File.Delete(file.FullName);
             }
         }

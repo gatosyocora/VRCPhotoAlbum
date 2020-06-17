@@ -79,7 +79,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
                                             try
                                             {
-                                                await _db.InsertAsync(fp, meta).ConfigureAwait(false);
+                                                await _db.InsertAsync(fp, meta, cancelToken).ConfigureAwait(false);
                                             }
                                             catch (InvalidOperationException e)
                                             {
@@ -96,6 +96,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                                 // An error occurred while updating the entries. See the inner exception for details.
                                                 FileHelper.OutputErrorLogFile(e);
                                             }
+                                            catch (TaskCanceledException e) { }
                                         }, cancelToken));
 
                     Debug.Print($"{tasks.Count()}/{filePaths.Count}");
