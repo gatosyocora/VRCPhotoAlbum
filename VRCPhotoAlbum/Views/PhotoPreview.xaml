@@ -73,21 +73,21 @@
                            Width="20" Height="20"/>
                 </Button>
             </Grid>
-
-            <Grid x:Name="FunctionGroup"
+        </Grid>
+        <Grid x:Name="FunctionGroup"
                   Grid.Row="0" Grid.ColumnSpan="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Grid.Row="0"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Grid.Row="0"
                       HorizontalAlignment="Right"
                       Margin="0 0 10 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="OpenExplorerButton"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="OpenExplorerButton"
                             Grid.Column="0" Grid.Row="0"
                             Width="180" Height="30"
                             Margin="5 2 5 2" Padding="10 0 10 5"
@@ -96,9 +96,7 @@
                             VerticalAlignment="Center"
                             Content="ファイルエクスプローラで開く"
                             Foreground="White"/>
-                </Grid>
             </Grid>
-
         </Grid>
         <Image x:Name="PreviewImage"
                VerticalAlignment="Center"
