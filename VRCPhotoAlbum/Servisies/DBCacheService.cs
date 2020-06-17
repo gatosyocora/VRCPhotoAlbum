@@ -26,7 +26,18 @@ using User = Gatosyocora.VRCPhotoAlbum.Models.Entities.User;
 
 namespace Gatosyocora.VRCPhotoAlbum.Servisies
 {
-    public class DBCacheService
+    public interface IDBCacheService
+    {
+        public void CreateDBCacheIfNeeded();
+
+        public List<(string filePath, VrcMetaData vrcMetaData)> GetVrcMetaDataIfExists(IEnumerable<string> filePaths);
+
+        public Task InsertAsync(string filePath, VrcMetaData metaData, CancellationToken cancelToken);
+
+        public void SaveChanges();
+    }
+
+    public class DBCacheService : IDBCacheService
     {
         private Context _context { get; set; }
         private string _dbFilePath;

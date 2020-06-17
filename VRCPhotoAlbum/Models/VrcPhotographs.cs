@@ -21,9 +21,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
     {
         public ReactiveCollection<Photo> Collection { get; }
 
-        private DBCacheService _db;
+        private IDBCacheService _db;
 
-        public VrcPhotographs(DBCacheService db)
+        public VrcPhotographs(IDBCacheService db)
         {
             _db = db;
             Collection = new ReactiveCollection<Photo>().AddTo(Disposable);
