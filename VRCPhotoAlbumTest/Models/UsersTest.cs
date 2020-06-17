@@ -5,6 +5,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -61,34 +62,107 @@ namespace VRCPhotoAlbumTest.Models
             Assert.AreEqual(UserSortType.None, usersModel.SortType.Value);
         }
 
-        //[TestMethod("写真のリストからそれに含まれるユーザーリストを作成する")]
-        //public void CreateUserListFromPhotoList()
-        //{
-        //    var photoList = new ReactiveCollection<Photo>();
-        //    var usersModel = new Users(photoList);
+        // TODO: Subscribeが呼ばれていない
+        [TestMethod("写真のリストからそれに含まれるユーザーリストを作成する")]
+        public void CreateUserListFromPhotoList()
+        {
+            var photoList = new ReactiveCollection<Photo>();
+            var usersModel = new Users(photoList);
 
-        //    var privateObject = new PrivateObject(usersModel);
+            var privateObject = new PrivateObject(usersModel);
 
-        //    var _photoList = Enumerable.Range(0, 5)
-        //        .Select(i =>
-        //        {
-        //            var meta = new VrcMetaData();
-        //            meta.Users.Add(
-        //                new KoyashiroKohaku.VrcMetaTool.User
-        //                {
-        //                    UserName = ('a' + i).ToString()
-        //                });
-        //            return new Photo
-        //            {
-        //                MetaData = meta
-        //            };
-        //        });
+            var _photoList = Enumerable.Range(0, 5)
+                .Select(offset =>
+                {
+                    var meta = new VrcMetaData();
+                    meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + offset)}"));
+                    return new Photo($"file{offset}.png")
+                    {
+                        MetaData = meta
+                    };
+                });
 
-        //    photoList.AddRangeOnScheduler(_photoList);
+            photoList.AddRangeOnScheduler(_photoList);
 
-        //    var userlist = privateObject.GetInvokeMember("_userList") as ReadOnlyReactiveCollection<string>;
-        //    Assert.AreEqual(5, userlist.Count);
-        //}
+            photoList.ObserveAddChangedItems()
+                .Subscribe(_ =>
+                {
+                    var userlist = privateObject.GetInvokeMember("_userList") as ReadOnlyReactiveCollection<string>;
+                    Assert.AreEqual(5, userlist.Count);
+                });
+        }
+
+        // TODO: Subscribeが呼ばれていない
+        [TestMethod("ユーザーリストのユーザーが重複していないか")]
+        public void DontDuplicateUserInUserList()
+        {
+            var photoList = new ReactiveCollection<Photo>();
+            var usersModel = new Users(photoList);
+
+            var privateObject = new PrivateObject(usersModel);
+
+            var _photoList = Enumerable.Range(0, 5)
+                .Select(offset =>
+                {
+                    var meta = new VrcMetaData();
+                    foreach (var userOffset in Enumerable.Range(0, offset + 1))
+                    {
+                        meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + userOffset)}"));
+                    }
+                    return new Photo($"file{offset}.png")
+                    {
+                        MetaData = meta
+                    };
+                });
+
+            photoList.AddRangeOnScheduler(_photoList);
+
+            photoList.ObserveAddChangedItems()
+                .Subscribe(_ =>
+                {
+                    var userlist = privateObject.GetInvokeMember("_userList") as ReadOnlyReactiveCollection<string>;
+                    Assert.AreEqual(5*5, userlist.Count);
+                });
+        }
+
+        // TODO: Subscribeが呼ばれていない
+        [TestMethod("ユーザーリストのUserに含まれる写真の枚数があっているか")]
+        [DataTestMethod()]
+        [DataRow("a", 5)]
+        [DataRow("b", 4)]
+        [DataRow("c", 3)]
+        [DataRow("d", 2)]
+        [DataRow("e", 1)]
+        public void CorrectPhotoCountInUserList(string userName, int count)
+        {
+            var photoList = new ReactiveCollection<Photo>();
+            var usersModel = new Users(photoList);
+
+            var privateObject = new PrivateObject(usersModel);
+
+            var _photoList = Enumerable.Range(0, 5)
+                .Select(offset =>
+                {
+                    var meta = new VrcMetaData();
+                    foreach (var userOffset in Enumerable.Range(0, offset + 1))
+                    {
+                        meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + userOffset)}"));
+                    }
+                    return new Photo($"file{offset}.png")
+                    {
+                        MetaData = meta
+                    };
+                });
+
+            photoList.AddRangeOnScheduler(_photoList);
+
+            photoList.ObserveAddChangedItems()
+                .Subscribe(_ =>
+                {
+                    var userlist = privateObject.GetInvokeMember("_userList") as ReadOnlyReactiveCollection<string>; ;
+                    Assert.AreEqual(5, usersModel.SortedUserList.Count);
+                });
+        }
 
         [TestMethod("写真のリストのメタ情報に含まれるユーザー数とユーザーリストの要素数が一致するか(各画像に異なる人が一人ずつ)")]
         public void EqualsPhotoListUserCountToUserListCount()
