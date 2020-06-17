@@ -9,19 +9,22 @@
     <Authors>gatosyocora</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <UserSecretsId>57b90247-f63f-4628-9475-c26b8834a74e</UserSecretsId>
-    <Version>0.3.1</Version>
+    <Version>0.4.0</Version>
     <RepositoryUrl>https://github.com/gatosyocora/VRCPhotoAlbum</RepositoryUrl>
-    <AssemblyVersion>0.3.1.0</AssemblyVersion>
-    <FileVersion>0.3.1.0</FileVersion>
+    <AssemblyVersion>0.4.0.0</AssemblyVersion>
+    <FileVersion>0.4.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <WarningLevel>1</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\cache.db" />
+    <None Remove="Resources\failed.png" />
     <None Remove="Resources\FlipHorizontalImage.png" />
     <None Remove="Resources\LeftImage.png" />
-    <None Remove="Resources\noloading.png" />
+    <None Remove="Resources\nowloading.jpg" />
     <None Remove="Resources\RightImage.png" />
     <None Remove="Resources\RotateLeft90Image.png" />
     <None Remove="Resources\RotateRight90Image.png" />
@@ -41,14 +44,23 @@
     <PackageReference Include="MaterialDesignColors" Version="1.2.6" />
     <PackageReference Include="MaterialDesignThemes" Version="3.1.3" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.4" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
     <PackageReference Include="ReactiveProperty" Version="7.1.0" />
-    <PackageReference Include="VrcMetaToolSharp" Version="0.1.3" />
+    <PackageReference Include="VirtualizingWrapPanel" Version="1.5.0" />
+    <PackageReference Include="VrcMetaTool.NET" Version="0.1.8" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\cache.db" />
     <Resource Include="Resources\FlipHorizontalImage.png" />
     <Resource Include="Resources\LeftImage.png" />
-    <Resource Include="Resources\noloading.png" />
+    <Resource Include="Resources\failed.png" />
+    <Resource Include="Resources\nowloading.jpg" />
     <Resource Include="Resources\RightImage.png" />
     <Resource Include="Resources\RotateLeft90Image.png" />
     <Resource Include="Resources\RotateRight90Image.png" />

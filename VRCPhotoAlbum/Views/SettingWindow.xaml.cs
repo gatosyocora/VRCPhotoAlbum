@@ -8,9 +8,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// SettingWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class SettingWindow : MetroWindow, IDisposable
+    public partial class SettingWindow : WindowBase
     {
-        protected SettingViewModel _settingViewModel;
+        private SettingViewModel _settingViewModel;
 
         public SettingWindow()
         {
@@ -21,6 +21,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         private void SettingWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             _settingViewModel = new SettingViewModel();
+            Disposable.Add(_settingViewModel);
             DataContext = _settingViewModel;
         }
 
@@ -28,11 +29,6 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
         {
             _settingViewModel.ApplySettingData();
             Close();
-        }
-
-        public void Dispose()
-        {
-            _settingViewModel.Dispose();
         }
     }
 }

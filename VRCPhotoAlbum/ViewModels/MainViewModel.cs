@@ -1,15 +1,18 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.Servisies;
 using Gatosyocora.VRCPhotoAlbum.Views;
-using KoyashiroKohaku.VrcMetaToolSharp;
+using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -24,12 +27,20 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         #region Model
         private SearchResult _searchResult;
         private Users _users;
+        private VrcPhotographs _vrcPhotographs;
+        private DBCacheService _db;
         #endregion
 
         #region Photo
-        private ReactiveCollection<Photo> _photoList { get; }
         public ReadOnlyReactiveCollection<Photo> ShowedPhotoList { get; }
         public ReactiveProperty<bool> HaveNoShowedPhoto { get; }
+        public ReactiveProperty<string> PhotoCount { get; }
+
+        public ReactiveCommand ChangePreviousPageCommand { get; }
+        public ReactiveCommand ChangeNextPageCommand { get; }
+
+        private Task _loadingTask;
+        private CancellationTokenSource _loadingCancel;
         #endregion
 
         #region Search
@@ -39,7 +50,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand<string> SearchWithUserNameCommand { get; }
         public ReactiveCommand<string> SearchWithWorldNameCommand { get; }
         public ReactiveCommand<string> SearchWithDateCommand { get; }
-        public ReactiveCommand<string> SearchWithDateTypeCommand { get; }
+        public ReactiveCommand<DateSearchType> SearchWithDateTypeCommand { get; }
 
         public ReactiveCommand ClearSearchText { get; }
         #endregion
@@ -50,6 +61,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<UserSortType> CurrentUserSortType { get; }
         public ReactiveCommand SortUserWithAlphabetCommand { get; }
         public ReactiveCommand SortUserWithCountCommand { get; }
+
+        public ReactiveProperty<bool> CanUseToSorting { get; }
         #endregion
 
         #region Window
@@ -57,24 +70,28 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand OpenSettingCommand { get; }
         #endregion
 
+        #region System
         public ReactiveCommand RebootCommand { get; }
+        public ReactiveProperty<bool> ActiveProgressRing { get; }
+        #endregion
+
+        public ReactiveCommand LoadResourcesCommand { get; }
+        public ReactiveCommand CancelLoadingCommand { get; }
+        public ReactiveCommand DeleteCacheCommand { get; }
 
         public MainViewModel(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
 
-            Setting.Instance.Create();
+            _db = new DBCacheService($"{AppCache.Instance.CacheFolderPath}{Path.DirectorySeparatorChar}cache.db");
 
-            Cache.Instance.Create();
-
-            _photoList = new ReactiveCollection<Photo>();
-            _searchResult = new SearchResult(_photoList);
-            _users = new Users(_photoList);
+            _vrcPhotographs = new VrcPhotographs(_db).AddTo(Disposable);
+            _searchResult = new SearchResult(_vrcPhotographs.Collection).AddTo(Disposable);
+            _users = new Users(_vrcPhotographs.Collection).AddTo(Disposable);
 
             SearchText = _searchResult.SearchText.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
 
-            ShowedPhotoList = _searchResult.ShowedPhotoList
-                                .ObserveAddChanged()
+            ShowedPhotoList = _searchResult.ShowedPhotoList.ObserveAddChanged()
                                 .ToReadOnlyReactiveCollection(
                                     onReset: Observable.Merge(
                                                     _searchResult.SearchText,
@@ -83,6 +100,11 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                                             .Select(_ => Unit.Default))
                                 .AddTo(Disposable);
             HaveNoShowedPhoto = ShowedPhotoList.ObserveAddChanged().Select(_ => !ShowedPhotoList.Any()).ToReactiveProperty().AddTo(Disposable);
+            PhotoCount = Observable.Merge(
+                            ShowedPhotoList.ObserveAddChanged().Select(_ => Unit.Default),
+                            ShowedPhotoList.ObserveRemoveChanged().Select(_ => Unit.Default),
+                            ShowedPhotoList.ObserveResetChanged().Select(_ => Unit.Default)
+                         ).Select(_ => $"{ShowedPhotoList.Count} 枚").ToReactiveProperty().AddTo(Disposable);
 
             SearchDate = _searchResult.SearchedDate.ToReactivePropertyAsSynchronized(x => x.Value).AddTo(Disposable);
             SearchWithUserNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
@@ -90,23 +112,23 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SearchWithWorldNameCommand = new ReactiveCommand<string>().AddTo(Disposable);
             SearchWithWorldNameCommand.Subscribe(_searchResult.SearchWithWorldName).AddTo(Disposable);
             SearchWithDateCommand = new ReactiveCommand<string>().AddTo(Disposable);
-            SearchWithDateCommand.Subscribe(_searchResult.SearchWithDateString).AddTo(Disposable);
-            SearchWithDateTypeCommand = new ReactiveCommand<string>().AddTo(Disposable);
+            SearchWithDateCommand.Subscribe(dateString => _searchResult.SearchWithDate(DateTime.Parse(dateString, new CultureInfo("en-US")))).AddTo(Disposable);
+            SearchWithDateTypeCommand = new ReactiveCommand<DateSearchType>().AddTo(Disposable);
             SearchWithDateTypeCommand.Subscribe(type =>
             {
                 var now = DateTime.Now;
 
-                if (type == "today")
+                if (type == DateSearchType.TODAY)
                 {
                     SearchDate.Value = now;
                 }
-                else if (type == "week")
+                else if (type == DateSearchType.WEEK)
                 {
-                    _searchResult.SearchWithDatePeriodString(now.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
+                    _searchResult.SearchWithDatePeriodString(now.AddDays(-7).ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")), now.ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")));
                 }
-                else if (type == "month")
+                else if (type == DateSearchType.MONTH)
                 {
-                    _searchResult.SearchWithDatePeriodString(now.AddMonths(-1).ToString("yyyy/MM/dd HH:mm:ss"), now.ToString("yyyy/MM/dd HH:mm:ss"));
+                    _searchResult.SearchWithDatePeriodString(now.AddMonths(-1).ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")), now.ToString("yyyy/MM/dd HH:mm:ss", new CultureInfo("en-US")));
                 }
             });
             ClearSearchText = new ReactiveCommand().AddTo(Disposable);
@@ -114,8 +136,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             CurrentUserSortType = new ReactiveProperty<UserSortType>(UserSortType.None).AddTo(Disposable);
             CurrentUserSortType.Subscribe(type => _users.SortType.Value = CurrentUserSortType.Value).AddTo(Disposable);
-            UserList = _users.SortedUserList
-                            .ObserveAddChanged()
+            UserList = _users.SortedUserList.ObserveAddChanged()
                             .Select(u => u.Name)
                             .ToReadOnlyReactiveCollection(
                                 onReset: Observable.Merge(_users.SortCommand, _users.ResetCommand).Select(_ => Unit.Default))
@@ -125,86 +146,56 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             SortUserWithCountCommand = new ReactiveCommand().AddTo(Disposable);
             SortUserWithAlphabetCommand.Subscribe(() => CurrentUserSortType.Value = UserSortType.Alphabet).AddTo(Disposable);
             SortUserWithCountCommand.Subscribe(() => CurrentUserSortType.Value = UserSortType.Count).AddTo(Disposable);
+            CanUseToSorting = _users.SortedUserList.CollectionChangedAsObservable()
+                                    .Select(_ => _users.SortedUserList.Any()).ToReactiveProperty(false).AddTo(Disposable);
 
             OpenPhotoPreviewCommand = new ReactiveCommand<Photo>().AddTo(Disposable);
             OpenPhotoPreviewCommand.Subscribe(photo => { if (!(photo is null)) WindowHelper.OpenPhotoPreviewWindow(photo, ShowedPhotoList.ToList(), _searchResult, _mainWindow); }).AddTo(Disposable);
             OpenSettingCommand = new ReactiveCommand().AddTo(Disposable);
             OpenSettingCommand.Subscribe(() => WindowHelper.OpenSettingDialog(_mainWindow)).AddTo(Disposable);
 
-            RebootCommand = new ReactiveCommand().AddTo(Disposable);
-            RebootCommand.Subscribe(() =>
+            LoadResourcesCommand = new ReactiveCommand().AddTo(Disposable);
+            LoadResourcesCommand.Subscribe(() =>
             {
-                _searchResult.ResetCommand.Execute();
-                _users.ResetCommand.Execute();
-                _ = LoadResourcesAsync();
+                _loadingCancel = new CancellationTokenSource().AddTo(Disposable);
+                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath, _loadingCancel.Token);
+            }).AddTo(Disposable);
+
+            CancelLoadingCommand = new ReactiveCommand().AddTo(Disposable);
+            CancelLoadingCommand.Subscribe(() =>
+            {
+                if (!(_loadingCancel is null))
+                {
+                    try
+                    {
+                        _loadingCancel.Cancel();
+                    }
+                    catch (TaskCanceledException e) { }
+                }
             });
 
-            if (!(Setting.Instance.Data is null))
+            RebootCommand = new ReactiveCommand().AddTo(Disposable);
+            RebootCommand.Subscribe(async () =>
             {
-                _ = LoadResourcesAsync();
-            }
-        }
+                CancelLoadingCommand.Execute();
+                // キャンセルにラグがあるので少し待つ
+                await Task.Delay(2000).ConfigureAwait(true);
+                _searchResult.ResetCommand.Execute();
+                _users.ResetCommand.Execute();
+                LoadResourcesCommand.Execute();
+            }).AddTo(Disposable);
 
-        /// <summary>
-        /// 非同期でデータを読み込む
-        /// </summary>
-        /// <returns></returns>
-        public async Task LoadResourcesAsync()
-        {
-            try
+            DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
+            DeleteCacheCommand.Subscribe(async () =>
             {
-                _photoList.AddRangeOnScheduler(await LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath));
-            }
-            catch (Exception e)
-            {
-                Debug.Print($"{e.GetType().Name}: {e.Message}");
-            }
-        }
+                CancelLoadingCommand.Execute();
+                await _db.DeleteAll().ConfigureAwait(true);
+                AppCache.Instance.DeleteCacheFileAll();
+            });
 
-        /// <summary>
-        /// 非同期で画像を読み込む
-        /// </summary>
-        /// <param name="folderPath"></param>
-        /// <returns></returns>
-        private Task<Photo[]> LoadVRCPhotoListAsync(string folderPath)
-        {
-            if (!Directory.Exists(folderPath))
-            {
-                throw new ArgumentException($"{folderPath} is not exist.");
-            }
-
-            return Task.WhenAll(Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
-                        .Where(x => !x.StartsWith(Cache.Instance.CacheFolderPath))
-                        .Select(async x =>
-                        {
-                            VrcMetaData meta;
-                            try
-                            {
-                                meta = VrcMetaDataReader.Read(x);
-                            }
-                            catch (Exception)
-                            {
-                                meta = null;
-                            }
-
-                            BitmapImage image;
-                            try
-                            {
-                                image = await ImageHelper.GetThumbnailImageAsync(x, Cache.Instance.CacheFolderPath);
-                            }
-                            catch (Exception)
-                            {
-                                image = new BitmapImage(new Uri(@"pack://application:,,,/Resources/noloading.png"));
-                            }
-
-                            return new Photo
-                            {
-                                FilePath = x,
-                                ThumbnailImage = image,
-                                MetaData = meta
-                            };
-                        })
-                        .ToList());
+            ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);
+            _vrcPhotographs.Collection.ObserveAddChangedItems().Subscribe(_ => ActiveProgressRing.Value = false).AddTo(Disposable);
+            _vrcPhotographs.Collection.ObserveResetChanged().Subscribe(_ => ActiveProgressRing.Value = true).AddTo(Disposable);
         }
     }
 }

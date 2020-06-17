@@ -1,85 +1,144 @@
-﻿using KoyashiroKohaku.VrcMetaToolSharp;
+﻿using Gatosyocora.VRCPhotoAlbum.Wrappers;
+using KoyashiroKohaku.VrcMetaTool;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
-    public class ImageHelper
+    public static class ImageHelper
     {
+        private static BitmapImage _failedImage => LoadThumbnailBitmapImage(@"pack://application:,,,/Resources/failed.png", 120);
+        private static BitmapImage _nowLoadingImage => LoadThumbnailBitmapImage(@"pack://application:,,,/Resources/nowloading.jpg", 120);
 
         #region BitmapImage
         public static BitmapImage LoadBitmapImage(string filePath)
         {
-            var bitmapImage = new BitmapImage();
-            var stream = File.OpenRead(filePath);
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-            stream.Close();
-            stream.Dispose();
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
+            BitmapImage bitmapImage = new BitmapImage();
+            Stream streamBase;
+            if (filePath.StartsWith(@"pack://application:,,,", StringComparison.Ordinal))
+            {
+                var streamInfo = Application.GetResourceStream(new Uri(filePath));
+                streamBase = streamInfo.Stream;
+            }
+            else
+            {
+                streamBase = File.OpenRead(filePath);
+            }
+
+            using (var stream = new DisposableStream(streamBase))
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.CreateOptions = BitmapCreateOptions.None;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+            }
+
             return bitmapImage;
         }
 
-        public static async Task<BitmapImage> LoadBitmapImageAsync(string filePath)
-        {
-            return await Task.Run(() =>
-            {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.EndInit();
-                    bitmapImage.Freeze();
-                    return bitmapImage;
-                }
-            });
-        }
+        public static Task<BitmapImage> LoadBitmapImageAsync(string filePath) => Task.Run(() => LoadBitmapImage(filePath));
 
-        public static BitmapImage GetThumbnailImage(string filePath, string cashFolderPath)
+        public static BitmapImage LoadThumbnailBitmapImage(string filePath, int decodePixelWidth)
         {
-            var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
-
-            if (!File.Exists(thumbnailImageFilePath))
+            if (string.IsNullOrEmpty(filePath))
             {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    var originalImage = Image.FromStream(stream, false, false);
-                    var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
-                    thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Jpeg);
-                    originalImage.Dispose();
-                    thumbnailImage.Dispose();
-                }
+                throw new ArgumentNullException(nameof(filePath));
             }
-            return LoadBitmapImage(thumbnailImageFilePath);
+
+            BitmapImage bitmapImage = new BitmapImage();
+            Stream streamBase;
+            if (filePath.StartsWith(@"pack://application:,,,", StringComparison.Ordinal))
+            {
+                var streamInfo = Application.GetResourceStream(new Uri(filePath));
+                streamBase = streamInfo.Stream;
+            }
+            else
+            {
+                streamBase = File.OpenRead(filePath);
+            }
+
+            using (var stream = new DisposableStream(streamBase))
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.CreateOptions = BitmapCreateOptions.None;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.DecodePixelWidth = decodePixelWidth;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+            }
+
+            return bitmapImage;
         }
 
-        public async static Task<BitmapImage> GetThumbnailImageAsync(string filePath, string cashFolderPath)
+        public static async Task<BitmapImage> LoadThumbnailBitmapImageAsync(string filePath, int decodePixelWidth) => await Task.Run(() => LoadThumbnailBitmapImage(filePath, decodePixelWidth));
+
+        public static BitmapImage GetNowLoadingImage() => _nowLoadingImage;
+
+        public static BitmapImage GetFailedImage() => _failedImage;
+
+        public static string GetThumbnailImagePath(string filePath, string cacheFolderPath)
+                => $"{cacheFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
+
+        public static async Task<bool> CreateThumbnailImagePathAsync(string originalFilePath, string thumbnailFilePath)
         {
             return await Task.Run(() =>
             {
-                var thumbnailImageFilePath = $"{cashFolderPath}/{Path.GetFileNameWithoutExtension(filePath)}.jpg";
+                if (File.Exists(thumbnailFilePath)) return true;
 
-                if (!File.Exists(thumbnailImageFilePath))
+                // TODO: FileStreamで例外が発生する
+                // 例外がスローされました: 'System.IO.IOException' (System.Private.CoreLib.dll の中)
+                // The process cannot access the file '***.jpg' because it is being used by another process.
+                try
                 {
-                    using (var stream = File.OpenRead(filePath))
+                    using var stream = File.OpenRead(originalFilePath);
+                    using var originalImage = Image.FromStream(stream, false, false);
+                    using (var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero))
+                    using (var memoryStream = new MemoryStream())
+                    using (var fs = new FileStream(thumbnailFilePath, FileMode.Create, FileAccess.ReadWrite))
                     {
-                        var originalImage = Image.FromStream(stream, false, false);
-                        var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
-                        thumbnailImage.Save(thumbnailImageFilePath, ImageFormat.Jpeg);
-                        originalImage.Dispose();
-                        thumbnailImage.Dispose();
+                        thumbnailImage.Save(memoryStream, ImageFormat.Jpeg);
+                        var bytes = memoryStream.ToArray();
+                        fs.Write(bytes, 0, bytes.Length);
                     }
+                    return true;
                 }
-                return LoadBitmapImageAsync(thumbnailImageFilePath);
+                catch (IOException e)
+                {
+                    FileHelper.OutputErrorLogFile(e);
+                    return false;
+                }
+            }).ConfigureAwait(true);
+        }
+
+        public static Task<byte[]> CreateThumbnailAsync(string filePath)
+        {
+            return Task.Run(() =>
+            {
+                var originalImage = Image.FromFile(filePath);
+                var thumbnailImage = originalImage.GetThumbnailImage(originalImage.Width / 8, originalImage.Height / 8, () => { return false; }, IntPtr.Zero);
+
+                ImageConverter converter = new ImageConverter();
+                return converter.ConvertTo(thumbnailImage, typeof(byte[])) as byte[];
             });
         }
+
         #endregion
 
         #region Bitmap
@@ -97,7 +156,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         {
             if (image is null)
             {
-                throw new ArgumentNullException("image is null");
+                throw new ArgumentNullException(nameof(image));
             }
             using (image)
             {
@@ -145,18 +204,33 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static Bitmap RotateLeft90(Bitmap image)
         {
+            if (image is null)
+            {
+                throw new ArgumentNullException($"{image} is null");
+            }
+
             image.RotateFlip(RotateFlipType.Rotate270FlipNone);
             return image;
         }
 
         public static Bitmap RotateRight90(Bitmap image)
         {
+            if (image is null)
+            {
+                throw new ArgumentNullException($"{image} is null");
+            }
+
             image.RotateFlip(RotateFlipType.Rotate90FlipNone);
             return image;
         }
 
         public static Bitmap FlipHorizontal(Bitmap image)
         {
+            if (image is null)
+            {
+                throw new ArgumentNullException($"{image} is null");
+            }
+
             image.RotateFlip(RotateFlipType.Rotate180FlipY);
             return image;
         }
@@ -165,7 +239,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static void RotateLeft90AndSave(string filePath, VrcMetaData metaData)
         {
-            var image = RotateLeft90(LoadImage(filePath));
+            using var image = RotateLeft90(LoadImage(filePath));
             var buffer = Bitmap2Bytes(image);
             if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
@@ -173,7 +247,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static void RotateRight90AndSave(string filePath, VrcMetaData metaData)
         {
-            var image = RotateRight90(LoadImage(filePath));
+            using var image = RotateRight90(LoadImage(filePath));
             var buffer = Bitmap2Bytes(image);
             if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);
@@ -181,7 +255,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
 
         public static void FilpHorizontalAndSave(string filePath, VrcMetaData metaData)
         {
-            var image = FlipHorizontal(LoadImage(filePath));
+            using var image = FlipHorizontal(LoadImage(filePath));
             var buffer = Bitmap2Bytes(image);
             if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);

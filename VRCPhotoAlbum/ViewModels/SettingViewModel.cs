@@ -18,6 +18,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<string> CacheFolderPath { get; }
         public ReactiveProperty<bool> CanEnter { get; }
         public ReactiveProperty<bool> UseTestFunction { get; }
+        public ReactiveProperty<bool> NeedRestart { get; }
 
         public ReactiveCommand DeleteCacheCommand { get; }
         public ReactiveCommand SelectCacheFolderCommand { get; }
@@ -44,21 +45,23 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             CacheFolderPath = new ReactiveProperty<string>().AddTo(Disposable);
             CanEnter = PhotoFolderName.Select(_ => !string.IsNullOrEmpty(_)).ToReactiveProperty().AddTo(Disposable);
             UseTestFunction = new ReactiveProperty<bool>(_settingData.UseTestFunction).AddTo(Disposable);
+            NeedRestart = new ReactiveProperty<bool>(false).AddTo(Disposable);
 
             DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
             SelectCacheFolderCommand = new ReactiveCommand().AddTo(Disposable);
 
             PhotoFolderName.Value = _settingData.FolderPath;
-            CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
-            CacheFolderPath.Value = Cache.Instance.CacheFolderPath;
+            CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
+            CacheFolderPath.Value = AppCache.Instance.CacheFolderPath;
 
             PhotoFolderName.Subscribe(f => _settingData.FolderPath = f);
             UseTestFunction.Subscribe(b => _settingData.UseTestFunction = b);
 
             DeleteCacheCommand.Subscribe(() =>
             {
-                Cache.Instance.DeleteCacheFileAll();
-                CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(Cache.Instance.CacheFolderPath));
+                MainWindow.Instance.DeleteCache();
+                CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
+                NeedRestart.Value = true;
             });
             SelectCacheFolderCommand.Subscribe(() =>
             {
@@ -83,7 +86,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
             if (isChangedPhotoFolder)
             {
-                Cache.Instance.DeleteCacheFileAll();
                 MainWindow.Instance.Reboot();
             }
 

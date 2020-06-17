@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -6,9 +7,10 @@ using System.Text;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
-    public class FileHelper
+    public static class FileHelper
     {
         private static readonly string[] _unit = new string[] { "B", "KB", "MB", "GB", "TB" };
+        private static object locker = new object();
 
         public static long CalcDataSize(string folderPath) => CalcDirectoryDataSize(new DirectoryInfo(folderPath));
 
@@ -35,10 +37,17 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             stringBuilder.Append($"[{DateTime.Now}] ");
             stringBuilder.Append($"{error.GetType().FullName}:");
             stringBuilder.Append($"{error.Message}\n");
+            stringBuilder.Append($", {error.StackTrace}\n");
+            stringBuilder.Append($", {error.InnerException}\n");
 
-            File.AppendAllText(
-                $"{Directory.GetCurrentDirectory()}/errorlog.txt", 
-                stringBuilder.ToString());
+            Debug.Print(stringBuilder.ToString());
+
+            lock (locker)
+            {
+                File.AppendAllText(
+                    $"{Directory.GetCurrentDirectory()}/errorlog.txt",
+                    stringBuilder.ToString());
+            }
         }
     }
 }

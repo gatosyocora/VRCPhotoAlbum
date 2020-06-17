@@ -3,11 +3,12 @@ using Gatosyocora.VRCPhotoAlbum.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 namespace Gatosyocora.VRCPhotoAlbum.Helpers
 {
-    public class WindowHelper
+    public static class WindowHelper
     {
         internal static void OpenSettingDialog(Window ownerWindow)
         {
@@ -16,6 +17,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 Owner = ownerWindow
             };
             settingWindow.ShowDialog();
+            settingWindow.Dispose();
         }
 
         internal static void OpenPhotoPreviewWindow(Photo photo, List<Photo> photoList, SearchResult searchResult, Window ownerWindow)
@@ -34,16 +36,35 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
                 Owner = ownerWindow
             };
             shareWindow.ShowDialog();
+            shareWindow.Dispose();
         }
 
-        public static void OpenTwitterWithScreenName(string twitterScreenName)
+        internal static void OpenTwitterWithScreenName(string twitterScreenName)
         {
-            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty)}";
+            var uri = $@"https://twitter.com/{twitterScreenName.Replace("@", string.Empty, StringComparison.Ordinal)}";
             try
             {
                 var startInfo = new ProcessStartInfo(uri)
                 {
                     UseShellExecute = true
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception exception)
+            {
+                Debug.Print($"{exception.GetType()}: {exception.Message} {uri}");
+            }
+        }
+
+        internal static void OpenFileExplorer(string filePath)
+        {
+            var uri = @"explorer.exe";
+            try
+            {
+                var startInfo = new ProcessStartInfo(uri)
+                {
+                    UseShellExecute = true,
+                    Arguments = $@"/select,{filePath}"
                 };
                 Process.Start(startInfo);
             }

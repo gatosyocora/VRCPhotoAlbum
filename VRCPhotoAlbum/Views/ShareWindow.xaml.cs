@@ -9,7 +9,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
     /// <summary>
     /// ShareWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class ShareWindow : MetroWindow, IDisposable
+    public partial class ShareWindow : WindowBase
     {
         private ShareViewModel _shareViewModel;
 
@@ -22,14 +22,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Views
             Loaded += ShareWindow_OnLoaded;
         }
 
-        public void Dispose()
-        {
-            _shareViewModel.Dispose();
-        }
-
         private void ShareWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             _shareViewModel = new ShareViewModel(_photo);
+            Disposable.Add(_shareViewModel);
             DataContext = _shareViewModel;
         }
     }
