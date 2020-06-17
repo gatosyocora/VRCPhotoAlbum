@@ -8,6 +8,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Models.Entities
 {
     public class Context : DbContext
     {
+        private string _dbPath;
+        public Context(string dbPath)
+        {
+            _dbPath = dbPath;
+        }
+
         public DbSet<User> Users { get; internal set; }
         public DbSet<UserNameHistory> UserNameHistories { get; internal set; }
         public DbSet<World> Worlds { get; internal set; }
@@ -19,7 +25,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models.Entities
         {
             var connectionString = new SqliteConnectionStringBuilder
             {
-                DataSource = @"Cache\cache.db"
+                DataSource = _dbPath
             }.ToString();
 
             optionsBuilder.UseSqlite(new SqliteConnection(connectionString));
