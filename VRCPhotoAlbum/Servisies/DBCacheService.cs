@@ -66,7 +66,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
             if (_context is null)
             {
-                _context = new Context();
+                _context = new Context(_dbFilePath);
             }
         }
 
