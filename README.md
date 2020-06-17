@@ -6,10 +6,11 @@
 
 VRChatで撮影した写真をながめるためのWindows向けアプリケーションです
 
+日付情報から写真の日付や期間検索や簡単な画像処理ができます。
 [vrc_meta_tool](https://github.com/27Cobalter/vrc_meta_tool)でメタ情報をいれた写真であれば,  
 撮影したユーザーやワールド, 日時の情報を表示したり, それらを元に検索したりできます.
 
-latest release : ver 0.3
+latest release : ver 0.4
 
 ## 動作確認環境
 * Windows10 64bit バージョン1903
@@ -86,6 +87,10 @@ D. 写真一覧画面にある「今週」「今月」ボタンを選択する.
   * 右90度回転
 
 ## 更新履歴
+(ver0.4.0)
+* vrc_meta_toolを使用していない写真もファイル名から日付情報を取得するように
+* ファイルエクスプローラを開くボタンを追加
+
 (ver0.3.1)
 * 写真が増える不具合を修正
 
@@ -122,12 +127,18 @@ MITライセンスです。詳しくは[LICENSE](https://github.com/gatosyocora/
 * Visual Studio 2019
 
 ## 使用ライブラリ
-* VrcMetaTool.NET [[MIT License](https://github.com/KoyashiroKohaku/VrcMetaTool.NET/blob/master/LICENSE)]
+### アーキテクチャ
 * ReactiveProperty [[MIT License](https://github.com/runceel/ReactiveProperty/blob/master/LICENSE.txt)]
+### データ処理
+* VrcMetaTool.NET [[MIT License](https://github.com/KoyashiroKohaku/VrcMetaTool.NET/blob/master/LICENSE)]
+* Microsoft.EntityFrameworkCore.Sqlite [[Apache-2.0](https://github.com/dotnet/efcore/blob/master/LICENSE.txt)]
+### デザイン・レイアウト
 * Microsoft.Xaml.Behaviors.Wpf [[MIT License](https://github.com/microsoft/XamlBehaviorsWpf/blob/master/LICENSE)]
 * MahApps.Metro [[MIT License](https://github.com/MahApps/MahApps.Metro/blob/develop/LICENSE)]
 * MaterialDesignInXamlToolkit [[MIT License](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/blob/master/LICENSE)]
   * MaterialDesignThemes.MahApps
   * MaterialDesignThemes
   * MaterialDesignColors
-
+* VirtualizingWrapPanel [[MIT License](https://gitlab.com/sbaeumlisberger/virtualizing-wrap-panel/-/blob/develop/LICENSE)]
+### その他
+* Nito.AsyncEx [[MIT License](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)]
