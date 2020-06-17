@@ -28,7 +28,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 {
     public class DBCacheService
     {
-        private readonly Context _context;
+        private Context _context { get; set; }
         private string _dbFilePath;
         private static readonly string _dbResourcePath = "Gatosyocora.VRCPhotoAlbum.Resources.cache.db";
 
@@ -38,8 +38,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
         public DBCacheService(string databaseFilePath)
         {
             _dbFilePath = databaseFilePath;
-            _context = new Context();
+            CreateDBCacheIfNeeded();
+        }
 
+        public void CreateDBCacheIfNeeded()
+        {
             if (!File.Exists(_dbFilePath))
             {
                 using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(_dbResourcePath);
@@ -59,6 +62,11 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                 }
 
                 File.WriteAllBytes(_dbFilePath, db);
+            }
+
+            if (_context is null)
+            {
+                _context = new Context();
             }
         }
 

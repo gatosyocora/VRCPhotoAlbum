@@ -36,6 +36,8 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// <returns></returns>
         public async Task LoadVRCPhotoListAsync(string folderPath, CancellationToken cancelToken)
         {
+            _db.CreateDBCacheIfNeeded();
+
             if (!Directory.Exists(folderPath))
             {
                 throw new DirectoryNotFoundException($"{folderPath} is not exist.");
