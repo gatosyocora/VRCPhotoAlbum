@@ -147,7 +147,6 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Visible"
                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
                   ScrollViewer.PanningMode="HorizontalFirst" 
-                  ScrollViewer.IsDeferredScrollingEnabled="True"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling">
             <i:Interaction.Triggers>
