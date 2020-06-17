@@ -178,6 +178,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             RebootCommand.Subscribe(async () =>
             {
                 CancelLoadingCommand.Execute();
+                // キャンセルにラグがあるので少し待つ
+                await Task.Delay(2000).ConfigureAwait(true);
                 _searchResult.ResetCommand.Execute();
                 _users.ResetCommand.Execute();
                 LoadResourcesCommand.Execute();
