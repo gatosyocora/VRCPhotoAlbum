@@ -2,10 +2,13 @@
 using Gatosyocora.VRCPhotoAlbum.Servisies;
 using KoyashiroKohaku.VrcMetaTool;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +16,24 @@ using User = KoyashiroKohaku.VrcMetaTool.User;
 
 namespace VRCPhotoAlbumTest.Models
 {
-    public class DBCacheServiceMock : IDBCacheService
+    public class DBCacheServiceMockNotExistInDB : IDBCacheService
+    {
+        public void CreateDBCacheIfNeeded() { }
+
+        public List<(string filePath, VrcMetaData vrcMetaData)> GetVrcMetaDataIfExists(IEnumerable<string> filePaths)
+        {
+            return Enumerable.Empty<(string, VrcMetaData)>().ToList();
+        }
+
+        public Task InsertAsync(string filePath, VrcMetaData metaData, CancellationToken cancelToken)
+        {
+            return Task.Delay(100);
+        }
+
+        public void SaveChanges() { }
+    }
+
+    public class DBCacheServiceMockExistInDB : IDBCacheService
     {
         public void CreateDBCacheIfNeeded(){}
 
@@ -54,19 +74,35 @@ namespace VRCPhotoAlbumTest.Models
         [TestMethod("インスタンスが作成できる")]
         public void CanCreateInstance()
         {
-            var vrcPhotographs = new VrcPhotographs(new DBCacheServiceMock());
+            var vrcPhotographs = new VrcPhotographs(new DBCacheServiceMockNotExistInDB());
             Assert.IsNotNull(vrcPhotographs);
         }
 
-        [TestMethod("通常の写真の読み込みができる")]
-        public async Task CanLoadNormalPhotographs()
+        [TestMethod("通常の写真の読み込みができる(すべてDBへの登録なし)")]
+        public async Task CanLoadNormalPhotographsNotExistsDB()
         {
-            var vrcPhotographs = new VrcPhotographs(new DBCacheServiceMock());
+            var vrcPhotographs = new VrcPhotographs(new DBCacheServiceMockNotExistInDB());
+            var filePaths = Directory.GetFiles(@"../../../Resources/NormalPhotos", "*.png");
+            await vrcPhotographs.LoadVRCPhotoListAsync(@"../../../Resources/NormalPhotos", new CancellationToken());
+            vrcPhotographs.Collection.ObserveAddChanged()
+                .Select(x => x.FilePath)
+                .Subscribe(f =>
+                {
+                    Debug.Print(f);
+                    Assert.IsTrue(filePaths.Contains(f));
+                });
+        }
+
+        [TestMethod("通常の写真の読み込みができる(すべてDBに登録済み)")]
+        public async Task CanLoadNormalPhotographsExistsDB()
+        {
+            var vrcPhotographs = new VrcPhotographs(new DBCacheServiceMockExistInDB());
             var filePaths = Directory.GetFiles(@"../../../Resources/NormalPhotos", "*.png");
             await vrcPhotographs.LoadVRCPhotoListAsync(@"../../../Resources/NormalPhotos", new CancellationToken());
 
             var loadedFilePaths = vrcPhotographs.Collection.Select(x => x.FilePath);
-            foreach (var filePath in filePaths){
+            foreach (var filePath in filePaths)
+            {
                 Assert.IsTrue(loadedFilePaths.Contains(filePath));
             }
         }
