@@ -189,8 +189,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             DeleteCacheCommand.Subscribe(async () =>
             {
                 CancelLoadingCommand.Execute();
-                AppCache.Instance.DeleteCacheFileAll();
                 await _db.DeleteAll().ConfigureAwait(true);
+                AppCache.Instance.DeleteCacheFileAll();
             });
 
             ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);

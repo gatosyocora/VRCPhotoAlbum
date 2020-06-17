@@ -122,6 +122,8 @@
                HorizontalAlignment="Right"
                Grid.Row="4"
                Margin="20"
+               FontSize="15"
+               Foreground="Red"
                Content="正しく動作させるにはアプリケーションの再起動が必要です"/>
         <Grid Grid.Row="99">
             <Button x:Name="ApplyButton"

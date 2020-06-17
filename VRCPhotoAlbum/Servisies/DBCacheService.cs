@@ -404,7 +404,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
                     {
                         foreach (var metaUser in metaData.Users)
                         {
-                            if (!ExistsUserByUserName(metaData.Photographer, out User user))
+                            if (!ExistsUserByUserName(metaUser.UserName, out User user))
                             {
                                 user = CreateUser(metaUser.UserName);
                             }
@@ -461,14 +461,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Servisies
 
         public async Task DeleteAll()
         {
-            // TODO:うまく全削除できない
-            _context.Photos.RemoveRange(_context.Photos);
-            _context.UserNameHistories.RemoveRange(_context.UserNameHistories);
-            _context.Users.RemoveRange(_context.Users);
-            _context.WorldNameHistories.RemoveRange(_context.WorldNameHistories);
-            _context.Worlds.RemoveRange(_context.Worlds);
-            _context.PhotoUsers.RemoveRange(_context.PhotoUsers);
-            await _context.SaveChangesAsync().ConfigureAwait(true);
+            await _context.DisposeAsync();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            File.Delete(_dbFilePath);
         }
     }
 }
