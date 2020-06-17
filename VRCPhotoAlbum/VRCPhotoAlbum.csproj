@@ -9,10 +9,10 @@
     <Authors>gatosyocora</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <UserSecretsId>57b90247-f63f-4628-9475-c26b8834a74e</UserSecretsId>
-    <Version>0.3.1</Version>
+    <Version>0.4.0</Version>
     <RepositoryUrl>https://github.com/gatosyocora/VRCPhotoAlbum</RepositoryUrl>
-    <AssemblyVersion>0.3.1.0</AssemblyVersion>
-    <FileVersion>0.3.1.0</FileVersion>
+    <AssemblyVersion>0.4.0.0</AssemblyVersion>
+    <FileVersion>0.4.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
