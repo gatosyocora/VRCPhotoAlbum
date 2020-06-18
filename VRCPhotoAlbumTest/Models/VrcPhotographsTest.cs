@@ -83,14 +83,13 @@ namespace VRCPhotoAlbumTest.Models
         {
             var vrcPhotographs = new VrcPhotographs(new DBCacheServiceMockNotExistInDB());
             var filePaths = Directory.GetFiles(@"../../../Resources/NormalPhotos", "*.png");
-            await vrcPhotographs.LoadVRCPhotoListAsync(@"../../../Resources/NormalPhotos", new CancellationToken());
             vrcPhotographs.Collection.ObserveAddChanged()
                 .Select(x => x.FilePath)
                 .Subscribe(f =>
                 {
-                    Debug.Print(f);
                     Assert.IsTrue(filePaths.Contains(f));
                 });
+            await vrcPhotographs.LoadVRCPhotoListAsync(@"../../../Resources/NormalPhotos", new CancellationToken());
         }
 
         [TestMethod("通常の写真の読み込みができる(すべてDBに登録済み)")]
@@ -98,13 +97,13 @@ namespace VRCPhotoAlbumTest.Models
         {
             var vrcPhotographs = new VrcPhotographs(new DBCacheServiceMockExistInDB());
             var filePaths = Directory.GetFiles(@"../../../Resources/NormalPhotos", "*.png");
+            vrcPhotographs.Collection.ObserveAddChanged()
+                .Select(x => x.FilePath)
+                .Subscribe(f =>
+                {
+                    Assert.IsTrue(filePaths.Contains(f));
+                });
             await vrcPhotographs.LoadVRCPhotoListAsync(@"../../../Resources/NormalPhotos", new CancellationToken());
-
-            var loadedFilePaths = vrcPhotographs.Collection.Select(x => x.FilePath);
-            foreach (var filePath in filePaths)
-            {
-                Assert.IsTrue(loadedFilePaths.Contains(filePath));
-            }
         }
     }
 }

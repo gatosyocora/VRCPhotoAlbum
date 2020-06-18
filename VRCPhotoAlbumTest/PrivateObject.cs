@@ -13,10 +13,13 @@ namespace VRCPhotoAlbumTest
             _obj = obj;
         }
 
-        public object GetInvokeMember(string memberName)
+        public object GetProperty(string memberName)
         {
-            var type = _obj.GetType();
-            return type.InvokeMember(memberName, BindingFlags.GetField, null, _obj, null);
+            var classType = _obj.GetType();
+            var property = classType.GetProperty(memberName, 
+                                BindingFlags.Public | BindingFlags.NonPublic |
+                                BindingFlags.Instance);
+            return property.GetValue(_obj);
         }
 
         public void SetInvokeMember(string memberName, object data)
