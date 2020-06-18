@@ -126,28 +126,31 @@ namespace VRCPhotoAlbumTest.Models
             Assert.AreEqual(5*5, userlist.Count);
         }
 
-        [TestMethod("表示用ユーザーリストのユーザーが重複していないか")]
-        public void DontDuplicateUserInUserList()
-        {
-            var photoList = new ReactiveCollection<Photo>();
-            var usersModel = new Users(photoList);
-            
-            foreach (var photo in _photoListWithManyUsers)
-            {
-                photoList.Add(photo);
-            }
-
-            Assert.AreEqual(5, usersModel.SortedUserList.Count);
-        }
-
-        [TestMethod("表示用ユーザーリストのUserに含まれる写真の枚数があっているか")]
+        [TestMethod("内部メソッドが重複をまとめたユーザーリストを作成できる")]
         [DataTestMethod()]
         [DataRow("a", 5)]
         [DataRow("b", 5)]
         [DataRow("c", 5)]
         [DataRow("d", 5)]
         [DataRow("e", 5)]
-        public async Task CorrectPhotoCountInUserList(string userName, int count)
+        public void CanCreateNoDuplicatedUserList(string userName, int photoCount)
+        {
+            var photoList = new ReactiveCollection<Photo>();
+            var usersModel = new Users(photoList);
+            var privateObject = new PrivateObject(usersModel);
+
+            foreach (var photo in _photoListWithManyUsers)
+            {
+                photoList.Add(photo);
+            }
+
+            var duplicatedUserList = privateObject.Invoke("CreateUserList", null) as IEnumerable<Gatosyocora.VRCPhotoAlbum.Models.User>;
+            Assert.AreEqual(5, duplicatedUserList.Count());
+            Assert.AreEqual(photoCount, duplicatedUserList.Where(u => u.Name == userName).Single().PhotoCount);
+        }
+
+        [TestMethod("表示用ユーザーリストのユーザーが重複していないか")]
+        public void DontDuplicateUserInUserList()
         {
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
@@ -156,7 +159,9 @@ namespace VRCPhotoAlbumTest.Models
             {
                 photoList.Add(photo);
             }
-            Assert.AreEqual(count, usersModel.SortedUserList.Where(u => u.Name == userName).Single().PhotoCount);
+
+            // 無ソート状態の初期状態では枚数1のUserの重複なしリストが作られる
+            Assert.AreEqual(5, usersModel.SortedUserList.Count);
         }
 
         [TestMethod("ユーザーリストの全要素がResetCommand発行で削除されるか")]
