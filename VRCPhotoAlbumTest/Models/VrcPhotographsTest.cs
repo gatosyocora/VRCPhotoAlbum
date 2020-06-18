@@ -90,6 +90,8 @@ namespace VRCPhotoAlbumTest.Models
                     Assert.IsTrue(filePaths.Contains(f));
                 });
             await vrcPhotographs.LoadVRCPhotoListAsync(@"../../../Resources/NormalPhotos", new CancellationToken());
+            await Task.Delay(5000); // 読み込みに時間がかかるため少し待つ
+            Assert.AreEqual(5, vrcPhotographs.Collection.Count);
         }
 
         [TestMethod("通常の写真の読み込みができる(すべてDBに登録済み)")]
@@ -104,6 +106,7 @@ namespace VRCPhotoAlbumTest.Models
                     Assert.IsTrue(filePaths.Contains(f));
                 });
             await vrcPhotographs.LoadVRCPhotoListAsync(@"../../../Resources/NormalPhotos", new CancellationToken());
+            Assert.AreEqual(5, vrcPhotographs.Collection.Count);
         }
     }
 }
