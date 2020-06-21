@@ -79,7 +79,7 @@
                         Command="{Binding Rotate180Command}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                    <Image Source="pack://application:,,,/Resources/RotateRight90Image.png" 
+                    <Image Source="pack://application:,,,/Resources/Rotate180Image.png" 
                            Width="20" Height="20"/>
                 </Button>
             </Grid>
