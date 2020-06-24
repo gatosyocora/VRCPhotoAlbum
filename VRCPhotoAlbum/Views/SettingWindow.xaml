@@ -35,7 +35,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*"/>
-                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Label x:Name="FolderPathLabel" 
                    Content="画像フォルダ"
