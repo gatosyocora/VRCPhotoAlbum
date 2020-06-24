@@ -58,6 +58,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <TextBox x:Name="FolderPathTextBox"
                                      VerticalAlignment="Center"
@@ -66,6 +67,14 @@
                             <CheckBox x:Name="ContainsSubFolderCheckBox"
                                       Grid.Column="1"
                                       IsChecked="{Binding ContainsSubFolder}"/>
+                            <Button x:Name="DeleteButton"
+                                    Grid.Column="2"
+                                    Margin="10 0 10 0" Padding="5 0 5 0"
+                                    HorizontalAlignment="Right"
+                                    Content="x"
+                                    Foreground="White" Background="Red"
+                                    BorderBrush="DarkRed"
+                                    Command=""/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
