@@ -4,6 +4,7 @@ using Gatosyocora.VRCPhotoAlbum.Views;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.IO;
 using System.Reactive.Linq;
 using System.Windows.Forms;
 
@@ -18,8 +19,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<string> CacheFolderPath { get; }
         public ReactiveProperty<bool> CanEnter { get; }
         public ReactiveProperty<bool> UseTestFunction { get; }
-        public ReactiveProperty<bool> NeedRestart { get; }
+        public ReactiveProperty<string> MessageText { get; }
 
+        public ReactiveCommand SelectVRChatFolderCommand { get; }
         public ReactiveCommand DeleteCacheCommand { get; }
         public ReactiveCommand SelectCacheFolderCommand { get; }
         public ReactiveCommand ApplyCommand { get; }
@@ -45,10 +47,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             CacheFolderPath = new ReactiveProperty<string>().AddTo(Disposable);
             CanEnter = PhotoFolderName.Select(_ => !string.IsNullOrEmpty(_)).ToReactiveProperty().AddTo(Disposable);
             UseTestFunction = new ReactiveProperty<bool>(_settingData.UseTestFunction).AddTo(Disposable);
-            NeedRestart = new ReactiveProperty<bool>(false).AddTo(Disposable);
 
             DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
             SelectCacheFolderCommand = new ReactiveCommand().AddTo(Disposable);
+            SelectVRChatFolderCommand = new ReactiveCommand().AddTo(Disposable);
 
             PhotoFolderName.Value = _settingData.FolderPath;
             CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
@@ -61,7 +63,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 MainWindow.Instance.DeleteCache();
                 CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
-                NeedRestart.Value = true;
+                MessageText.Value = "正しく動作させるにはアプリケーションの再起動が必要です";
             });
             SelectCacheFolderCommand.Subscribe(() =>
             {
@@ -73,6 +75,19 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 };
                 dialog.ShowDialog();
                 PhotoFolderName.Value = dialog.SelectedPath;
+            });
+
+            SelectVRChatFolderCommand.Subscribe(() =>
+            {
+                var vrcPictureFolderPath = VRChatHelper.GetVRChatPictureFolderPath();
+                if (!string.IsNullOrEmpty(vrcPictureFolderPath) && Directory.Exists(vrcPictureFolderPath))
+                {
+                    PhotoFolderName.Value = vrcPictureFolderPath;
+                }
+                else
+                {
+                    MessageText.Value = "VRChatの写真が入ったフォルダを見つけるのに失敗しました";
+                }
             });
         }
 
