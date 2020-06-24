@@ -8,7 +8,7 @@
         xmlns:views="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
         mc:Ignorable="d"
         Title="Setting"
-        Height="450" Width="600"
+        Height="600" Width="600"
         DataContext="{Binding SettingViewModel}"
         WindowStartupLocation="CenterOwner">
 
@@ -21,12 +21,12 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="6*"/>
+            <RowDefinition Height="9*"/>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="1.5*"/>
             <RowDefinition Height="1.5*"/>
             <RowDefinition Height="5*"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid x:Name="ImageFolder" Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -63,13 +63,17 @@
                             <TextBox x:Name="FolderPathTextBox"
                                      VerticalAlignment="Center"
                                      Grid.Column="0"
+                                     Margin="10 0 10 0" Padding="2"
                                      Text="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}"/>
                             <CheckBox x:Name="ContainsSubFolderCheckBox"
                                       Grid.Column="1"
+                                      Margin="0" Padding="0"
+                                      HorizontalAlignment="Right"
                                       IsChecked="{Binding ContainsSubFolder}"/>
                             <Button x:Name="DeleteButton"
                                     Grid.Column="2"
-                                    Margin="10 0 10 0" Padding="5 0 5 0"
+                                    Margin="10 0 10 0" Padding="0"
+                                    Width="20" Height="20"
                                     HorizontalAlignment="Right"
                                     Content="x"
                                     Foreground="White" Background="Red"
