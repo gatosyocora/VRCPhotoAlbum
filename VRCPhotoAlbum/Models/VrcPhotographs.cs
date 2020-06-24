@@ -34,13 +34,13 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         /// </summary>
         /// <param name="folderPath"></param>
         /// <returns></returns>
-        public async Task LoadVRCPhotoListAsync(string folderPath, CancellationToken cancelToken)
+        public async Task LoadVRCPhotoListAsync(string[] folderPaths, CancellationToken cancelToken)
         {
             _db.CreateDBCacheIfNeeded();
 
-            if (!Directory.Exists(folderPath))
+            if (folderPaths.Any(f => !Directory.Exists(f)))
             {
-                throw new DirectoryNotFoundException($"{folderPath} is not exist.");
+                throw new DirectoryNotFoundException($"{string.Join(',',folderPaths.Where(f => !Directory.Exists(f)))} is not exist.");
             }
 
             Collection.Clear();
@@ -50,7 +50,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 // UIスレッドと分離させる
                 await Task.Run(async () =>
                 {
-                    var filePaths = Directory.GetFiles(folderPath, "*.png", SearchOption.AllDirectories)
+                    var filePaths = folderPaths.SelectMany(f => Directory.GetFiles(f, "*.png", SearchOption.TopDirectoryOnly))
                                         .Where(x => !x.StartsWith(AppCache.Instance.CacheFolderPath, StringComparison.Ordinal))
                                         .ToList();
 

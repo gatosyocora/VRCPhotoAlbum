@@ -30,7 +30,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         {
             return new SettingData()
             {
-                FolderPath = Data.FolderPath,
+                PhotoFolders = Data.PhotoFolders,
                 UseTestFunction = Data.UseTestFunction
             };
         }

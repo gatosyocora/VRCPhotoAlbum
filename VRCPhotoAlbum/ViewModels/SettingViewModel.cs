@@ -4,7 +4,9 @@ using Gatosyocora.VRCPhotoAlbum.Views;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Forms;
 
@@ -14,7 +16,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
     {
         private SettingData _settingData;
 
-        public ReactiveProperty<string> PhotoFolderName { get; }
+        public ReactiveCollection<PhotoFolder> PhotoFolders { get; }
         public ReactiveProperty<string> CacheDataSize { get; }
         public ReactiveProperty<string> CacheFolderPath { get; }
         public ReactiveProperty<bool> CanEnter { get; }
@@ -33,7 +35,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 _settingData = new SettingData
                 {
-                    FolderPath = string.Empty,
+                    PhotoFolders = new List<PhotoFolder>(),
                     UseTestFunction = false
                 };
             }
@@ -42,21 +44,35 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 _settingData = Setting.Instance.Copy();
             }
 
-            PhotoFolderName = new ReactiveProperty<string>(_settingData.FolderPath).AddTo(Disposable);
+            if (_settingData.PhotoFolders is null)
+            {
+                _settingData.PhotoFolders = new List<PhotoFolder>();
+            }
+
+            PhotoFolders = new ReactiveCollection<PhotoFolder>().AddTo(Disposable);
             CacheDataSize = new ReactiveProperty<string>().AddTo(Disposable);
             CacheFolderPath = new ReactiveProperty<string>().AddTo(Disposable);
-            CanEnter = PhotoFolderName.Select(_ => !string.IsNullOrEmpty(_)).ToReactiveProperty().AddTo(Disposable);
+            CanEnter = new ReactiveProperty<bool>().AddTo(Disposable);
+            Observable.Merge(
+                    PhotoFolders.ObserveAddChanged(),
+                    PhotoFolders.ObserveRemoveChanged())
+                .Subscribe(_ => CanEnter.Value = PhotoFolders.Any(f => !string.IsNullOrEmpty(f.FolderPath)))
+                .AddTo(Disposable);
             UseTestFunction = new ReactiveProperty<bool>(_settingData.UseTestFunction).AddTo(Disposable);
 
             DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
             SelectCacheFolderCommand = new ReactiveCommand().AddTo(Disposable);
             SelectVRChatFolderCommand = new ReactiveCommand().AddTo(Disposable);
 
-            PhotoFolderName.Value = _settingData.FolderPath;
+            foreach (var folder in _settingData.PhotoFolders)
+            {
+                PhotoFolders.Add(folder);
+            }
             CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
             CacheFolderPath.Value = AppCache.Instance.CacheFolderPath;
 
-            PhotoFolderName.Subscribe(f => _settingData.FolderPath = f);
+            PhotoFolders.ObserveAddChanged().Subscribe(f => _settingData.PhotoFolders.Add(f)).AddTo(Disposable);
+            PhotoFolders.ObserveRemoveChanged().Subscribe(f => _settingData.PhotoFolders.Remove(f)).AddTo(Disposable);
             UseTestFunction.Subscribe(b => _settingData.UseTestFunction = b);
 
             DeleteCacheCommand.Subscribe(() =>
@@ -74,7 +90,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                     ShowNewFolderButton = false,
                 };
                 dialog.ShowDialog();
-                PhotoFolderName.Value = dialog.SelectedPath;
+                PhotoFolders.Add(
+                    new PhotoFolder
+                    {
+                        FolderPath = dialog.SelectedPath,
+                        ContainsSubFolder = true
+                    });
             });
 
             SelectVRChatFolderCommand.Subscribe(() =>
@@ -82,7 +103,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 var vrcPictureFolderPath = VRChatHelper.GetVRChatPictureFolderPath();
                 if (!string.IsNullOrEmpty(vrcPictureFolderPath) && Directory.Exists(vrcPictureFolderPath))
                 {
-                    PhotoFolderName.Value = vrcPictureFolderPath;
+                    PhotoFolders.Add(
+                        new PhotoFolder
+                        {
+                            FolderPath = vrcPictureFolderPath,
+                            ContainsSubFolder = true
+                        });
                 }
                 else
                 {
@@ -94,8 +120,12 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public void ApplySettingData()
         {
             JsonHelper.ExportJsonFile(_settingData, JsonHelper.GetJsonFilePath());
-
-            var isChangedPhotoFolder = (Setting.Instance.Data?.FolderPath ?? string.Empty) != _settingData.FolderPath;
+            
+            // 写真のフォルダリストに変化があったかどうか
+            var isChangedPhotoFolder = (Setting.Instance.Data?.PhotoFolders ?? Enumerable.Empty<PhotoFolder>())
+                                            .Except(
+                                                _settingData.PhotoFolders ?? Enumerable.Empty<PhotoFolder>())
+                                            .Any();
 
             Setting.Instance.Data = _settingData;
 

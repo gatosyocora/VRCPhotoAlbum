@@ -21,40 +21,68 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="6*"/>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="1.5*"/>
             <RowDefinition Height="1.5*"/>
             <RowDefinition Height="5*"/>
-            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid x:Name="ImageFolder" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="5*"/>
-                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1.5*"/>
             </Grid.RowDefinitions>
             <Label x:Name="FolderPathLabel" 
                    Content="画像フォルダ"
-                   VerticalAlignment="Center"
                    HorizontalAlignment="Left"
                    Grid.Column="0" Grid.Row="0"
-                   Margin="10 0 0 0"/>
-            <TextBox x:Name="FolderPathTextBox"
-                 Text="{Binding PhotoFolderName.Value, UpdateSourceTrigger=PropertyChanged}"
-                 VerticalAlignment="Center"
-                 Grid.Column="1" Grid.Row="0"/>
-            <Button x:Name="SelectFolderButton"
-                    Grid.Column="2" Grid.Row="0"
-                    Margin="5 0 5 0" Padding="0"
+                   Margin="10"/>
+            <ListView x:Name="PhotoFolderList"
+                      ItemsSource="{Binding PhotoFolders}"
+                      Grid.Column="1" Grid.Row="0"
+                      Grid.ColumnSpan="2"
+                      Margin="10">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="FolderPathTextBox"
+                                     VerticalAlignment="Center"
+                                     Grid.Column="0"
+                                     Text="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox x:Name="ContainsSubFolderCheckBox"
+                                      Grid.Column="1"
+                                      IsChecked="{Binding ContainsSubFolder}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Column="1" Grid.Row="1"
+                  HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="SelectFolderButton"
+                    Grid.Column="0" Grid.Row="1"
+                    Margin="5 0 5 0" Padding="10 0 10 0"
                     Content="参照"
                     Foreground="White"
                     Command="{Binding SelectCacheFolderCommand}"/>
-            <Button x:Name="AutoSelectVRChatFolderButton"
+                <Button x:Name="AutoSelectVRChatFolderButton"
                     Grid.Column="1" Grid.Row="1"
                     Grid.ColumnSpan="2"
                     Content="VRChatフォルダを選択"
@@ -62,6 +90,7 @@
                     HorizontalAlignment="Right"
                     Margin="5" Padding="10 0 10 0"
                     Command="{Binding SelectVRChatFolderCommand}" Cursor="Hand"/>
+            </Grid>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

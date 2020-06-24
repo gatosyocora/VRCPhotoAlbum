@@ -6,6 +6,7 @@ using KoyashiroKohaku.VrcMetaTool;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -14,6 +15,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
@@ -158,7 +160,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             LoadResourcesCommand.Subscribe(() =>
             {
                 _loadingCancel = new CancellationTokenSource().AddTo(Disposable);
-                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(Setting.Instance.Data.FolderPath, _loadingCancel.Token);
+                var folderPaths = GetPhotoFolders(Setting.Instance.Data.PhotoFolders);
+                _loadingTask = _vrcPhotographs.LoadVRCPhotoListAsync(folderPaths, _loadingCancel.Token);
             }).AddTo(Disposable);
 
             CancelLoadingCommand = new ReactiveCommand().AddTo(Disposable);
@@ -196,6 +199,25 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             ActiveProgressRing = new ReactiveProperty<bool>(true).AddTo(Disposable);
             _vrcPhotographs.Collection.ObserveAddChangedItems().Subscribe(_ => ActiveProgressRing.Value = false).AddTo(Disposable);
             _vrcPhotographs.Collection.ObserveResetChanged().Subscribe(_ => ActiveProgressRing.Value = true).AddTo(Disposable);
+        }
+
+        private string[] GetPhotoFolders(IList<PhotoFolder> photoFolderList)
+        {
+            if (photoFolderList is null) return Array.Empty<string>();
+
+            return photoFolderList.SelectMany(f =>
+            {
+                if (f.ContainsSubFolder)
+                {
+                    return Directory.GetDirectories(f.FolderPath);
+                }
+                else
+                {
+                    return new string[] { f.FolderPath };
+                }
+            })
+            .Distinct()
+            .ToArray();
         }
     }
 }
