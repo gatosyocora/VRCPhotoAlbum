@@ -90,10 +90,15 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                     ShowNewFolderButton = false,
                 };
                 dialog.ShowDialog();
+                var newFolderPath = dialog.SelectedPath;
+
+                // すでに存在したら追加しない
+                if (PhotoFolders.Any(f => f.FolderPath == newFolderPath)) return;
+
                 PhotoFolders.Add(
                     new PhotoFolder
                     {
-                        FolderPath = dialog.SelectedPath,
+                        FolderPath = newFolderPath,
                         ContainsSubFolder = true
                     });
             });
@@ -103,6 +108,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 var vrcPictureFolderPath = VRChatHelper.GetVRChatPictureFolderPath();
                 if (!string.IsNullOrEmpty(vrcPictureFolderPath) && Directory.Exists(vrcPictureFolderPath))
                 {
+                    // すでに存在したら追加しない
+                    if (PhotoFolders.Any(f => f.FolderPath == vrcPictureFolderPath)) return;
+
                     PhotoFolders.Add(
                         new PhotoFolder
                         {
