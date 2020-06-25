@@ -18,6 +18,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Interfaces
         public ReactiveCommand SelectVRChatFolderCommand { get; }
         public ReactiveCommand DeleteCacheCommand { get; }
         public ReactiveCommand SelectCacheFolderCommand { get; }
+        public ReactiveCommand<string> RemoveCacheFolderCommand { get; }
         public ReactiveCommand ApplyCommand { get; }
     }
 }

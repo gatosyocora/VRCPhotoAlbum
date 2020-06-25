@@ -25,6 +25,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand SelectVRChatFolderCommand { get; }
         public ReactiveCommand DeleteCacheCommand { get; }
         public ReactiveCommand SelectCacheFolderCommand { get; }
+        public ReactiveCommand<string> RemoveCacheFolderCommand { get; }
         public ReactiveCommand ApplyCommand { get; }
 
 
@@ -44,6 +45,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
             SelectCacheFolderCommand = new ReactiveCommand().AddTo(Disposable);
             SelectVRChatFolderCommand = new ReactiveCommand().AddTo(Disposable);
+            RemoveCacheFolderCommand = new ReactiveCommand<string>().AddTo(Disposable);
 
             foreach (var folder in Setting.Instance.Data?.PhotoFolders ?? Enumerable.Empty<PhotoFolder>())
             {
@@ -99,6 +101,14 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                 {
                     MessageText.Value = "VRChatの写真が入ったフォルダを見つけるのに失敗しました";
                 }
+            });
+
+            RemoveCacheFolderCommand.Subscribe(folderPath =>
+            {
+                var removeFolder = PhotoFolders
+                                    .Where(f => f.FolderPath == folderPath)
+                                    .Single();
+                PhotoFolders.Remove(removeFolder);
             });
         }
 

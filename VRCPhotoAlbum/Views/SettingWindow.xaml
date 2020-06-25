@@ -11,7 +11,8 @@
         Height="600" Width="600"
         DataContext="{Binding SettingViewModel}"
         d:DataContext="{d:DesignInstance Type=dummy:DummySettingViewModel, IsDesignTimeCreatable=True}"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterOwner"
+        x:Name="Root">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
@@ -79,7 +80,8 @@
                                     Content="x"
                                     Foreground="White" Background="Red"
                                     BorderBrush="DarkRed"
-                                    Command=""/>
+                                    Command="{Binding ElementName=Root, Path=DataContext.RemoveCacheFolderCommand}"
+                                    CommandParameter="{Binding FolderPath}"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

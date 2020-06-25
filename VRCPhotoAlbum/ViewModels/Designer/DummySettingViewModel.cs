@@ -25,6 +25,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Designer
 
         public ReactiveCommand SelectCacheFolderCommand { get; }
 
+        public ReactiveCommand<string> RemoveCacheFolderCommand { get; }
         public ReactiveCommand ApplyCommand { get; }
 
         public DummySettingViewModel()
