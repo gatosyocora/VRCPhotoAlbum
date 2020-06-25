@@ -1,5 +1,6 @@
 ﻿using Gatosyocora.VRCPhotoAlbum.Helpers;
 using Gatosyocora.VRCPhotoAlbum.Models;
+using Gatosyocora.VRCPhotoAlbum.ViewModels.Interfaces;
 using Gatosyocora.VRCPhotoAlbum.Views;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
-    public class SettingViewModel : ViewModelBase
+    public class SettingViewModel : ViewModelBase, ISettingViewModel
     {
         private SettingData _settingData;
 
