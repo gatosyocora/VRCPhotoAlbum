@@ -209,7 +209,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 if (f.ContainsSubFolder)
                 {
-                    return Directory.GetDirectories(f.FolderPath);
+                    return new string[] { f.FolderPath }.Union(Directory.GetDirectories(f.FolderPath));
                 }
                 else
                 {
