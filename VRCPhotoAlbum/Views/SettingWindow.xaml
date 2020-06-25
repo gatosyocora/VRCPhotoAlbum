@@ -4,12 +4,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
+        xmlns:dummy="clr-namespace:Gatosyocora.VRCPhotoAlbum.ViewModels.Designer"
         xmlns:views="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
         mc:Ignorable="d"
         Title="Setting"
         Height="600" Width="600"
         DataContext="{Binding SettingViewModel}"
+        d:DataContext="{d:DesignInstance Type=dummy:DummySettingViewModel, IsDesignTimeCreatable=True}"
         WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
