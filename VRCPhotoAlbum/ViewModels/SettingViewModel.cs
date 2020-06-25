@@ -15,8 +15,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 {
     public class SettingViewModel : ViewModelBase, ISettingViewModel
     {
-        private SettingData _settingData;
-
         public ReactiveCollection<PhotoFolder> PhotoFolders { get; }
         public ReactiveProperty<string> CacheDataSize { get; }
         public ReactiveProperty<string> CacheFolderPath { get; }
@@ -32,24 +30,6 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public SettingViewModel()
         {
-            if (Setting.Instance.Data is null)
-            {
-                _settingData = new SettingData
-                {
-                    PhotoFolders = new List<PhotoFolder>(),
-                    UseTestFunction = false
-                };
-            }
-            else
-            {
-                _settingData = Setting.Instance.Copy();
-            }
-
-            if (_settingData.PhotoFolders is null)
-            {
-                _settingData.PhotoFolders = new List<PhotoFolder>();
-            }
-
             PhotoFolders = new ReactiveCollection<PhotoFolder>().AddTo(Disposable);
             CacheDataSize = new ReactiveProperty<string>().AddTo(Disposable);
             CacheFolderPath = new ReactiveProperty<string>().AddTo(Disposable);
@@ -59,22 +39,18 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                     PhotoFolders.ObserveRemoveChanged())
                 .Subscribe(_ => CanEnter.Value = PhotoFolders.Any(f => !string.IsNullOrEmpty(f.FolderPath)))
                 .AddTo(Disposable);
-            UseTestFunction = new ReactiveProperty<bool>(_settingData.UseTestFunction).AddTo(Disposable);
+            UseTestFunction = new ReactiveProperty<bool>(Setting.Instance.Data?.UseTestFunction ?? false).AddTo(Disposable);
 
             DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
             SelectCacheFolderCommand = new ReactiveCommand().AddTo(Disposable);
             SelectVRChatFolderCommand = new ReactiveCommand().AddTo(Disposable);
 
-            foreach (var folder in _settingData.PhotoFolders)
+            foreach (var folder in Setting.Instance.Data?.PhotoFolders ?? Enumerable.Empty<PhotoFolder>())
             {
                 PhotoFolders.Add(folder);
             }
             CacheDataSize.Value = FileHelper.DataSize2String(FileHelper.CalcDataSize(AppCache.Instance.CacheFolderPath));
             CacheFolderPath.Value = AppCache.Instance.CacheFolderPath;
-
-            PhotoFolders.ObserveAddChanged().Subscribe(f => _settingData.PhotoFolders.Add(f)).AddTo(Disposable);
-            PhotoFolders.ObserveRemoveChanged().Subscribe(f => _settingData.PhotoFolders.Remove(f)).AddTo(Disposable);
-            UseTestFunction.Subscribe(b => _settingData.UseTestFunction = b);
 
             DeleteCacheCommand.Subscribe(() =>
             {
@@ -128,21 +104,24 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
 
         public void ApplySettingData()
         {
-            JsonHelper.ExportJsonFile(_settingData, JsonHelper.GetJsonFilePath());
-            
-            // 写真のフォルダリストに変化があったかどうか
-            var isChangedPhotoFolder = (Setting.Instance.Data?.PhotoFolders ?? Enumerable.Empty<PhotoFolder>())
-                                            .Except(
-                                                _settingData.PhotoFolders ?? Enumerable.Empty<PhotoFolder>())
-                                            .Any();
-
-            Setting.Instance.Data = _settingData;
-
-            if (isChangedPhotoFolder)
+            if (Setting.Instance.Data is null)
             {
-                MainWindow.Instance.Reboot();
+                Setting.Instance.Data = new SettingData();
+            }
+            else
+            {
+                Setting.Instance.Data.PhotoFolders.Clear();
             }
 
+            foreach (var folder in PhotoFolders)
+            {
+                Setting.Instance.Data.PhotoFolders.Add(folder);
+            }
+            Setting.Instance.Data.UseTestFunction = UseTestFunction.Value;
+
+            JsonHelper.ExportJsonFile(Setting.Instance.Data, JsonHelper.GetJsonFilePath());
+
+            MainWindow.Instance.Reboot();
         }
     }
 }
