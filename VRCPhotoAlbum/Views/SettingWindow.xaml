@@ -47,7 +47,8 @@
                    Content="画像フォルダ"
                    HorizontalAlignment="Left"
                    Grid.Column="0" Grid.Row="0"
-                   Margin="10"/>
+                   Margin="10"
+                   FontWeight="Bold"/>
             <Label x:Name="FolderPathHeaderLabel" 
                    Content="フォルダパス"
                    HorizontalAlignment="Center"
@@ -146,7 +147,8 @@
                    Content="キャッシュ"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Margin="10 0 0 0"/>
+                   Margin="10 0 0 0"
+                   FontWeight="Bold"/>
             <Label x:Name="CacheDataSize"
                    Content="{Binding CacheDataSize.Value}"
                    Grid.Column="1" 
@@ -175,7 +177,8 @@
                    Grid.Column="0"
                    VerticalAlignment="Center"
                    Margin="10 0 0 0"
-                   Content="日付変更時間"/>
+                   Content="日付変更時間"
+                   FontWeight="Bold"/>
             <mahApps:TimePicker
                 x:Name="DateLinePicker"
                 Grid.Column="1"
@@ -197,7 +200,8 @@
                    Content="テスト機能"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Margin="10 0 0 0"/>
+                   Margin="10 0 0 0"
+                   FontWeight="Bold"/>
             <ToggleButton x:Name="TestToggleButton"
                           Grid.Column="1"
                           VerticalAlignment="Center"
