@@ -67,6 +67,7 @@
                                      VerticalAlignment="Center"
                                      Grid.Column="0"
                                      Margin="10 0 5 0" Padding="2"
+                                     IsReadOnly="True"
                                      Text="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}"/>
                             <CheckBox x:Name="ContainsSubFolderCheckBox"
                                       Grid.Column="1"
