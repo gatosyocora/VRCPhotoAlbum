@@ -120,7 +120,10 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         {
             if (Setting.Instance.Data is null)
             {
-                Setting.Instance.Data = new SettingData();
+                Setting.Instance.Data = new SettingData
+                {
+                    PhotoFolders = new List<PhotoFolder>()
+                };
             }
             else
             {
