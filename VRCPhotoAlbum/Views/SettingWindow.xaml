@@ -145,7 +145,7 @@
         <Grid x:Name="DateLine"
               Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label x:Name="DateLineLabel"
@@ -156,7 +156,7 @@
             <mahApps:TimePicker
                 x:Name="DateLinePicker"
                 Grid.Column="1"
-                Margin="20 5 50 5"
+                Margin="50 5 50 5"
                 Culture="{Binding DateTimeCulture}"
                 SelectedDateTime="{Binding InternationalDateLine.Value, ValidatesOnDataErrors=False, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=False}"/>
         </Grid>
