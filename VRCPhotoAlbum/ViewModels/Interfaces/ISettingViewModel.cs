@@ -12,6 +12,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Interfaces
         public ReactiveProperty<string> CacheDataSize { get; }
         public ReactiveProperty<string> CacheFolderPath { get; }
         public ReactiveProperty<bool> CanEnter { get; }
+        public ReactiveProperty<DateTime> InternationalDateLine { get; }
         public ReactiveProperty<bool> UseTestFunction { get; }
         public ReactiveProperty<string> MessageText { get; }
 

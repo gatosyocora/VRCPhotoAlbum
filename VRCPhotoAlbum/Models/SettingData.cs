@@ -10,6 +10,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         [DataMember(Name = "photoFolders")]
         public List<PhotoFolder> PhotoFolders { get; set; }
 
+        [DataMember(Name = "internationalDateLine")]
+        public DateTime InternationalDateLine { get; set; }
+
         [DataMember(Name = "useTestFunction")]
         public bool UseTestFunction { get; set; }
     }

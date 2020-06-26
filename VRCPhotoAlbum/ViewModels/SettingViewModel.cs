@@ -19,6 +19,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveProperty<string> CacheDataSize { get; }
         public ReactiveProperty<string> CacheFolderPath { get; }
         public ReactiveProperty<bool> CanEnter { get; }
+        public ReactiveProperty<DateTime> InternationalDateLine { get; }
         public ReactiveProperty<bool> UseTestFunction { get; }
         public ReactiveProperty<string> MessageText { get; }
 
@@ -40,6 +41,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
                     PhotoFolders.ObserveRemoveChanged())
                 .Subscribe(_ => CanEnter.Value = PhotoFolders.Any(f => !string.IsNullOrEmpty(f.FolderPath)))
                 .AddTo(Disposable);
+            InternationalDateLine = new ReactiveProperty<DateTime>(Setting.Instance.Data?.InternationalDateLine ?? default).AddTo(Disposable);
             UseTestFunction = new ReactiveProperty<bool>(Setting.Instance.Data?.UseTestFunction ?? false).AddTo(Disposable);
 
             DeleteCacheCommand = new ReactiveCommand().AddTo(Disposable);
@@ -127,6 +129,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             {
                 Setting.Instance.Data.PhotoFolders.Add(folder);
             }
+            Setting.Instance.Data.InternationalDateLine = InternationalDateLine.Value;
             Setting.Instance.Data.UseTestFunction = UseTestFunction.Value;
 
             JsonHelper.ExportJsonFile(Setting.Instance.Data, JsonHelper.GetJsonFilePath());

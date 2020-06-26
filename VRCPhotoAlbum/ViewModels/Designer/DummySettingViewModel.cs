@@ -15,6 +15,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Designer
         public ReactiveProperty<string> CacheDataSize { get; }
         public ReactiveProperty<string> CacheFolderPath { get; }
         public ReactiveProperty<bool> CanEnter { get; }
+        public ReactiveProperty<DateTime> InternationalDateLine { get; }
         public ReactiveProperty<string> MessageText { get; }
 
         public ReactiveProperty<bool> UseTestFunction { get; }
@@ -36,6 +37,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Designer
             CacheDataSize = new ReactiveProperty<string>("00 MB").AddTo(Disposable);
             CacheFolderPath = new ReactiveProperty<string>(@"C:\\Hoge\\Piyo").AddTo(Disposable);
             CanEnter = new ReactiveProperty<bool>(false).AddTo(Disposable);
+            InternationalDateLine = new ReactiveProperty<DateTime>().AddTo(Disposable);
             MessageText = new ReactiveProperty<string>("Testメッセージです").AddTo(Disposable);
         }
     }

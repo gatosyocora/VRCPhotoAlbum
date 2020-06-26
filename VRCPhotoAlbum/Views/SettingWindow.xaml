@@ -27,6 +27,7 @@
             <RowDefinition Height="3*"/>
             <RowDefinition Height="1.5*"/>
             <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="5*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
@@ -141,7 +142,24 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"/>
         </Grid>
-        <Grid Grid.Row="2" Grid.RowSpan="2">
+        <Grid x:Name="DateLine"
+              Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="DateLineLabel"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Margin="10 0 0 0"
+                   Content="日付変更時間"/>
+            <mahApps:TimePicker
+                x:Name="DateLinePicker"
+                Grid.Column="1"
+                Margin="20 5 50 5"
+                SelectedDateTime="{Binding InternationalDateLine.Value, ValidatesOnDataErrors=False, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=False}"/>
+        </Grid>
+        <Grid Grid.Row="3" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
