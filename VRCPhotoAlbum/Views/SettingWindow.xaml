@@ -43,35 +43,50 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Label x:Name="FolderPathLabel" 
+            <Grid Margin="0 0 20 0" Grid.ColumnSpan="99">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="FolderPathLabel" 
                    Content="画像フォルダ"
                    HorizontalAlignment="Left"
                    Grid.Column="0" Grid.Row="0"
                    Margin="10"
                    FontWeight="Bold"/>
-            <Label x:Name="FolderPathHeaderLabel" 
+                <Label x:Name="FolderPathHeaderLabel" 
                    Content="フォルダパス"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Grid.Column="1" Grid.Row="0"
                    Margin="10"/>
-            <Label x:Name="SubFolderHeaderLabel" 
+                <Label x:Name="SubFolderHeaderLabel" 
                    Content="サブフォルダ含む"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Grid.Column="2" Grid.Row="0"
                    Margin="5"/>
-            <Label x:Name="RemoveHeaderLabel" 
+                <Label x:Name="RemoveHeaderLabel" 
                    Content="削除"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Grid.Column="3" Grid.Row="0"
                    Margin="10"/>
+            </Grid>
             <ItemsControl x:Name="PhotoFolderList"
                           ItemsSource="{Binding PhotoFolders}"
                           Grid.Column="1" Grid.Row="1"
                           Grid.ColumnSpan="3"
                           Margin="10">
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer VerticalScrollBarVisibility="Visible">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel/>
