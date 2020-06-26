@@ -4,13 +4,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
+        xmlns:dummy="clr-namespace:Gatosyocora.VRCPhotoAlbum.ViewModels.Designer"
         xmlns:views="clr-namespace:Gatosyocora.VRCPhotoAlbum.Views"
         mc:Ignorable="d"
         Title="Setting"
-        Height="450" Width="600"
+        Height="600" Width="600"
         DataContext="{Binding SettingViewModel}"
-        WindowStartupLocation="CenterOwner">
+        d:DataContext="{d:DesignInstance Type=dummy:DummySettingViewModel, IsDesignTimeCreatable=True}"
+        WindowStartupLocation="CenterOwner"
+        x:Name="Root">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
@@ -21,35 +23,130 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="9*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="5*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid x:Name="ImageFolder" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="5*"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="FolderPathLabel" 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="0 0 20 0" Grid.ColumnSpan="99">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="FolderPathLabel" 
                    Content="画像フォルダ"
-                   VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Grid.Column="0"
-                   Margin="10 0 0 0"/>
-            <TextBox x:Name="FolderPathTextBox"
-                 Text="{Binding PhotoFolderName.Value, UpdateSourceTrigger=PropertyChanged}"
-                 VerticalAlignment="Center"
-                 Grid.Column="1"/>
-            <Button x:Name="SelectFolderButton"
-                    Grid.Column="2"
-                    Margin="5 0 5 0" Padding="0"
+                   Grid.Column="0" Grid.Row="0"
+                   Margin="10"
+                   FontWeight="Bold"/>
+                <Label x:Name="FolderPathHeaderLabel" 
+                   Content="フォルダパス"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.Column="1" Grid.Row="0"
+                   Margin="10"/>
+                <Label x:Name="SubFolderHeaderLabel" 
+                   Content="サブフォルダ含む"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.Column="2" Grid.Row="0"
+                   Margin="5"/>
+                <Label x:Name="RemoveHeaderLabel" 
+                   Content="削除"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.Column="3" Grid.Row="0"
+                   Margin="10"/>
+            </Grid>
+            <ItemsControl x:Name="PhotoFolderList"
+                          ItemsSource="{Binding PhotoFolders}"
+                          Grid.Column="1" Grid.Row="1"
+                          Grid.ColumnSpan="3"
+                          Margin="10">
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer VerticalScrollBarVisibility="Visible">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="FolderPathTextBox"
+                                     VerticalAlignment="Center"
+                                     Grid.Column="0"
+                                     Margin="10 0 5 0" Padding="2"
+                                     IsReadOnly="True"
+                                     Text="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox x:Name="ContainsSubFolderCheckBox"
+                                      Grid.Column="1"
+                                      Margin="0" Padding="0"
+                                      HorizontalAlignment="Center"
+                                      IsChecked="{Binding ContainsSubFolder}"/>
+                            <Button x:Name="DeleteButton"
+                                    Grid.Column="2"
+                                    Margin="5 0 10 0" Padding="0"
+                                    Width="20" Height="20"
+                                    HorizontalAlignment="Right"
+                                    Content="x"
+                                    Foreground="White" Background="Red"
+                                    BorderBrush="DarkRed"
+                                    Command="{Binding ElementName=Root, Path=DataContext.RemoveCacheFolderCommand}"
+                                    CommandParameter="{Binding FolderPath}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Grid Grid.Column="1" Grid.Row="2"
+                  Grid.ColumnSpan="3"
+                  HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="SelectFolderButton"
+                    Grid.Column="0" Grid.Row="1"
+                    Margin="5 0 5 0" Padding="10 0 10 0"
                     Content="参照"
                     Foreground="White"
                     Command="{Binding SelectCacheFolderCommand}"/>
+                <Button x:Name="AutoSelectVRChatFolderButton"
+                    Grid.Column="1" Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Content="VRChatフォルダを選択"
+                    Foreground="White"
+                    HorizontalAlignment="Right"
+                    Margin="5" Padding="10 0 10 0"
+                    Command="{Binding SelectVRChatFolderCommand}" Cursor="Hand"/>
+            </Grid>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -65,7 +162,8 @@
                    Content="キャッシュ"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Margin="10 0 0 0"/>
+                   Margin="10 0 0 0"
+                   FontWeight="Bold"/>
             <Label x:Name="CacheDataSize"
                    Content="{Binding CacheDataSize.Value}"
                    Grid.Column="1" 
@@ -82,9 +180,28 @@
                    Grid.Column="1" Grid.Row="1"
                    Grid.ColumnSpan="2"
                    VerticalAlignment="Center"
-                   HorizontalAlignment="Left"/>
+                   HorizontalAlignment="Center"/>
         </Grid>
-        <Grid Grid.Row="2" Grid.RowSpan="2">
+        <Grid x:Name="DateLine"
+              Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="DateLineLabel"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Margin="10 0 0 0"
+                   Content="日付変更時間"
+                   FontWeight="Bold"/>
+            <mahApps:TimePicker
+                x:Name="DateLinePicker"
+                Grid.Column="1"
+                Margin="50 5 50 5"
+                Culture="{Binding DateTimeCulture}"
+                SelectedDateTime="{Binding InternationalDateLine.Value, ValidatesOnDataErrors=False, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=False}"/>
+        </Grid>
+        <Grid Grid.Row="3" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
@@ -98,7 +215,8 @@
                    Content="テスト機能"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Margin="10 0 0 0"/>
+                   Margin="10 0 0 0"
+                   FontWeight="Bold"/>
             <ToggleButton x:Name="TestToggleButton"
                           Grid.Column="1"
                           VerticalAlignment="Center"
@@ -117,14 +235,13 @@
                    Grid.Row="1"/>
         </Grid>
         <Label x:Name="MessageLabel"
-               Visibility="{Binding NeedRestart.Value, Converter={StaticResource BoolVisibilityConverter}}"
                VerticalAlignment="Bottom"
                HorizontalAlignment="Right"
                Grid.Row="4"
                Margin="20"
                FontSize="15"
                Foreground="Red"
-               Content="正しく動作させるにはアプリケーションの再起動が必要です"/>
+               Content="{Binding MessageText.Value}"/>
         <Grid Grid.Row="99">
             <Button x:Name="ApplyButton"
                 Content="適用"

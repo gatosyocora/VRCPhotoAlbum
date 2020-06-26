@@ -84,10 +84,12 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var searchResultModel = new SearchResult(photoList);
 
-            photoList.AddRangeOnScheduler(_photoList);
+            foreach (var photo in _photoList)
+            {
+                photoList.Add(photo);
+            }
 
-            searchResultModel.ShowedPhotoList.ObserveAddChangedItems()
-                .Subscribe(_ => Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count));
+            Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count);
         }
 
         [TestMethod("表示用写真リストの全要素がResetCommand実行時に削除されているか")]
@@ -101,10 +103,11 @@ namespace VRCPhotoAlbumTest.Models
                 photoList.Add(photo);
             }
 
+            Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count);
+
             searchResultModel.ResetCommand.Execute();
 
-            searchResultModel.ShowedPhotoList.ObserveAddChangedItems()
-                .Subscribe(_ => Assert.AreEqual(0, searchResultModel.ShowedPhotoList.Count));
+            Assert.AreEqual(0, searchResultModel.ShowedPhotoList.Count);
         }
 
         [TestMethod("表示用写真リストの要素数がResearchCommand実行後に変化していないか")]
@@ -118,10 +121,11 @@ namespace VRCPhotoAlbumTest.Models
                 photoList.Add(photo);
             }
 
+            var photoCount = searchResultModel.ShowedPhotoList.Count;
+
             searchResultModel.ResearchCommand.Execute();
 
-            searchResultModel.ShowedPhotoList.ObserveMoveChangedItems()
-                .Subscribe(_ => Assert.AreEqual(5, searchResultModel.ShowedPhotoList.Count));
+            Assert.AreEqual(photoCount, searchResultModel.ShowedPhotoList.Count);
         }
 
         [TestMethod("検索キーワードがない状態のとき内部メソッドがすべての写真リストを取得できているか")]

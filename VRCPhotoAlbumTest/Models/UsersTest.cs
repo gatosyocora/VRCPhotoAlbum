@@ -5,6 +5,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -16,11 +17,38 @@ namespace VRCPhotoAlbumTest.Models
     [TestClass]
     public class UsersTest
     {
+        IEnumerable<Photo> _photoListWithOneUser; // 一人のUserだけ入っている写真のリスト
+        IEnumerable<Photo> _photoListWithManyUsers; // 複数のUserが入っている写真のリスト
         IEnumerable<Photo> _photoListForAlphabet;
         IEnumerable<Photo> _photoListForCount;
 
         public UsersTest()
         {
+            _photoListWithOneUser = Enumerable.Range(0, 5)
+                                    .Select(offset =>
+                                    {
+                                        var meta = new VrcMetaData();
+                                        meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + offset)}"));
+                                        return new Photo($"file{offset}.png")
+                                        {
+                                            MetaData = meta
+                                        };
+                                    });
+
+            _photoListWithManyUsers = Enumerable.Range(0, 5)
+                                        .Select(offset =>
+                                        {
+                                            var meta = new VrcMetaData();
+                                            foreach (var userOffset in Enumerable.Range(0, 5))
+                                            {
+                                                meta.Users.Add(new KoyashiroKohaku.VrcMetaTool.User($"{(char)('a' + userOffset)}"));
+                                            }
+                                            return new Photo($"file{offset}.png")
+                                            {
+                                                MetaData = meta
+                                            };
+                                        });
+
             _photoListForAlphabet = new int[] { 0, 3, 1, 2, 4 } // 各写真のユーザーの文字offset
                                         .Select(i =>
                                         {
@@ -61,131 +89,78 @@ namespace VRCPhotoAlbumTest.Models
             Assert.AreEqual(UserSortType.None, usersModel.SortType.Value);
         }
 
-        //[TestMethod("写真のリストからそれに含まれるユーザーリストを作成する")]
-        //public void CreateUserListFromPhotoList()
-        //{
-        //    var photoList = new ReactiveCollection<Photo>();
-        //    var usersModel = new Users(photoList);
-
-        //    var privateObject = new PrivateObject(usersModel);
-
-        //    var _photoList = Enumerable.Range(0, 5)
-        //        .Select(i =>
-        //        {
-        //            var meta = new VrcMetaData();
-        //            meta.Users.Add(
-        //                new KoyashiroKohaku.VrcMetaTool.User
-        //                {
-        //                    UserName = ('a' + i).ToString()
-        //                });
-        //            return new Photo
-        //            {
-        //                MetaData = meta
-        //            };
-        //        });
-
-        //    photoList.AddRangeOnScheduler(_photoList);
-
-        //    var userlist = privateObject.GetInvokeMember("_userList") as ReadOnlyReactiveCollection<string>;
-        //    Assert.AreEqual(5, userlist.Count);
-        //}
-
-        [TestMethod("写真のリストのメタ情報に含まれるユーザー数とユーザーリストの要素数が一致するか(各画像に異なる人が一人ずつ)")]
-        public void EqualsPhotoListUserCountToUserListCount()
+        [TestMethod("写真のリストからそれに含まれるユーザーリストを作成する(ユーザーに重複なし)")]
+        public void CreateUserListFromPhotoList()
         {
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            var _photoList = Enumerable.Range(0, 5)
-                .Select(i =>
-                {
-                    var meta = new VrcMetaData();
-                    meta.Users.Add(
-                        new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()));
-                    return new Photo("hoge.png")
-                    {
-                        MetaData = meta
-                    };
-                });
+            var privateObject = new PrivateObject(usersModel);
+            var userlist = privateObject.GetProperty("_userList") as ReadOnlyReactiveCollection<string>;
+            Assert.AreEqual(0, userlist.Count);
 
-            photoList.AddRangeOnScheduler(_photoList);
+            foreach (var photo in _photoListWithOneUser)
+            {
+                photoList.Add(photo);
+            }
 
-            Assert.AreEqual(5, usersModel.SortedUserList.Count);
+            Assert.AreEqual(5, userlist.Count);
         }
 
-        [TestMethod("写真のリストのメタ情報に含まれるユーザー数とユーザーリストの要素数が一致するか(各画像に異なる人が2人ずつ)")]
-        public void EqualsPhotoListUserCountToUserListCount2()
+
+        [TestMethod("写真のリストからそれに含まれるユーザーリストを作成する(ユーザーに重複あり)")]
+        public void CreateUserListFromPhotoListContainsDuplicateUser()
         {
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            var _photoList = Enumerable.Range(0, 5)
-                .Select(i =>
-                {
-                    var meta = new VrcMetaData();
-                    meta.Users.AddRange(
-                        new KoyashiroKohaku.VrcMetaTool.User[]
-                        {
-                            new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()),
-                            new KoyashiroKohaku.VrcMetaTool.User(('z' - i).ToString())
-                        });
-                    return new Photo("hoge.png")
-                    {
-                        MetaData = meta
-                    };
-                });
+            var privateObject = new PrivateObject(usersModel);
+            var userlist = privateObject.GetProperty("_userList") as ReadOnlyReactiveCollection<string>;
+            Assert.AreEqual(0, userlist.Count);
 
-            photoList.AddRangeOnScheduler(_photoList);
-            Assert.AreEqual(10, usersModel.SortedUserList.Count);
+            foreach (var photo in _photoListWithManyUsers)
+            {
+                photoList.Add(photo);
+            }
+
+            Assert.AreEqual(5*5, userlist.Count);
         }
 
-        [TestMethod("写真のリストのメタ情報に含まれるユーザー数とユーザーリストの要素数が一致するか（各画像に同じ人が2人ずつ）")]
-        public void EqualsPhotoListUserCountToUserListCount3()
+        [TestMethod("内部メソッドが重複をまとめたユーザーリストを作成できる")]
+        [DataTestMethod()]
+        [DataRow("a", 5)]
+        [DataRow("b", 5)]
+        [DataRow("c", 5)]
+        [DataRow("d", 5)]
+        [DataRow("e", 5)]
+        public void CanCreateNoDuplicatedUserList(string userName, int photoCount)
         {
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
+            var privateObject = new PrivateObject(usersModel);
 
-            var _photoList = Enumerable.Range(0, 5)
-                .Select(i =>
-                {
-                    var meta = new VrcMetaData();
-                    meta.Users.AddRange(
-                        new KoyashiroKohaku.VrcMetaTool.User[] 
-                        {
-                            new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString()),
-                            new KoyashiroKohaku.VrcMetaTool.User(('a' + i).ToString())
-                        });
-                    return new Photo("hoge.png")
-                    {
-                        MetaData = meta
-                    };
-                });
+            foreach (var photo in _photoListWithManyUsers)
+            {
+                photoList.Add(photo);
+            }
 
-            photoList.AddRangeOnScheduler(_photoList);
-            Assert.AreEqual(5, usersModel.SortedUserList.Count);
+            var duplicatedUserList = privateObject.Invoke("CreateUserList", null) as IEnumerable<Gatosyocora.VRCPhotoAlbum.Models.User>;
+            Assert.AreEqual(5, duplicatedUserList.Count());
+            Assert.AreEqual(photoCount, duplicatedUserList.Where(u => u.Name == userName).Single().PhotoCount);
         }
 
-        [TestMethod("写真のリストのメタ情報に含まれるユーザー数とユーザーリストの要素数が一致するか（各画像にi人, n人がそれぞれ入る）")]
-        public void EqualsPhotoListUserCountToUserListCount4()
+        [TestMethod("表示用ユーザーリストのユーザーが重複していないか")]
+        public void DontDuplicateUserInUserList()
         {
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            var _photoList = Enumerable.Range(1, 5)
-                .Select(i =>
-                {
-                    var meta = new VrcMetaData();
-                    meta.Users.AddRange(
-                        Enumerable.Range(0, i)
-                            .Select(ii =>
-                                new KoyashiroKohaku.VrcMetaTool.User(('a' + ii).ToString())));
-                    return new Photo("hoge.png")
-                    {
-                        MetaData = meta
-                    };
-                });
+            foreach (var photo in _photoListWithManyUsers)
+            {
+                photoList.Add(photo);
+            }
 
-            photoList.AddRangeOnScheduler(_photoList);
+            // 無ソート状態の初期状態では枚数1のUserの重複なしリストが作られる
             Assert.AreEqual(5, usersModel.SortedUserList.Count);
         }
 
@@ -195,21 +170,11 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            var _photoList = Enumerable.Range(1, 5)
-                .Select(i =>
-                {
-                    var meta = new VrcMetaData();
-                    meta.Users.AddRange(
-                        Enumerable.Range(0, i)
-                            .Select(ii =>
-                                new KoyashiroKohaku.VrcMetaTool.User(('a' + ii).ToString())));
-                    return new Photo("hoge.png")
-                    {
-                        MetaData = meta
-                    };
-                });
-
-            photoList.AddRangeOnScheduler(_photoList);
+            foreach (var photo in _photoListWithOneUser)
+            {
+                photoList.Add(photo);
+            }
+            Assert.AreEqual(5, usersModel.SortedUserList.Count);
 
             usersModel.ResetCommand.Execute();
 
@@ -217,7 +182,7 @@ namespace VRCPhotoAlbumTest.Models
         }
 
         [TestMethod("ユーザーリストの要素数がアルファベット順ソートで変化しないか")]
-        public void SaneUserListCountAfterAlphabetSort()
+        public void SameUserListCountAfterAlphabetSort()
         {
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
@@ -227,12 +192,13 @@ namespace VRCPhotoAlbumTest.Models
                 photoList.Add(photo);
             }
 
-            usersModel.SortType.Value = UserSortType.Alphabet;
+            var userCount = usersModel.SortedUserList.Count;
 
-            usersModel.SortedUserList.ObserveAddChangedItems()
-                .Subscribe(_ => Assert.AreEqual(5, usersModel.SortedUserList.Count));
+            usersModel.SortType.Value = UserSortType.Alphabet;
+            Assert.AreEqual(userCount, usersModel.SortedUserList.Count);
         }
 
+        // TODO : 検査部分が未完成
         [TestMethod("ユーザーリストがアルファベット順にソートされるか")]
         public void CanSortOrderToAlphabet()
         {
@@ -246,17 +212,7 @@ namespace VRCPhotoAlbumTest.Models
 
             usersModel.SortType.Value = UserSortType.Alphabet;
 
-            var list = usersModel.SortedUserList;
-
-            usersModel.SortedUserList.ObserveAddChangedItems()
-                .Subscribe(_ => 
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        Assert.IsTrue(list[i].Name.CompareTo(list[i + 1].Name) <= 0);
-                    }
-                });
-            
+            throw new NotImplementedException();
         }
 
         [TestMethod("ユーザーリストの要素数が枚数順ソートで変化しないか")]
@@ -265,38 +221,33 @@ namespace VRCPhotoAlbumTest.Models
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            photoList.AddRangeOnScheduler(_photoListForCount);
+            foreach (var photo in _photoListForCount)
+            {
+                photoList.Add(photo);
+            }
+
+            var userCount = usersModel.SortedUserList.Count;
 
             usersModel.SortType.Value = UserSortType.Count;
 
-            usersModel.SortedUserList.ObserveAddChangedItems()
-                .Subscribe(_ => Assert.AreEqual(5, usersModel.SortedUserList.Count));
+            Assert.AreEqual(userCount, usersModel.SortedUserList.Count);
         }
 
+        // TODO : 検査部分が未完成
         [TestMethod("ユーザーリストが枚数順にソートされるか")]
         public void CanSortOrderToCount()
         {
             var photoList = new ReactiveCollection<Photo>();
             var usersModel = new Users(photoList);
 
-            foreach (var photo in _photoListForAlphabet)
+            foreach (var photo in _photoListForCount)
             {
                 photoList.Add(photo);
             }
 
             usersModel.SortType.Value = UserSortType.Count;
 
-            var list = usersModel.SortedUserList;
-
-            usersModel.SortedUserList.ObserveAddChangedItems()
-                .Subscribe(_ =>
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        Assert.IsTrue(list[i].PhotoCount.CompareTo(list[i + 1].PhotoCount) <= 0);
-                    }
-                });
-
+            throw new NotImplementedException();
         }
     }
 }

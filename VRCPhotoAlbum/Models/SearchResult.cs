@@ -87,6 +87,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                                     }
                                     else if (x is string)
                                     {
+                                        // TODO : DIが必要
                                         MainWindow.Instance.ScrollToTopInPhotoList();
                                         return SearchPhoto(SearchText?.Value ?? string.Empty);
                                     }
@@ -213,18 +214,36 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
             if (useDate && (!useSinceDate && !useUntilDate))
             {
-                if ((photo?.MetaData?.Date?.Date.CompareTo(SearchedDate.Value.Date) ?? 1) != 0) return false;
+                var searchedDateTime = SearchedDate.Value.Date
+                                            + new TimeSpan(
+                                                Setting.Instance.Data.InternationalDateLine.Hour,
+                                                Setting.Instance.Data.InternationalDateLine.Minute,
+                                                0);
+
+                if ((photo?.MetaData?.Date?.CompareTo(searchedDateTime) ?? 1) != 0) return false;
             }
             else
             {
                 if (useSinceDate)
                 {
-                    if ((photo?.MetaData?.Date?.Date.CompareTo(SearchedSinceDate.Value.Date) ?? -1) < 0) return false;
+                    var searchedSinceDateTime = SearchedSinceDate.Value.Date
+                                                    + new TimeSpan(
+                                                        Setting.Instance.Data.InternationalDateLine.Hour,
+                                                        Setting.Instance.Data.InternationalDateLine.Minute,
+                                                        0);
+
+                    if ((photo?.MetaData?.Date?.CompareTo(searchedSinceDateTime) ?? -1) < 0) return false;
                 }
 
                 if (useUntilDate)
                 {
-                    if ((photo?.MetaData?.Date?.Date.CompareTo(SearchedUntilDate.Value.Date) ?? 1) > 0) return false;
+                    var searchedUntilDateTime = SearchedUntilDate.Value.Date
+                                                    + new TimeSpan(
+                                                        Setting.Instance.Data.InternationalDateLine.Hour,
+                                                        Setting.Instance.Data.InternationalDateLine.Minute,
+                                                        0);
+
+                    if ((photo?.MetaData?.Date?.CompareTo(searchedUntilDateTime) ?? 1) > 0) return false;
                 }
             }
 

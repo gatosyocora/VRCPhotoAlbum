@@ -40,6 +40,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         public ReactiveCommand OpenExplorerCommand { get; }
         public ReactiveCommand RotateL90Command { get; }
         public ReactiveCommand RotateR90Command { get; }
+        public ReactiveCommand Rotate180Command { get; }
         public ReactiveCommand FlipHorizontalCommand { get; }
         public ReactiveCommand ShareToTwitterCommand { get; }
         public ReactiveCommand<User> UserSelectCommand { get; }
@@ -104,6 +105,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             OpenExplorerCommand = new ReactiveCommand().AddTo(Disposable);
             RotateL90Command = new ReactiveCommand().AddTo(Disposable);
             RotateR90Command = new ReactiveCommand().AddTo(Disposable);
+            Rotate180Command = new ReactiveCommand().AddTo(Disposable);
             FlipHorizontalCommand = new ReactiveCommand().AddTo(Disposable);
             ShareToTwitterCommand = new ReactiveCommand().AddTo(Disposable);
             UserSelectCommand = new ReactiveCommand<User>().AddTo(Disposable);
@@ -127,6 +129,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             OpenExplorerCommand.Subscribe(() => WindowHelper.OpenFileExplorer(PreviewPhoto.Value.FilePath)).AddTo(Disposable);
             RotateL90Command.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateLeft90AndSave)).AddTo(Disposable);
             RotateR90Command.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.RotateRight90AndSave)).AddTo(Disposable);
+            Rotate180Command.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.Rotate180AndSave)).AddTo(Disposable);
             FlipHorizontalCommand.Subscribe(() => ImageProcessing(PreviewPhoto.Value.FilePath, PreviewPhoto.Value.MetaData, searchResult, ImageHelper.FilpHorizontalAndSave)).AddTo(Disposable);
             ShareToTwitterCommand.Subscribe(() => WindowHelper.OpenShareDialog(PreviewPhoto.Value, photoPreviewWindow)).AddTo(Disposable);
             UserSelectCommand.Subscribe(u => searchResult.SearchedUserName.Value = u.UserName).AddTo(Disposable);

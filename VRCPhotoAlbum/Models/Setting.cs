@@ -25,14 +25,5 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 Data = null;
             }
         }
-
-        public SettingData Copy()
-        {
-            return new SettingData()
-            {
-                FolderPath = Data.FolderPath,
-                UseTestFunction = Data.UseTestFunction
-            };
-        }
     }
 }

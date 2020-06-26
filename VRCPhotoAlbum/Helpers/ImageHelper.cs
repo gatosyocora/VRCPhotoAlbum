@@ -202,6 +202,12 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             return RotateRight90(image);
         }
 
+        public static Bitmap Rotate180(string filePath)
+        {
+            var image = LoadImage(filePath);
+            return Rotate180(image);
+        }
+
         public static Bitmap RotateLeft90(Bitmap image)
         {
             if (image is null)
@@ -221,6 +227,17 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
             }
 
             image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            return image;
+        }
+
+        public static Bitmap Rotate180(Bitmap image)
+        {
+            if (image is null)
+            {
+                throw new ArgumentNullException($"{image} is null");
+            }
+
+            image.RotateFlip(RotateFlipType.Rotate180FlipNone);
             return image;
         }
 
@@ -248,6 +265,14 @@ namespace Gatosyocora.VRCPhotoAlbum.Helpers
         public static void RotateRight90AndSave(string filePath, VrcMetaData metaData)
         {
             using var image = RotateRight90(LoadImage(filePath));
+            var buffer = Bitmap2Bytes(image);
+            if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
+            SaveImage(buffer, filePath);
+        }
+
+        public static void Rotate180AndSave(string filePath, VrcMetaData metaData)
+        {
+            using var image = Rotate180(LoadImage(filePath));
             var buffer = Bitmap2Bytes(image);
             if (!(metaData is null)) buffer = VrcMetaDataWriter.Write(buffer, metaData);
             SaveImage(buffer, filePath);

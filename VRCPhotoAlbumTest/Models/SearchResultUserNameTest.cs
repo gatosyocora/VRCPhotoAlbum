@@ -5,6 +5,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -115,9 +116,13 @@ namespace VRCPhotoAlbumTest.Models
                 photoList.Add(photo);
             }
 
-            searchResultModel.SearchText.Value = @$"user:""{userName}""";
             searchResultModel.ShowedPhotoList.ObserveAddChangedItems()
-                .Subscribe(_ => Assert.AreEqual(hitCount, searchResultModel.ShowedPhotoList.Count));
+                .Subscribe(f =>
+                {
+                    Assert.AreEqual(hitCount, searchResultModel.ShowedPhotoList.Count);
+                });
+
+            searchResultModel.SearchText.Value = @$"user:""{userName}""";
         }
 
         [TestMethod("SearchTextに検索するユーザー名の所定フォーマットを入力して正しく取得できているか")]
@@ -136,10 +141,10 @@ namespace VRCPhotoAlbumTest.Models
                 photoList.Add(photo);
             }
 
-            searchResultModel.SearchedUserName.Value = userName;
-
             searchResultModel.ShowedPhotoList.ObserveAddChangedItems()
                 .Subscribe(_ => Assert.AreEqual(hitCount, searchResultModel.ShowedPhotoList.Count));
+
+            searchResultModel.SearchedUserName.Value = userName;
         }
     }
 }
