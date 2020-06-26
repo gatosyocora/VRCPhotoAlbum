@@ -157,6 +157,7 @@
                 x:Name="DateLinePicker"
                 Grid.Column="1"
                 Margin="20 5 50 5"
+                Culture="{Binding DateTimeCulture}"
                 SelectedDateTime="{Binding InternationalDateLine.Value, ValidatesOnDataErrors=False, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=False}"/>
         </Grid>
         <Grid Grid.Row="3" Grid.RowSpan="2">

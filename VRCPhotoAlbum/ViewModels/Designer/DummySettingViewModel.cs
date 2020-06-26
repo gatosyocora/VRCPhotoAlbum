@@ -4,6 +4,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Designer
@@ -28,6 +29,8 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Designer
 
         public ReactiveCommand<string> RemoveCacheFolderCommand { get; }
         public ReactiveCommand ApplyCommand { get; }
+
+        public CultureInfo DateTimeCulture { get; } = new CultureInfo("en-In");
 
         public DummySettingViewModel()
         {

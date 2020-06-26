@@ -2,6 +2,7 @@
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Interfaces
@@ -21,5 +22,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels.Interfaces
         public ReactiveCommand SelectCacheFolderCommand { get; }
         public ReactiveCommand<string> RemoveCacheFolderCommand { get; }
         public ReactiveCommand ApplyCommand { get; }
+
+        public CultureInfo DateTimeCulture { get; }
     }
 }
