@@ -180,7 +180,7 @@
                    Grid.Column="1" Grid.Row="1"
                    Grid.ColumnSpan="2"
                    VerticalAlignment="Center"
-                   HorizontalAlignment="Left"/>
+                   HorizontalAlignment="Center"/>
         </Grid>
         <Grid x:Name="DateLine"
               Grid.Row="2">
