@@ -105,7 +105,7 @@
                 <Label x:Name="MetadataPhotoOnlyLabel"
                        Grid.Column="0"
                        VerticalAlignment="Center"
-                       Content="全メタ情報を含む写真のみ"/>
+                       Content="すべての情報を含む写真のみ"/>
                 <ToggleButton x:Name="MetadataPhotoOnlyToggle"
                               Grid.Column="1"
                               VerticalAlignment="Center"
