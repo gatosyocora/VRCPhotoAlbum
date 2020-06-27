@@ -212,6 +212,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             var useSinceDate = SearchedSinceDate.Value.Date.CompareTo(_defaultDate.Date) != 0;
             var useUntilDate = SearchedUntilDate.Value.Date.CompareTo(_defaultDate.Date) != 0;
 
+            // 日付検索で、期間検索をおこなっていないとき
             if (useDate && (!useSinceDate && !useUntilDate))
             {
                 var searchedDateTime = SearchedDate.Value.Date
@@ -222,8 +223,10 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
 
                 if ((photo?.MetaData?.Date?.CompareTo(searchedDateTime) ?? 1) != 0) return false;
             }
+            // 期間検索のとき
             else
             {
+                // 期間検索で開始日付検索のとき
                 if (useSinceDate)
                 {
                     var searchedSinceDateTime = SearchedSinceDate.Value.Date
@@ -235,6 +238,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                     if ((photo?.MetaData?.Date?.CompareTo(searchedSinceDateTime) ?? -1) < 0) return false;
                 }
 
+                // 期間検索で終了日付検索のとき
                 if (useUntilDate)
                 {
                     var searchedUntilDateTime = SearchedUntilDate.Value.Date
@@ -247,20 +251,20 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 }
             }
 
-            // UsersとWorldがnullでDateがnullでない写真はファイル名Dateな写真なので無条件で通す
-            if (photo?.MetaData?.Users?.Count > 0 || !(photo?.MetaData?.World is null))
+            // ユーザー検索のとき
+            if (useUser)
             {
-                // ユーザーでもワールドでも検索していない場合
-                if (!useUser && !useWorld)
-                {
-                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower(new CultureInfo("en-US")).StartsWith(SearchedUserName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal)) ?? true) &&
-                        (!photo?.MetaData?.World?.ToLower(new CultureInfo("en-US")).Contains(SearchedWorldName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal) ?? true)) return false;
-                }
-                else
-                {
-                    if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower(new CultureInfo("en-US")).StartsWith(SearchedUserName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal)) ?? true) ||
-                        (!photo?.MetaData?.World?.ToLower(new CultureInfo("en-US")).Contains(SearchedWorldName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal) ?? true)) return false;
-                }
+                // ユーザー情報がない写真は省く
+                if ((photo?.MetaData?.Users?.Count ?? 0) <= 0) return false;
+                if ((!photo?.MetaData?.Users?.Any(u => u.UserName.ToLower(new CultureInfo("en-US")).StartsWith(SearchedUserName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal)) ?? true)) return false;
+            }
+
+            // ワールド検索のとき
+            if (useWorld)
+            {
+                // ワールド情報がない写真は省く
+                if (photo?.MetaData?.World is null) return false;
+                if (!photo?.MetaData?.World?.ToLower(new CultureInfo("en-US")).Contains(SearchedWorldName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal) ?? true) return false;
             }
 
             return true;
