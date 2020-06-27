@@ -90,16 +90,33 @@
               HorizontalAlignment="Right"
               Margin="5 10 5 10">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="MetadataPhotoOnlyLabel"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       Content="全メタ情報を含む写真のみ"/>
+                <ToggleButton x:Name="MetadataPhotoOnlyToggle"
+                              Grid.Column="1"
+                              VerticalAlignment="Center"
+                              Margin="5"
+                              IsChecked="{Binding MetadataPhotoOnly.Value}"/>
+            </Grid>
             <Label x:Name="SearchDateLabel"
                    Content="日付"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
+                   Grid.Column="1"
                    Margin="20 0 0 0"/>
             <DatePicker x:Name="SearchDatePicker"
                         Margin="5" Padding="0"
@@ -107,10 +124,10 @@
                         HorizontalAlignment="Center"
                         Width="100"
                         SelectedDate="{Binding SearchDate.Value}"
-                        Grid.Column="1"/>
+                        Grid.Column="2"/>
             <Button x:Name="EnterSearchDateTodayButton"
                     Content="今日"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Padding="0" Margin="5"
                     Width="50" Height="30"
                     HorizontalAlignment="Center"
@@ -119,7 +136,7 @@
                     Command="{Binding SearchWithDateTypeCommand}"/>
             <Button x:Name="EnterSearchDateWeekButton"
                     Content="1週間"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Padding="0" Margin="5"
                     Width="50" Height="30"
                     HorizontalAlignment="Center"
@@ -128,7 +145,7 @@
                     Command="{Binding SearchWithDateTypeCommand}"/>
             <Button x:Name="EnterSearchDateMonthButton"
                     Content="1ヵ月"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     Padding="0" Margin="5"
                     Width="50" Height="30"
                     HorizontalAlignment="Center"

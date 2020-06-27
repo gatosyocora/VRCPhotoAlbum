@@ -23,6 +23,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
         public ReactiveProperty<DateTime> SearchedDate { get; }
         public ReactiveProperty<DateTime> SearchedSinceDate { get; }
         public ReactiveProperty<DateTime> SearchedUntilDate { get; }
+        public ReactiveProperty<bool> MetadataPhotoOnly { get; }
 
         public ReactiveCommand ResearchCommand { get; }
         public ReactiveCommand ResetCommand { get; }
@@ -50,6 +51,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             SearchedDate = new ReactiveProperty<DateTime>(_defaultDate).AddTo(Disposable);
             SearchedSinceDate = new ReactiveProperty<DateTime>(_defaultDate).AddTo(Disposable);
             SearchedUntilDate = new ReactiveProperty<DateTime>(_defaultDate).AddTo(Disposable);
+            MetadataPhotoOnly = new ReactiveProperty<bool>(false).AddTo(Disposable);
 
             ResearchCommand = new ReactiveCommand().AddTo(Disposable);
             ResetCommand = new ReactiveCommand().AddTo(Disposable);
@@ -59,6 +61,7 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             SearchedDate.Subscribe(d => { if (!_IsSearching) { SearchWithDate(d); } }).AddTo(Disposable);
             SearchedSinceDate.Subscribe(d => { if (!_IsSearching) { SearchWithDatePeriod(d, SearchedUntilDate.Value); } }).AddTo(Disposable);
             SearchedUntilDate.Subscribe(d => { if (!_IsSearching) { SearchWithDatePeriod(SearchedUntilDate.Value, d); } }).AddTo(Disposable);
+            MetadataPhotoOnly.Subscribe(_ => ResearchCommand.Execute()).AddTo(Disposable);
 
             _photoList = photoList.ObserveAddChanged()
                             .Select(p => p)
@@ -111,7 +114,18 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             searchText = Regex.Replace(searchText, @"^\s*", string.Empty);
             searchText = Regex.Replace(searchText, @"\s*$", string.Empty);
 
-            if (!searchText.Any()) return _photoList;
+            // 検索条件がないときはそのままのリストを返す
+            if (!searchText.Any())
+            {
+                if (MetadataPhotoOnly.Value)
+                {
+                    return _photoList.Where(p => ContainsAllMetadata(p));
+                }
+                else
+                {
+                    return _photoList;
+                }
+            }
 
             _IsSearching = true;
 
@@ -212,6 +226,9 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
             var useSinceDate = SearchedSinceDate.Value.Date.CompareTo(_defaultDate.Date) != 0;
             var useUntilDate = SearchedUntilDate.Value.Date.CompareTo(_defaultDate.Date) != 0;
 
+            // メタデータが完全に入った写真のみ検索にひっかける
+            if (MetadataPhotoOnly.Value && !ContainsAllMetadata(photo)) return false;
+
             // 日付検索で、期間検索をおこなっていないとき
             if (useDate && (!useSinceDate && !useUntilDate))
             {
@@ -266,6 +283,16 @@ namespace Gatosyocora.VRCPhotoAlbum.Models
                 if (photo?.MetaData?.World is null) return false;
                 if (!photo?.MetaData?.World?.ToLower(new CultureInfo("en-US")).Contains(SearchedWorldName.Value.ToLower(new CultureInfo("en-US")), StringComparison.Ordinal) ?? true) return false;
             }
+
+            return true;
+        }
+
+        private bool ContainsAllMetadata(Photo photo)
+        {
+            if ((photo.MetaData.Date ?? default) == default) return false;
+            if ((string.IsNullOrEmpty(photo.MetaData.Photographer))) return false;
+            if ((string.IsNullOrEmpty(photo.MetaData.World))) return false;
+            if ((photo.MetaData.Users is null) || !photo.MetaData.Users.Any()) return false;
 
             return true;
         }

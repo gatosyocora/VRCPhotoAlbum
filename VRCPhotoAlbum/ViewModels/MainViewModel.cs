@@ -48,6 +48,7 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
         #region Search
         public ReactiveProperty<string> SearchText { get; }
         public ReactiveProperty<DateTime> SearchDate { get; }
+        public ReactiveProperty<bool> MetadataPhotoOnly { get; }
 
         public ReactiveCommand<string> SearchWithUserNameCommand { get; }
         public ReactiveCommand<string> SearchWithWorldNameCommand { get; }
@@ -135,6 +136,9 @@ namespace Gatosyocora.VRCPhotoAlbum.ViewModels
             });
             ClearSearchText = new ReactiveCommand().AddTo(Disposable);
             ClearSearchText.Subscribe(() => SearchText.Value = string.Empty).AddTo(Disposable);
+
+            MetadataPhotoOnly = new ReactiveProperty<bool>(false).AddTo(Disposable);
+            MetadataPhotoOnly.Subscribe(b => _searchResult.MetadataPhotoOnly.Value = b).AddTo(Disposable);
 
             CurrentUserSortType = new ReactiveProperty<UserSortType>(UserSortType.None).AddTo(Disposable);
             CurrentUserSortType.Subscribe(type => _users.SortType.Value = CurrentUserSortType.Value).AddTo(Disposable);
