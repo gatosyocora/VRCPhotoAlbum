@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="ViewModel">
+    <Position X="10" Y="4.604" Height="0.291" Width="1.7" />
+  </Comment>
+  <Comment CommentText="View">
+    <Position X="11.031" Y="1.948" Height="0.291" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Model">
+    <Position X="11.198" Y="7.375" Height="0.291" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Helper">
+    <Position X="19.531" Y="4.906" Height="0.291" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Model">
+    <Position X="25.302" Y="2.156" Height="0.291" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Service">
+    <Position X="18.49" Y="0.5" Height="0.291" Width="1.7" />
+  </Comment>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.ViewModels.Designer.DummySettingViewModel" Collapsed="true">
+    <Position X="6.5" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AICAAAASABAEQAAAAAAAQAAAAEAhAAAAAAgAAAEAAAA=</HashCode>
+      <FileName>ViewModels\Designer\DummySettingViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.ViewModels.MainViewModel" Collapsed="true">
+    <Position X="9.75" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>oACAggQAAEGAQUBAAgCBAAhDAAAlhIAJAAAAAAgICgA=</HashCode>
+      <FileName>ViewModels\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.ViewModels.PhotoPreviewViewModel" Collapsed="true">
+    <Position X="12" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AACoRAQQAQAIAACAAEAQACgCAABAADAAAAgAAABAAIA=</HashCode>
+      <FileName>ViewModels\PhotoPreviewViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.ViewModels.SettingViewModel" Collapsed="true">
+    <Position X="16.5" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AICAAAASABAEQAAAAAAAQAAQAEAhAAAAAAgAAAEAAAA=</HashCode>
+      <FileName>ViewModels\SettingViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.ViewModels.ShareViewModel" Collapsed="true">
+    <Position X="14.5" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAACAABQAAAAAAAAQAAAACAA=</HashCode>
+      <FileName>ViewModels\ShareViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.ViewModels.ViewModelBase" Collapsed="true">
+    <Position X="12.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAEAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\ViewModelBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Views.MainWindow" Collapsed="true">
+    <Position X="10" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAACAAQAAAAAAIAAAQAAAAAACASIAAAAAAAAQ=</HashCode>
+      <FileName>Views\MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Views.PhotoPreview" Collapsed="true">
+    <Position X="12.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAQgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\PhotoPreview.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Views.SettingWindow" Collapsed="true">
+    <Position X="16.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAgABAAA=</HashCode>
+      <FileName>Views\SettingWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Views.ShareWindow" Collapsed="true">
+    <Position X="14.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>Views\ShareWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Views.WindowBase" Collapsed="true">
+    <Position X="13.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\WindowBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Wrappers.DisposableStream" Collapsed="true">
+    <Position X="25.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAACAAwAAgGAAAAABgAAAAAAAAAAAABAEIACA=</HashCode>
+      <FileName>Wrappers\DisposableStream.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Servisies.DBCacheService" Collapsed="true">
+    <Position X="18.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>lAQIEAGACSAQBCAgJRAmAAAAgAgCABAAAAAAEQQIEEA=</HashCode>
+      <FileName>Servisies\DBCacheService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Entities.Context" Collapsed="true">
+    <Position X="27" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAARAAACAAAAAAAAAAUAAAAgBAAAAAEAAAAAA=</HashCode>
+      <FileName>Models\Entities\Context.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Entities.Photo" Collapsed="true">
+    <Position X="30.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAABAAAAAAAAAACgAAAAAAAAABAABAEAAAAAA=</HashCode>
+      <FileName>Models\Entities\Photo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Entities.PhotoUser" Collapsed="true">
+    <Position X="27" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\PhotoUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Entities.User" Collapsed="true">
+    <Position X="25.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAggAAAAAAAACQAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Entities.UserNameHistory" Collapsed="true">
+    <Position X="28.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\UserNameHistory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Entities.World" Collapsed="true">
+    <Position X="30.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAFAAAA=</HashCode>
+      <FileName>Models\Entities\World.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Entities.WorldNameHistory" Collapsed="true">
+    <Position X="25.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAQAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Models\Entities\WorldNameHistory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.AppCache" Collapsed="true">
+    <Position X="25.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAABAAAQAAAAAAAAACAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Models\Cache.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.DatePeriod" Collapsed="true">
+    <Position X="28.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\DatePeriod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.ModelBase" Collapsed="true">
+    <Position X="13.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAEAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ModelBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Photo" Collapsed="true">
+    <Position X="10.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAAAEAQAAAAAEAAAAAIAAEAAAAEAAAIBAAAAAAAA=</HashCode>
+      <FileName>Models\Photo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.PhotoFolder" Collapsed="true">
+    <Position X="25.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\PhotoFolder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.SearchResult" Collapsed="true">
+    <Position X="14.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAFgAMAAAEAAAASCABAAAAIEAgAEAAABAoACAAAAAAE=</HashCode>
+      <FileName>Models\SearchResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Setting" Collapsed="true">
+    <Position X="28.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAQAAAAAAAAAA=</HashCode>
+      <FileName>Models\Setting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.SettingData" Collapsed="true">
+    <Position X="30.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAASAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\SettingData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.User" Collapsed="true">
+    <Position X="27" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.Users" Collapsed="true">
+    <Position X="12.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAIAAAAAAEgAAIAgAABAAIAAAAAAAAAAI=</HashCode>
+      <FileName>Models\Users.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Models.VrcPhotographs" Collapsed="true">
+    <Position X="17" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Models\VrcPhotographs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Helpers.FileHelper" Collapsed="true">
+    <Position X="19.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAIACAAAAAAAAAAAEAAAAAAAAAAAAAAQI=</HashCode>
+      <FileName>Helpers\FileHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Helpers.ImageHelper" Collapsed="true">
+    <Position X="21.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgACQAAAwEAACJAAAEACEAA8ACAAAgCUABAAAAABA=</HashCode>
+      <FileName>Helpers\ImageHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Helpers.JsonHelper" Collapsed="true">
+    <Position X="23" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAIAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Helpers\JsonHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Helpers.MetaDataHelper" Collapsed="true">
+    <Position X="19.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAEAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\MetaDataHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Helpers.VRChatHelper" Collapsed="true">
+    <Position X="21.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\VRChatHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gatosyocora.VRCPhotoAlbum.Helpers.WindowHelper" Collapsed="true">
+    <Position X="23" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQIAAAAAAgAAAAAAAAAAAAAAAAAAAAACAAAAAAEAAAA=</HashCode>
+      <FileName>Helpers\WindowHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Gatosyocora.VRCPhotoAlbum.ViewModels.Interfaces.ISettingViewModel" Collapsed="true">
+    <Position X="14.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AICAAAASABAEQAAAAAAAQAAAAEAhAAAAAAgAAAEAAAA=</HashCode>
+      <FileName>ViewModels\Interfaces\ISettingViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Gatosyocora.VRCPhotoAlbum.Servisies.IDBCacheService" Collapsed="true">
+    <Position X="20.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kAAAAAAACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Servisies\DBCacheService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Gatosyocora.VRCPhotoAlbum.Models.DateSearchType" Collapsed="true">
+    <Position X="25.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAQAgAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Models\DateSearchType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Gatosyocora.VRCPhotoAlbum.Models.UserSortType" Collapsed="true">
+    <Position X="27" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Models\UserSortType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Yu Gothic UI" Size="9" />
+</ClassDiagram>
